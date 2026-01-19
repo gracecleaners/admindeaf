@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ride Completed - Zyra</title>
+    <!--[if mso]>
+    <noscript>
+        <xml>
+            <o:OfficeDocumentSettings>
+                <o:AllowPNG/>
+                <o:PixelsPerInch>96</o:PixelsPerInch>
+            </o:OfficeDocumentSettings>
+        </xml>
+    </noscript>
+    <![endif]-->
+    <style type="text/css">
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f8f9fa;
+            width: 100% !important;
+            min-width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .email-wrapper {
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Fallback for Outlook */
+        .email-container-outlook {
+            width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .completion-title {
+            font-size: 32px;
+            color: #28a745;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .completion-message {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.8;
+        }
+        
+        .ride-summary {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 1px solid #2196f3;
+        }
+        
+        .ride-summary-title {
+            font-size: 24px;
+            color: #1976d2;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .summary-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        .summary-value {
+            font-size: 16px;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .ride-id {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        .ride-id-label {
+            font-size: 14px;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        
+        .ride-id-value {
+            font-size: 24px;
+            color: #856404;
+            font-weight: bold;
+        }
+        
+        .receipt-section {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #28a745;
+            text-align: center;
+        }
+        
+        .receipt-title {
+            font-size: 24px;
+            color: #155724;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .receipt-description {
+            color: #155724;
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .receipt-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin: 10px;
+        }
+        
+        .receipt-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .receipt-button.secondary {
+            background: white;
+            color: #28a745;
+            border: 2px solid #28a745;
+        }
+        
+        .rating-section {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 2px solid #ffc107;
+            text-align: center;
+        }
+        
+        .rating-title {
+            font-size: 20px;
+            color: #856404;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .rating-text {
+            color: #856404;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .rating-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffc107 0%, #ffed4e 100%);
+            color: #856404;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .rating-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .trip-details {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .trip-details-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .trip-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .trip-item:last-child {
+            border-bottom: none;
+        }
+        
+        .trip-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .trip-value {
+            color: #2c3e50;
+        }
+        
+        .route-map-section {
+            background: linear-gradient(135deg, #e8f5e8 0%, #f0f8f0 100%);
+            padding: 0;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 2px solid #28a745;
+        }
+        
+        .route-map-title {
+            font-size: 20px;
+            color: #155724;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .map-container {
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+        }
+        
+        
+
+        @keyframes markerBounce {
+            0%, 100% { transform: scale(0.7) translateY(0); }
+            50% { transform: scale(0.7) translateY(-3px); }
+        }
+
+        @keyframes markerPulse {
+            0%, 100% { transform: scale(0.85); }
+            50% { transform: scale(0.9); }
+        }
+
+        @keyframes markerGlow {
+            0%, 100% { 
+                transform: scale(0.6);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(0.65);
+                opacity: 1;
+            }
+        }
+
+        .marker-svg {
+            width: 24px;
+            height: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .location-label {
+            position: absolute;
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 500;
+            white-space: nowrap;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .location-marker:hover .location-label {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .start-time-tooltip {
+            position: absolute;
+            top: -45px;
+            left: -10px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 4;
+        }
+
+        .start-marker:hover .start-time-tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .location-label::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #2c3e50;
+        }
+
+        .start-time-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 20px;
+            border: 5px solid transparent;
+            border-top-color: #28a745;
+        }
+        
+        .route-path {
+            stroke: #28a745;
+            stroke-width: 4;
+            fill: none;
+            stroke-linecap: round;
+        }
+        
+
+        .gps-svg-container {
+            width: 100%;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .gps-svg-container svg {
+            width: 100%;
+            height: 100%;
+            max-width: 256px;
+            max-height: 256px;
+        }
+
+        .gps-svg-container path {
+            transition: fill 0.3s ease;
+        }
+
+        .gps-svg-container path:hover {
+            opacity: 0.8;
+        }
+
+        .svg-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gps-svg-container {
+            position: relative;
+        }
+
+        .gps-svg-container path {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Linear perspective marker sizes with automatic animations */
+        .start-marker-group {
+            transform: scale(0.7);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+            animation: markerBounce 2s ease-in-out infinite;
+        }
+
+        .end-marker-group {
+            transform: scale(0.85);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+            animation: markerPulse 2s ease-in-out infinite;
+        }
+
+        .waypoint-group {
+            transform: scale(0.6);
+            transform-origin: center;
+            transition: transform 0.3s ease;
+            animation: markerGlow 3s ease-in-out infinite;
+        }
+
+        /* Hover effects with perspective maintained */
+        .start-marker-group:hover {
+            transform: scale(0.8);
+            filter: brightness(1.2);
+        }
+
+        .end-marker-group:hover {
+            transform: scale(0.95);
+            filter: brightness(1.2);
+        }
+
+        .waypoint-group:hover {
+            transform: scale(0.7);
+            filter: brightness(1.3);
+        }
+
+        
+        .ride-summary-compact {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #28a745;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .summary-item-compact {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            margin-right: 15px;
+        }
+        
+        .summary-item-compact:last-child {
+            margin-right: 0;
+        }
+        
+        .summary-icon {
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        
+        .summary-text {
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        
+        .support-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .support-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .support-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            text-align: center;
+        }
+        
+        .contact-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .contact-value {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            margin-bottom: 20px;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        /* Mobile-first responsive design */
+        @media screen and (max-width: 600px) {
+            .email-wrapper {
+                padding: 10px 0;
+            }
+            
+            .email-container {
+                margin: 0 10px;
+                border-radius: 4px;
+            }
+            
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .content, .support-section, .footer {
+                padding: 20px;
+            }
+            
+            .completion-title {
+                font-size: 22px;
+                line-height: 1.3;
+            }
+            
+            .completion-message {
+                font-size: 16px;
+                line-height: 1.5;
+            }
+            
+            .ride-summary {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .ride-summary-title {
+                font-size: 20px;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .summary-item {
+                padding: 15px;
+            }
+            
+            .route-map-section {
+                padding: 12px;
+                margin: 15px 0;
+            }
+            
+            .route-map-title {
+                font-size: 18px;
+                margin-bottom: 10px;
+            }
+            
+            .map-container {
+                padding: 8px;
+            }
+            
+            .route-svg {
+                height: 100px;
+                min-width: 220px;
+                margin: 0 5px;
+            }
+
+            .gps-marker-container {
+                width: 28px;
+                height: 28px;
+            }
+
+            .location-label {
+                font-size: 8px;
+                max-width: 80px;
+                padding: 4px 8px;
+            }
+
+            .start-time-tooltip {
+                font-size: 8px;
+                padding: 6px 8px;
+            }
+
+            .gps-svg-container {
+                height: 150px;
+                padding: 15px;
+                margin-top: 15px;
+            }
+
+            .svg-tooltip {
+                font-size: 11px;
+                padding: 10px 12px;
+                max-width: 150px;
+            }
+
+            .tooltip-text {
+                font-size: 10px;
+            }
+
+            .tooltip-time {
+                font-size: 9px;
+            }
+
+            /* Maintain perspective scaling on tablet */
+            .start-marker-group {
+                transform: scale(0.6);
+            }
+
+            .end-marker-group {
+                transform: scale(0.75);
+            }
+
+            .waypoint-group {
+                transform: scale(0.5);
+            }
+
+            .route-line {
+                stroke-width: 1.2 !important;
+            }
+            
+            .trip-details {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .trip-details-title {
+                font-size: 18px;
+            }
+            
+            .trip-item {
+                padding: 8px 0;
+                font-size: 14px;
+            }
+            
+            .receipt-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .receipt-title {
+                font-size: 20px;
+            }
+            
+            .receipt-description {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            
+            .receipt-button {
+                display: block;
+                margin: 8px 0;
+                padding: 12px 20px;
+                font-size: 14px;
+                text-align: center;
+            }
+            
+            .rating-section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .rating-title {
+                font-size: 18px;
+            }
+            
+            .rating-text {
+                font-size: 14px;
+                margin-bottom: 15px;
+            }
+            
+            .rating-button {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+            
+            .ride-summary-compact {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .summary-row {
+                flex-direction: column;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            
+            .summary-item-compact {
+                margin-right: 0;
+                margin-bottom: 5px;
+            }
+            
+            .summary-icon {
+                font-size: 14px;
+            }
+            
+            .summary-text {
+                font-size: 13px;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .contact-item {
+                text-align: center;
+            }
+            
+            .contact-label {
+                font-size: 14px;
+            }
+            
+            .contact-value {
+                font-size: 13px;
+            }
+            
+            .support-title {
+                font-size: 18px;
+            }
+            
+            .support-description {
+                font-size: 14px;
+            }
+            
+            .footer {
+                padding: 20px;
+            }
+            
+            .footer-content p {
+                font-size: 14px;
+            }
+            
+            .social-link {
+                margin: 0 8px;
+                font-size: 16px;
+            }
+            
+            .footer-text {
+                font-size: 11px;
+            }
+        }
+        
+        /* Small mobile devices */
+        @media screen and (max-width: 480px) {
+            .email-container {
+                margin: 0 5px;
+            }
+            
+            .header, .content, .support-section, .footer {
+                padding: 15px;
+            }
+            
+            .completion-title {
+                font-size: 20px;
+            }
+            
+            .completion-message {
+                font-size: 15px;
+            }
+            
+            .route-map-title {
+                font-size: 16px;
+            }
+            
+            .route-svg {
+                height: 80px;
+                min-width: 200px;
+                margin: 0 3px;
+            }
+
+            .gps-marker-container {
+                width: 24px;
+                height: 24px;
+            }
+
+            .location-label {
+                font-size: 7px;
+                max-width: 60px;
+                padding: 3px 6px;
+            }
+
+            .start-time-tooltip {
+                font-size: 7px;
+                padding: 4px 6px;
+            }
+
+            .gps-svg-container {
+                height: 120px;
+                padding: 10px;
+                margin-top: 10px;
+            }
+
+            .svg-tooltip {
+                font-size: 10px;
+                padding: 8px 10px;
+                max-width: 120px;
+            }
+
+            .tooltip-text {
+                font-size: 9px;
+            }
+
+            .tooltip-time {
+                font-size: 8px;
+            }
+
+            /* Further reduce scaling on mobile */
+            .start-marker-group {
+                transform: scale(0.5);
+            }
+
+            .end-marker-group {
+                transform: scale(0.65);
+            }
+
+            .waypoint-group {
+                transform: scale(0.4);
+            }
+
+            .route-line {
+                stroke-width: 1.0 !important;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .email-container {
+                background-color: #1a1a1a;
+                color: #ffffff;
+            }
+            
+            .map-container {
+                background-color: #2d2d2d;
+            }
+            
+            .route-point {
+                background-color: #2d2d2d;
+                color: #ffffff;
+            }
+            
+            .stat-item {
+                background-color: rgba(45, 45, 45, 0.9);
+                color: #ffffff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--[if mso]>
+    <div class="email-container-outlook">
+    <![endif]-->
+    <div class="email-wrapper">
+        <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🚗 Zyra</div>
+            <div class="tagline">Your Premium Ride Experience</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="completion-title">🎉 Ride Completed!</h1>
+            
+            <p class="completion-message">
+                Hello {{ customer_name }}, your ride has been successfully completed! 
+                Thank you for choosing Zyra for your transportation needs.
+            </p>
+            
+            <!-- Ride ID -->
+            <!-- <div class="ride-id">
+                <div class="ride-id-label">Ride ID</div>
+                <div class="ride-id-value">#{{ ride_id }}</div>
+            </div> -->
+            
+            <!-- Route Map Section -->
+            <div class="route-map-section">
+                <h3 class="route-map-title">🗺️ Your Journey</h3>
+                <div class="map-container">
+                    <!-- Enhanced GPS SVG with Tooltips -->
+                    <div class="gps-svg-container">
+                        <div class="svg-wrapper">
+                            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 256 256" enable-background="new 0 0 256 256" xml:space="preserve">
+                                <metadata>Svg Vector Icons : http://www.onlinewebfonts.com/icon</metadata>
+                                <g>
+                                    <g>
+                                         <g>
+                                             <!-- Start GPS Marker (Orange) -->
+                                             <g class="start-marker-group pickup-marker" transform="translate(0, 0)">
+                                                <path fill="#ffc107" d="M46.7,15.5c-19.5,3.2-33.9,18.1-36.4,37.8c-0.7,5.7-0.2,10,2,16.1c2.4,6.9,8.3,17.6,14.8,27.3c6.6,9.8,24.6,32.6,25.7,32.6c0.6,0,11.5-13.1,17.7-21.4C85.4,88,93.5,73.1,95.4,62c0.8-4.6,0.1-11.2-1.8-17.4c-3.3-10.2-11.7-20-21.6-25C65.2,16.2,54,14.4,46.7,15.5z M60,31.1c11.9,3.1,20.7,14.4,20.7,26.4c0,7.7-7.8,22.4-22.5,42c-2.6,3.6-5,6.5-5.3,6.5c-0.7,0-9.9-12.3-14.7-19.6c-8.6-13.1-12.7-21.9-13.1-27.9c-0.7-12,8.3-24,20.4-27.3C49.4,30.1,56.1,30.1,60,31.1z"/>
+                                                <path fill="#2c3e50" d="M48.4,43.8c-4.7,1.7-8.1,5-9.6,9.6c-2.4,6.9,1.6,15.2,8.7,18.3c2.6,1.1,8.2,1.1,10.8,0c9.3-4,12.3-15.9,5.9-23.3C60.3,43.8,53.8,41.9,48.4,43.8z"/>
+                                            </g>
+                                            
+                                            <!-- End GPS Marker (Green) -->
+                                            <g class="end-marker-group destination-marker" transform="translate(0, 0)">
+                                                <path fill="#28a745" d="M198.8,109.1c-7.9,0.7-16.6,4.3-22.9,9.5c-12.2,9.9-18.2,27.4-14.3,41.4c2.6,9.5,13.1,27.5,25,43.2c6.2,8.1,16,19.9,16.5,19.9c0.6,0,10-11.5,17.2-21c16.1-21.3,24.5-37.4,25.6-48.7c0.7-7.2-2.2-17.9-6.7-24.8c-3-4.7-9.4-10.8-14-13.5c-4.4-2.6-11.6-5.1-15.8-5.6C203.7,108.7,202.7,108.7,198.8,109.1z M212.2,125.3c13.5,4.8,21.7,19.8,17.5,32.2c-2.6,7.6-10.8,21.4-20.8,34.8c-3.1,4.2-5.8,7.6-5.9,7.6c-0.5-0.1-9.7-12.6-14.1-19.2c-9-13.4-13.8-23.7-13.8-29.5c0-7.2,2.8-13.5,8.3-19c4.1-4.1,7.6-6.1,12.8-7.6C200.2,123.5,208.1,123.8,212.2,125.3z"/>
+                                                <path fill="#2c3e50" d="M200.3,136.9c-4.4,1-8.6,4.3-10.7,8.3c-1.5,2.9-1.4,9.5,0.3,12.8c5.4,10.6,20,10.8,26.1,0.5c1.3-2.2,1.4-3,1.4-6.9c0-5.2-0.9-7.5-4.1-10.7C210,137.5,204.6,135.9,200.3,136.9z"/>
+                                            </g>
+                                            
+                                            <!-- Route Waypoints with tooltips -->
+                                            <g class="waypoint-group" transform="translate(0, 0)">
+                                                <path fill="#20c997" d="M48.8,137.2c-2.5,1.1-3.7,3.8-2.9,6.5c0.9,2.9,2.6,3.8,7.7,4.1c5.6,0.4,8.5-0.4,9.8-2.6c0.6-0.9,1-2.2,1-2.9c0-1.9-1.4-4.2-3.1-5.1C59.3,136.1,51.2,136.1,48.8,137.2z"/>
+                                                <path fill="#20c997" d="M76.7,138.7c-1.7,1.7-1.8,2-1.6,4.3c0.4,3.3,2,4.7,5.7,5.1c13.7,1.4,15.1,1.4,16.3,0.8c2-1,3-2.7,3-5.1c0-1.8-0.3-2.6-1.5-3.8c-1.6-1.6-2.3-1.7-11.9-2.6C78.8,136.7,78.7,136.7,76.7,138.7z"/>
+                                                <path fill="#20c997" d="M111.6,145.8c-1.2,1.2-1.5,2-1.5,3.7c0,2.4,0.8,3.4,5.7,7.2c1.6,1.3,2.4,2.3,2.8,4.1c1.5,5.8,8.5,6.8,10.8,1.5c0.6-1.5,0.6-2.2-0.1-4.8c-0.9-3.7-2.1-5.6-5-8.4C118.7,143.9,114.6,142.8,111.6,145.8z"/>
+                                                <path fill="#20c997" d="M108.5,168.6c-0.1,0.2-3.6,1.2-7.8,2.4c-8.6,2.4-10,3.3-10,6.8c0,2.5,1.2,4.2,3.5,5.1c1.7,0.7,2.3,0.6,9-1.1c9-2.4,10.6-3.1,11.8-5.6c1.3-2.6,0.5-5.3-1.9-6.8C111.6,168.5,109.1,168.1,108.5,168.6z"/>
+                                                <path fill="#20c997" d="M66.6,178.9c-4.1,1-8.1,2.4-8.9,3c-4.7,3.5-0.8,11,4.9,9.6c8.6-2.1,15-3.9,15.9-4.6c1.7-1.1,2.6-4.3,1.7-6.5c-0.8-1.8-3.3-3.6-5-3.6C74.6,176.8,70.7,177.8,66.6,178.9z"/>
+                                                <path fill="#20c997" d="M38.3,192.2c-3.3,2.9-5,6.7-5.3,11.2c-0.5,7.1,1.8,11.2,6.3,11.2c1.6,0,2.4-0.4,3.7-1.6c1.6-1.6,1.6-1.7,1.3-5.7c-0.3-4.2-0.3-4.2,2.2-8c2.5-3.7,0.6-8.1-3.8-8.7C40.7,190.3,40.2,190.5,38.3,192.2z"/>
+                                                <path fill="#20c997" d="M52.6,217.4c-2.9,2.9-2.2,7.1,1.5,8.9c2.5,1.2,14.3,4.5,15.9,4.5c1.7,0,4.3-1.3,4.9-2.6c0.3-0.6,0.5-2,0.5-3.1c0-3.5-1.4-4.5-8.9-6.6c-3.6-1-7.2-2-8-2.4C55.9,215.2,54.5,215.5,52.6,217.4z"/>
+                                                <path fill="#20c997" d="M89.3,224.3c-4.7,2.1-4.4,8.7,0.5,10.2c0.9,0.3,5,0.9,9.1,1.4c6.2,0.7,7.7,0.8,9.1,0.2c4-1.7,4.1-8.3,0.2-9.9c-0.8-0.3-4.4-0.9-8-1.4c-3.6-0.4-7.1-0.9-7.9-1C91.5,223.7,90.2,223.9,89.3,224.3z"/>
+                                                <path fill="#20c997" d="M124.7,228c-1.6,0.9-3,3.3-3,5c0,1.9,1.6,4.3,3.4,5c1,0.4,5,0.9,10.1,1.1l8.3,0.4l1.7-1.4c2-1.7,2.6-3.8,1.5-6.2c-1.1-2.7-2.8-3.4-10.6-3.7c-3.7-0.2-7.5-0.5-8.4-0.6C126.9,227.3,125.5,227.6,124.7,228z"/>
+                                                <path fill="#20c997" d="M160.8,230.1c-2.2,1.2-2.9,2.3-2.9,4.6c0,4.8,1.5,5.5,13.1,5.7l9,0.2l1.6-1.7c2.9-3.2,1.6-7.9-2.6-9C175.9,229,162.7,229.1,160.8,230.1z"/>
+                                                <path fill="#20c997" d="M196.1,231.4c-1.5,1.3-1.7,1.9-1.7,3.9c0,1.9,0.3,2.7,1.5,3.8c1.4,1.4,1.7,1.5,6.8,1.6c6.2,0.2,7.8-0.3,9.3-2.6s1.1-4.9-1-6.9c-1.5-1.4-1.8-1.4-7.4-1.4C198,229.8,197.8,229.9,196.1,231.4z"/>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </g>
+                            </svg>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            
+            <!-- Compact Ride Summary -->
+            <div class="ride-summary-compact">
+                <div class="summary-row">
+                    <div class="summary-item-compact">
+                        <span class="summary-icon">📱</span>
+                        <span class="summary-text">{{ driver_phone }}</span>
+                    </div>
+                    <div class="summary-item-compact">
+                        <span class="summary-icon">👨‍💼</span>
+                        <span class="summary-text">{{ driver_name }}</span>
+                    </div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-item-compact">
+                        <span class="summary-icon">🚗</span>
+                        <span class="summary-text">{{ vehicle_info }}</span>
+                    </div>
+                    <div class="summary-item-compact">
+                        <span class="summary-icon">📏</span>
+                        <span class="summary-text">{{ distance }}</span>
+                    </div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-item-compact">
+                        <span class="summary-icon">🕐</span>
+                        <span class="summary-text">{{ start_time }} - {{ end_time }}</span>
+                    </div>
+                    <div class="summary-item-compact">
+                        <span class="summary-icon">⏱️</span>
+                        <span class="summary-text">{{ duration }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trip Details -->
+            <div class="trip-details">
+                <h3 class="trip-details-title">💰 Trip Details</h3>
+                <div class="trip-item">
+                    <span class="trip-label">Base Fare:</span>
+                    <span class="trip-value">{{ base_fare }}</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">Distance Charge:</span>
+                    <span class="trip-value">{{ distance_charge }}</span>
+                </div>
+                <div class="trip-item">
+                    <span class="trip-label">Time Charge:</span>
+                    <span class="trip-value">{{ time_charge }}</span>
+                </div>
+                {% if discount %}
+                <div class="trip-item">
+                    <span class="trip-label">Discount:</span>
+                    <span class="trip-value" style="color: #28a745;">-{{ discount }}</span>
+                </div>
+                {% endif %}
+                <div class="trip-item" style="border-top: 2px solid #28a745; font-weight: bold; font-size: 18px;">
+                    <span class="trip-label">Total Amount:</span>
+                    <span class="trip-value" style="color: #28a745;">{{ total_amount }}</span>
+                </div>
+            </div>
+            
+            <!-- Receipt Section -->
+            <div class="receipt-section">
+                <h3 class="receipt-title">📄 Download Your Receipt</h3>
+                <p class="receipt-description">
+                    Your ride receipt is ready for download. Keep it for your records or expense claims.
+                </p>
+                <a href="{{ receipt_pdf_url }}" class="receipt-button" target="_blank">
+                    📥 Download PDF Receipt
+                </a>
+                <a href="{{ receipt_view_url }}" class="receipt-button secondary" target="_blank">
+                    👁️ View Online
+                </a>
+            </div>
+            
+            <!-- Rating Section -->
+            <div class="rating-section">
+                <h3 class="rating-title">⭐ Rate Your Experience</h3>
+                <p class="rating-text">
+                    How was your ride? Your feedback helps us improve our service and helps other riders make informed decisions.
+                </p>
+                <a href="{{ rating_url }}" class="rating-button" target="_blank">
+                    Rate Your Driver
+                </a>
+            </div>
+        </div>
+        
+        <!-- Support Section -->
+        <div class="support-section">
+            <h3 class="support-title">Need Help?</h3>
+            <p class="support-description">
+                If you have any questions about your ride or need assistance, our support team is here to help you.
+            </p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-label">📧 Email</div>
+                    <a href="mailto:support@zyra.daraza.net" class="contact-value">support@zyra.daraza.net</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">📞 Phone</div>
+                    <a href="tel:+256700000000" class="contact-value">+256 700 000 000</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">💬 WhatsApp</div>
+                    <a href="https://wa.me/256700000000" class="contact-value">Chat with us</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <p><strong>Thank you for choosing Zyra!</strong></p>
+                <p>We hope you had a great ride experience.</p>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link">📘</a>
+                <a href="#" class="social-link">🐦</a>
+                <a href="#" class="social-link">📷</a>
+                <a href="#" class="social-link">💼</a>
+            </div>
+            
+            <div class="footer-text">
+                <p>© {{ year }} Zyra. All rights reserved.</p>
+                <p>You received this email because you completed a ride with Zyra.</p>
+                <p>If you no longer wish to receive these emails, you can <a href="#" style="color: #3498db;">unsubscribe here</a>.</p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!--[if mso]>
+    </div>
+    <![endif]-->
+</body>
+</html>

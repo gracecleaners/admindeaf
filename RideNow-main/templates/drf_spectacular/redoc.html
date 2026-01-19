@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Zyra API</title>
+    <link rel="icon" type="image/png" href="/static/img/favicons/favicon-32x32.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        /* Custom Header */
+        .custom-header {
+            background: linear-gradient(135deg, #21c45d 0%, #1db954 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .custom-header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-logo h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .header-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .header-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        
+        .header-links a:hover {
+            opacity: 1;
+        }
+        
+        /* ReDoc container */
+        #redoc-container {
+            min-height: calc(100vh - 80px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Header -->
+    <div class="custom-header">
+        <div class="custom-header-content">
+            <div class="header-logo">
+                <span style="font-size: 32px;">🚗</span>
+                <div>
+                    <h1>Zyra API</h1>
+                    <p style="margin: 0; opacity: 0.9; font-size: 14px;">Interactive Documentation</p>
+                </div>
+            </div>
+            <div class="header-info">
+                <span class="header-badge">v{{ version }}</span>
+                <div class="header-links">
+                    <a href="/" target="_blank">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="/admin/" target="_blank">
+                        <i class="fas fa-cog"></i> Admin
+                    </a>
+                    <a href="/api/docs/" target="_blank">
+                        <i class="fas fa-code"></i> Swagger
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ReDoc Container -->
+    <div id="redoc-container"></div>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ReDoc Script -->
+    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
+    <script>
+        Redoc.init(
+            "{{ schema_url }}",
+            {
+                scrollYOffset: 80,
+                theme: {
+                    colors: {
+                        primary: {
+                            main: '#21c45d'
+                        },
+                        success: {
+                            main: '#21c45d'
+                        },
+                        error: {
+                            main: '#f93e3e'
+                        },
+                        warning: {
+                            main: '#fca130'
+                        },
+                        http: {
+                            get: '#61affe',
+                            post: '#21c45d',
+                            put: '#fca130',
+                            delete: '#f93e3e',
+                            patch: '#50e3c2'
+                        }
+                    },
+                    typography: {
+                        fontSize: '15px',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        headings: {
+                            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                            fontWeight: '600'
+                        },
+                        code: {
+                            fontSize: '14px',
+                            fontFamily: '"Monaco", "Courier New", monospace'
+                        }
+                    },
+                    sidebar: {
+                        backgroundColor: '#fafafa',
+                        textColor: '#333',
+                        activeTextColor: '#21c45d'
+                    },
+                    rightPanel: {
+                        backgroundColor: '#1a1a1a',
+                        textColor: '#ffffff'
+                    }
+                },
+                hideDownloadButton: false,
+                disableSearch: false,
+                expandResponses: '200,201',
+                requiredPropsFirst: true,
+                sortPropsAlphabetically: false,
+                showExtensions: true,
+                hideHostname: false,
+                nativeScrollbars: false,
+                pathInMiddlePanel: true
+            },
+            document.getElementById('redoc-container')
+        );
+    </script>
+</body>
+</html>
+

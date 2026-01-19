@@ -1,0 +1,252 @@
+<!-- Profile Setup Modal -->
+<div id="profileSetupModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 transform transition-all max-h-[90vh] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Complete Your Profile</h2>
+                <button id="closeProfileSetupModal" class="text-gray-400 hover:text-gray-600 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="text-center mb-6">
+                <p class="text-gray-600">Help us serve you better by completing your profile</p>
+            </div>
+            
+            <form id="profileSetupForm">
+                <!-- Profile Photo -->
+                <div class="mb-6 text-center">
+                    <div class="relative inline-block">
+                        <div id="profilePhotoPreview" class="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-2 overflow-hidden">
+                            <i class="fas fa-user text-4xl text-gray-400"></i>
+                        </div>
+                        <label for="profilePhoto" class="absolute bottom-0 right-0 bg-primary-500 hover:bg-primary-600 text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer">
+                            <i class="fas fa-camera text-sm"></i>
+                        </label>
+                        <input type="file" id="profilePhoto" class="hidden" accept="image/*">
+                    </div>
+                    <p class="text-xs text-gray-500">Upload profile photo (optional)</p>
+                </div>
+                
+                <!-- Basic Information -->
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            First Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="profileFirstName" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Last Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="profileLastName" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-primary-500"></i>Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="profileEmail" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="your.email@example.com">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-calendar mr-2 text-primary-500"></i>Date of Birth
+                    </label>
+                    <input 
+                        type="date" 
+                        id="profileDOB" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        max="2006-01-01">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-venus-mars mr-2 text-primary-500"></i>Gender
+                    </label>
+                    <select 
+                        id="profileGender" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <option value="">Select gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-map-marker-alt mr-2 text-primary-500"></i>City
+                    </label>
+                    <input 
+                        type="text" 
+                        id="profileAddress" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                        placeholder="Enter your city">
+                </div>
+                
+                <div id="profileSetupError" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span id="profileSetupErrorText"></span>
+                </div>
+                
+                <div class="flex gap-3">
+                    <button 
+                        type="button"
+                        id="skipProfileSetup"
+                        class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3 px-6 rounded-lg font-semibold transition-colors">
+                        Skip for Now
+                    </button>
+                    <button 
+                        type="submit" 
+                        id="profileSetupBtn"
+                        class="flex-1 bg-primary-500 hover:bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold transition-colors">
+                        <i class="fas fa-check mr-2"></i>Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Profile Setup Modal Controls
+    function showProfileSetupModal() {
+        document.getElementById('profileSetupModal').classList.remove('hidden');
+        
+        // Pre-fill with existing user data if available
+        fetchUserProfile();
+    }
+    
+    function hideProfileSetupModal() {
+        document.getElementById('profileSetupModal').classList.add('hidden');
+        document.getElementById('profileSetupForm').reset();
+        document.getElementById('profileSetupError').classList.add('hidden');
+    }
+    
+    document.getElementById('closeProfileSetupModal').addEventListener('click', hideProfileSetupModal);
+    
+    // Profile photo preview
+    document.getElementById('profilePhoto').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profilePhotoPreview').innerHTML = 
+                    `<img src="${e.target.result}" alt="Profile" class="w-full h-full object-cover">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    // Fetch user profile
+    async function fetchUserProfile() {
+        try {
+            const response = await fetch('/accounts/api/profile/');
+            const data = await response.json();
+            console.log(data);
+            if (response.ok) {
+                document.getElementById('profileFirstName').value = data.first_name || '';
+                document.getElementById('profileLastName').value = data.last_name || '';
+                document.getElementById('profileEmail').value = data.email || '';
+                
+                if (data.client_profile) {
+                    document.getElementById('profileDOB').value = data.client_profile.date_of_birth || '';
+                    document.getElementById('profileGender').value = data.client_profile.gender || '';
+                    document.getElementById('profileAddress').value = data.client_profile.city || '';
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+        }
+    }
+    
+    // Skip profile setup
+    document.getElementById('skipProfileSetup').addEventListener('click', () => {
+        hideProfileSetupModal();
+        
+        SweetAlert.info('Profile Setup Skipped', 'You can complete your profile later from settings', {
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
+    
+    // Profile setup form submission
+    document.getElementById('profileSetupForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('profileSetupBtn');
+        const errorDiv = document.getElementById('profileSetupError');
+        const errorText = document.getElementById('profileSetupErrorText');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        errorDiv.classList.add('hidden');
+        
+        try {
+            const formData = new FormData();
+            formData.append('first_name', document.getElementById('profileFirstName').value);
+            formData.append('last_name', document.getElementById('profileLastName').value);
+            formData.append('email', document.getElementById('profileEmail').value);
+            formData.append('date_of_birth', document.getElementById('profileDOB').value);
+            formData.append('gender', document.getElementById('profileGender').value);
+            formData.append('address', document.getElementById('profileAddress').value);
+            
+            const photoFile = document.getElementById('profilePhoto').files[0];
+            if (photoFile) {
+                formData.append('profile_photo', photoFile);
+            }
+            
+            const csrftoken = getCookie('csrftoken');
+            
+            const response = await fetch('/accounts/api/profile/update/', {
+                method: 'POST',
+                headers: getPostHeaders(true), // Use JWT authentication
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                hideProfileSetupModal();
+                
+                SweetAlert.success('Profile Updated!', 'Your profile has been saved successfully', {
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                
+                // Update userAuth object
+                userAuth.username = `${document.getElementById('profileFirstName').value} ${document.getElementById('profileLastName').value}`;
+
+                // Reload page to get authenticated state
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            } else {
+                errorText.textContent = data.error || 'Failed to update profile';
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Profile setup error:', error);
+            errorText.textContent = 'An error occurred. Please try again.';
+            errorDiv.classList.remove('hidden');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Save';
+        }
+    });
+</script>
+

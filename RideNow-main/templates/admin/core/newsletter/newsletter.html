@@ -1,0 +1,62 @@
+{% extends "admin/base_site.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <style>
+        body {
+            background-color: azure;
+            color: black;
+        }
+        .content-section {
+            width: 50%;
+            margin: auto;
+            font-size: medium;
+            padding: 0.1em;
+            font-size: 1rem;
+        }
+        .form-title {
+            margin: 0.3em;
+            text-align: center;
+            color: black;
+            font-size: 1.3rem;
+        }
+        input[type=text] {
+            width: 100%;
+            font-size: 1rem;
+            padding: 0.5rem;
+            background-color: white;
+            color: black;
+        }
+        .btn-outline-info {
+            font-size: 1rem;
+            padding: 0.7em;
+            width: 30%;
+            border-radius: 0.3em;
+        }
+        .btn-outline-info:hover {
+            background-color: bisque;
+            transform: scale(1);
+            transition: 1s;
+        }
+    </style>
+    {% load i18n admin_urls %}
+
+    <!-- {% block breadcrumbs %}
+        <div class="breadcrumbs">
+            <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+            &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+            &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+            &rsaquo; {{ object }}
+        </div>
+    {% endblock %} -->
+    <div class="content-section">
+        <h3 class="form-title">News Letter</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy  }}
+            {{ form.media  }}
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Send News Letter</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Zyra Driver - Start Earning Today!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .welcome-title {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .welcome-message {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.8;
+        }
+        
+        .earnings-highlight {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+            border: 2px solid #f1c40f;
+        }
+        
+        .earnings-title {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .earnings-text {
+            font-size: 16px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .benefits {
+            margin: 30px 0;
+        }
+        
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .benefit-text {
+            flex: 1;
+        }
+        
+        .benefit-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .benefit-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .requirements {
+            background-color: #e8f5e8;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border: 1px solid #c3e6c3;
+        }
+        
+        .requirements-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .requirement-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+        
+        .requirement-check {
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        
+        .requirement-text {
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            border-radius: 12px;
+            color: white;
+        }
+        
+        .cta-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .cta-text {
+            font-size: 16px;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: white;
+            color: #007bff;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .support-section {
+            background-color: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .support-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .support-description {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .contact-item {
+            text-align: center;
+        }
+        
+        .contact-label {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .contact-value {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            margin-bottom: 20px;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            opacity: 0.8;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .header, .content, .support-section, .footer {
+                padding: 20px;
+            }
+            
+            .welcome-title {
+                font-size: 24px;
+            }
+            
+            .benefit-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .benefit-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🚗 Zyra Driver</div>
+            <div class="tagline">Your Journey to Financial Freedom Starts Here</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="welcome-title">Welcome to Zyra Driver, {{ driver_name }}! 🎉</h1>
+            
+            <p class="welcome-message">
+                Congratulations on joining the Zyra driver community! You're now part of a 
+                platform that values your time, effort, and dedication to providing excellent service.
+            </p>
+            
+            <!-- Earnings Highlight -->
+            <div class="earnings-highlight">
+                <h2 class="earnings-title">💰 Start Earning Today!</h2>
+                <p class="earnings-text">
+                    With Zyra, you can earn competitive rates while maintaining flexibility 
+                    in your schedule. Your success is our success!
+                </p>
+            </div>
+            
+            <!-- Benefits Section -->
+            <div class="benefits">
+                <div class="benefit-item">
+                    <div class="benefit-icon">💵</div>
+                    <div class="benefit-text">
+                        <div class="benefit-title">Competitive Earnings</div>
+                        <div class="benefit-description">Earn more with our competitive rates and bonus programs</div>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">⏰</div>
+                    <div class="benefit-text">
+                        <div class="benefit-title">Flexible Schedule</div>
+                        <div class="benefit-description">Work when you want, where you want - you're in control</div>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🛡️</div>
+                    <div class="benefit-text">
+                        <div class="benefit-title">Insurance Coverage</div>
+                        <div class="benefit-description">Comprehensive insurance coverage for your peace of mind</div>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">📱</div>
+                    <div class="benefit-text">
+                        <div class="benefit-title">Easy-to-Use App</div>
+                        <div class="benefit-description">Intuitive driver app with real-time navigation and earnings tracking</div>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🎯</div>
+                    <div class="benefit-text">
+                        <div class="benefit-title">Performance Rewards</div>
+                        <div class="benefit-description">Earn bonuses for excellent ratings and consistent performance</div>
+                    </div>
+                </div>
+                
+                <div class="benefit-item">
+                    <div class="benefit-icon">🤝</div>
+                    <div class="benefit-text">
+                        <div class="benefit-title">24/7 Support</div>
+                        <div class="benefit-description">Round-the-clock support team to help you succeed</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Requirements Section -->
+            <div class="requirements">
+                <h3 class="requirements-title">✅ Driver Requirements</h3>
+                <ul class="requirement-list">
+                    <li class="requirement-item">
+                        <span class="requirement-check">✓</span>
+                        <span class="requirement-text">Valid driver's license (minimum 2 years)</span>
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-check">✓</span>
+                        <span class="requirement-text">Clean driving record</span>
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-check">✓</span>
+                        <span class="requirement-text">Vehicle in excellent condition</span>
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-check">✓</span>
+                        <span class="requirement-text">Smartphone with GPS capability</span>
+                    </li>
+                    <li class="requirement-item">
+                        <span class="requirement-check">✓</span>
+                        <span class="requirement-text">Background check completed</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Call to Action -->
+            <div class="cta-section">
+                <h2 class="cta-title">Ready to Start Driving?</h2>
+                <p class="cta-text">Complete your profile setup and start accepting rides today!</p>
+                <a href="{{ driver_dashboard_url }}" class="cta-button">Go to Driver Dashboard</a>
+            </div>
+        </div>
+        
+        <!-- Support Section -->
+        <div class="support-section">
+            <h3 class="support-title">Need Help Getting Started?</h3>
+            <p class="support-description">
+                Our support team is here to help you succeed. Contact us anytime for assistance.
+            </p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <div class="contact-label">📧 Email</div>
+                    <a href="mailto:drivers@zyra.daraza.net" class="contact-value">drivers@zyra.daraza.net</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">📞 Phone</div>
+                    <a href="tel:+256700000000" class="contact-value">+256 700 000 000</a>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">💬 WhatsApp</div>
+                    <a href="https://wa.me/256700000000" class="contact-value">Chat with us</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-content">
+                <p><strong>Welcome to the Zyra Driver Family!</strong></p>
+                <p>We're excited to have you on board and look forward to your success.</p>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" class="social-link">📘</a>
+                <a href="#" class="social-link">🐦</a>
+                <a href="#" class="social-link">📷</a>
+                <a href="#" class="social-link">💼</a>
+            </div>
+            
+            <div class="footer-text">
+                <p>© {{ year }} Zyra. All rights reserved.</p>
+                <p>You received this email because you registered as a Zyra driver.</p>
+                <p>If you no longer wish to receive these emails, you can <a href="#" style="color: #3498db;">unsubscribe here</a>.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

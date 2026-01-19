@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('RideNow Admin') }}{% endblock %}
+ 
+{% block branding %}
+{% block extrastyle %}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/chat.css' %}"/>
+{% endblock %}
+<h1 id="site-name" style="font-family: cursive;" ><img src="{% static 'favicon/logo-small.png' %}" style="max-width: 30px;"><a href="{% url 'admin:index' %}">{% trans "RideNow Admin" %}</a></h1>
+{% endblock %}

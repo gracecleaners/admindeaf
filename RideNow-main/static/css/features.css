@@ -1,0 +1,84 @@
+/* Custom styling for feature cards */
+.feature-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Text color classes */
+.text-teal {
+    color: #008080;
+}
+
+.text-mint {
+    color: #98FF98;
+}
+
+.text-persian {
+    color: #1C39BB;
+}
+
+/* Heading styles */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #333;
+}
+
+h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+p {
+    font-size: 1rem;
+    color: #666;
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;  /* Smaller heading size for tablets and mobile */
+    }
+
+    h4 {
+        font-size: 1rem;  /* Adjust h4 for smaller screens */
+    }
+
+    p {
+        font-size: 0.9rem;  /* Reduce paragraph font size for better readability */
+    }
+
+    .feature-card {
+        padding: 15px;  /* Adjust card padding for mobile */
+    }
+}
+
+/* Additional responsiveness for small screens */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.8rem;  /* Further reduce font size for very small screens */
+    }
+
+    .feature-card {
+        padding: 10px;  /* Smaller padding for small screens */
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;  /* Adjust navbar logo size */
+    }
+
+    .navbar-nav {
+        font-size: 0.9rem;  /* Reduce font size of navbar items */
+    }
+
+    .social-links a {
+        font-size: 1.2rem;  /* Adjust social media icons size */
+    }
+}

@@ -1,0 +1,1162 @@
+{% extends 'base_tailwind.html' %}
+{% load static %}
+
+{% block title %}Driver Dashboard - RideNow{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* .main-navbar {
+        display: none !important;
+    } */
+    
+    .main-h-screen, .pt-16 {
+        padding-top: 0 !important;
+    }
+
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+    }
+    .status-online { background-color: #10b981; }
+    .status-offline { background-color: #ef4444; }
+    .status-available { background-color: #3b82f6; }
+    .status-busy { background-color: #f59e0b; }
+    
+    .ride-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    .ride-card:hover {
+        border-color: #3b82f6;
+        transform: translateY(-2px);
+    }
+    
+    .timer-ring {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 4px solid #e5e7eb;
+        border-top: 4px solid #3b82f6;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center py-4 space-y-4 lg:space-y-0">
+                <!-- Title and Status -->
+                <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                    <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Driver Dashboard</h1>
+                    <div class="flex items-center space-x-2">
+                        <span class="status-indicator {% if is_online %}status-online{% else %}status-offline{% endif %}"></span>
+                        <span class="text-sm font-medium {% if is_online %}text-green-600{% else %}text-red-600{% endif %}">
+                            {% if is_online %}Online{% else %}Offline{% endif %}
+                        </span>
+                        {% if is_online %}
+                            <span class="ml-2 status-indicator {% if is_available %}status-available{% else %}status-busy{% endif %}"></span>
+                            <span class="text-sm font-medium {% if is_available %}text-blue-600{% else %}text-yellow-600{% endif %}">
+                                {% if is_available %}Available{% else %}Busy{% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                    <button id="toggleAvailability" 
+                            class="px-4 py-2 rounded-lg font-medium transition-colors text-center
+                                   {% if is_available %}bg-red-600 text-white hover:bg-red-700{% else %}bg-green-600 text-white hover:bg-green-700{% endif %}">
+                        {% if is_available %}Go Offline{% else %}Go Online{% endif %}
+                    </button>
+                    
+                    <!-- Mobile Menu for Secondary Actions -->
+                    <div class="flex sm:hidden">
+                        <button id="mobile-actions-button" class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 flex items-center justify-center">
+                            <span class="mr-2">More Actions</span>
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Desktop Actions -->
+                    <div class="hidden sm:flex items-center space-x-3">
+                        <a href="{% url 'driver_registration_dashboard' %}" 
+                           class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+                            Status
+                        </a>
+                        <a href="{% url 'rides:ride_history' %}" 
+                           class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+                            Ride History
+                        </a>
+                        <a href="/rides/driver-navigation/" 
+                           class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 whitespace-nowrap">
+                            Navigation
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Actions Menu -->
+            <div id="mobile-actions-menu" class="hidden sm:hidden mt-4 pt-4 border-t border-gray-200">
+                <div class="grid grid-cols-1 gap-2">
+                    <a href="{% url 'driver_registration_dashboard' %}" 
+                       class="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-center">
+                        <i class="fas fa-chart-line mr-2"></i> Status
+                    </a>
+                    <a href="{% url 'rides:ride_history' %}" 
+                       class="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-center">
+                        <i class="fas fa-history mr-2"></i> Ride History
+                    </a>
+                    <a href="/rides/driver-navigation/" 
+                       class="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 text-center">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Navigation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-4 md:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                    <div class="p-2 bg-blue-100 rounded-lg mb-2 sm:mb-0 sm:mr-4 w-fit">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-500">Total Rides</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900">{{ total_rides }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow p-4 md:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                    <div class="p-2 bg-green-100 rounded-lg mb-2 sm:mb-0 sm:mr-4 w-fit">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-500">Completed</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900">{{ completed_rides }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow p-4 md:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                    <div class="p-2 bg-yellow-100 rounded-lg mb-2 sm:mb-0 sm:mr-4 w-fit">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-500">Rating</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900">{{ average_rating|floatformat:1 }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow p-4 md:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center">
+                    <div class="p-2 bg-red-100 rounded-lg mb-2 sm:mb-0 sm:mr-4 w-fit">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-xs sm:text-sm font-medium text-gray-500">Cancelled</p>
+                        <p class="text-lg sm:text-2xl font-bold text-gray-900">{{ cancelled_rides }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Ride Section -->
+        {% if active_ride %}
+        <div class="bg-white rounded-lg shadow p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900">Current Active Ride</h2>
+                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                    {{ active_ride.status }}
+                </span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Client</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ active_ride.client.user.get_user_names }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Pickup Location</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ active_ride.start_location }}</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Destination</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ active_ride.end_location }}</p>
+                </div>
+            </div>
+            
+            <div class="mt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <a href="{% url 'rides:driver_navigation' active_ride.matching_attempts.first.id %}" 
+                   class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                    Navigate
+                </a>
+                {% if active_ride.status == 'accepted' %}
+                <button onclick="markArrived({{ active_ride.id }})" 
+                        class="flex-1 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+                    Mark Arrived
+                </button>
+                {% elif active_ride.status == 'driver_arrived' %}
+                <button onclick="startRide({{ active_ride.id }})" 
+                        class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Start Ride
+                </button>
+                {% elif active_ride.status == 'ride_started' %}
+                <button onclick="completeRide({{ active_ride.id }})" 
+                        class="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    Complete Ride
+                </button>
+                {% endif %}
+                <button onclick="cancelRide({{ active_ride.id }})" 
+                        class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    Cancel Ride
+                </button>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Pending Ride Requests -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-6 border-b">
+                <h2 class="text-lg font-semibold text-gray-900">Pending Ride Requests</h2>
+                <p class="text-sm text-gray-500">Ride requests waiting for your response</p>
+            </div>
+            
+            <div id="pendingRidesContainer">
+                {% if pending_matches %}
+                    {% for match in pending_matches %}
+                    <div class="p-6 border-b last:border-b-0 ride-card">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="timer-ring mr-4"></div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900">
+                                        Ride Request #{{ match.ride_request.id }}
+                                    </h3>
+                                    <p class="text-sm text-gray-500">
+                                        Requested {{ match.created_at|timesince }} ago
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-gray-900">UGX {{ match.ride_request.cost }}</p>
+                                <p class="text-sm text-gray-500">{{ match.estimated_eta_minutes }} min ETA</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Client</p>
+                                <p class="text-base font-semibold text-gray-900">
+                                    {{ match.ride_request.client.user.get_user_names }}
+                                </p>
+                                <p class="text-sm text-gray-500">
+                                    {{ match.ride_request.client.user.phone_number }}
+                                </p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Distance</p>
+                                <p class="text-base font-semibold text-gray-900">
+                                    {{ match.estimated_distance_km|floatformat:1 }} km
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-500">Pickup Location</p>
+                                    <p class="text-base text-gray-900">{{ match.ride_request.start_location }}</p>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-500">Destination</p>
+                                    <p class="text-base text-gray-900">{{ match.ride_request.end_location }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                            <button onclick="acceptRide({{ match.ride_request.id }}, {{ match.id }})" 
+                                    class="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                Accept Ride
+                            </button>
+                            <button onclick="declineRide({{ match.ride_request.id }}, {{ match.id }})" 
+                                    class="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                                Decline Ride
+                            </button>
+                        </div>
+                        
+                        <!-- Timer -->
+                        <div class="mt-4 p-3 bg-yellow-50 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-yellow-800">
+                                    Time remaining to respond:
+                                </span>
+                                <span id="timer-{{ match.id }}" class="text-lg font-bold text-yellow-900">
+                                    {{ match.expires_at|timeuntil }}
+                                </span>
+                            </div>
+                            <div class="mt-2 w-full bg-yellow-200 rounded-full h-2">
+                                <div id="progress-{{ match.id }}" class="bg-yellow-600 h-2 rounded-full transition-all duration-1000"></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-12 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900">No pending requests</h3>
+                        <p class="mt-1 text-sm text-gray-500">You'll see ride requests here when they come in.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- WebSocket Connection -->
+<script>
+    let websocket = null;
+    let timers = {};
+    let websocketReconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+    let reconnectTimeout = null;
+
+    // Initialize WebSocket connection with enhanced error handling
+    function connectWebSocket() {
+        if (reconnectTimeout) {
+            clearTimeout(reconnectTimeout);
+            reconnectTimeout = null;
+        }
+
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/ws/ride-matching/`;
+        
+        console.log('Connecting to WebSocket:', wsUrl);
+        websocket = new WebSocket(wsUrl);
+        
+        websocket.onopen = function(event) {
+            console.log('WebSocket connected successfully');
+            websocketReconnectAttempts = 0;
+            
+            // Subscribe to driver-specific updates
+            websocket.send(JSON.stringify({
+                'type': 'subscribe',
+                'driver_id': {{ driver_profile.id }}
+            }));
+            
+            // Show connection status (optional)
+            showToast('success', 'Connected to real-time updates', 2000);
+        };
+        
+        websocket.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                console.log('WebSocket message received:', data);
+                handleWebSocketMessage(data);
+            } catch (error) {
+                console.error('Error parsing WebSocket message:', error);
+            }
+        };
+        
+        websocket.onclose = function(event) {
+            console.log('WebSocket disconnected:', event.code, event.reason);
+            
+            // Only attempt to reconnect if not a normal closure and under max attempts
+            if (event.code !== 1000 && websocketReconnectAttempts < maxReconnectAttempts) {
+                websocketReconnectAttempts++;
+                const delay = Math.min(2000 * websocketReconnectAttempts, 10000); // Max 10 seconds
+                
+                console.log(`Attempting to reconnect... (${websocketReconnectAttempts}/${maxReconnectAttempts}) in ${delay}ms`);
+                
+                reconnectTimeout = setTimeout(() => {
+                    connectWebSocket();
+                }, delay);
+                
+                showToast('warning', `Connection lost. Reconnecting... (${websocketReconnectAttempts}/${maxReconnectAttempts})`, 3000);
+            } else if (websocketReconnectAttempts >= maxReconnectAttempts) {
+                console.error('Max reconnection attempts reached. Please refresh the page.');
+                showToast('error', 'Connection lost. Please refresh the page to reconnect.', 5000);
+            }
+        };
+        
+        websocket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+            showToast('error', 'Connection error. Attempting to reconnect...', 3000);
+        };
+    }
+
+    function handleWebSocketMessage(data) {
+        console.log('Received WebSocket message:', data);
+        
+        switch(data.type) {
+            case 'connection_established':
+                console.log('WebSocket connection established');
+                break;
+                
+            case 'subscribed':
+                console.log(`Subscribed to driver updates for driver ${data.driver_id}`);
+                break;
+                
+            case 'ride_request':
+                handleNewRideRequest(data.data);
+                break;
+                
+            case 'ride_cancelled':
+                handleRideCancelled(data.data);
+                break;
+                
+            case 'ride_confirmed':
+                handleRideConfirmed(data.data);
+                break;
+                
+            case 'ride_accepted':
+                handleRideAccepted(data.data);
+                break;
+                
+            case 'ride_started':
+                handleRideStarted(data.data);
+                break;
+                
+            case 'ride_completed':
+                handleRideCompleted(data.data);
+                break;
+                
+            case 'driver_status_update':
+                handleDriverStatusUpdate(data.data);
+                break;
+                
+            case 'driver_availability_update':
+                handleDriverAvailabilityUpdate(data.data);
+                break;
+                
+            case 'ride_timeout':
+                handleRideTimeout(data.data);
+                break;
+                
+            default:
+                console.log('Unknown WebSocket message type:', data.type);
+        }
+    }
+
+    function handleNewRideRequest(data) {
+        console.log('New ride request received:', data);
+        
+        // Add new ride request to the pending list
+        const container = document.getElementById('pendingRidesContainer');
+        
+        if (container.innerHTML.includes('No pending requests')) {
+            container.innerHTML = '';
+        }
+        
+        // Create new ride card HTML
+        const rideCard = createRideCard(data);
+        container.insertAdjacentHTML('afterbegin', rideCard);
+        
+        // Start timer for this ride
+        startTimer(data.ride_matching_id, data.expires_at);
+        
+        // Show notification
+        showToast('info', `New ride request from ${data.client_name}`, 4000);
+        
+        // Play notification sound (optional)
+        playNotificationSound();
+    }
+
+    function handleRideCancelled(data) {
+        console.log('Ride cancelled:', data);
+        
+        // Remove ride from pending list
+        const rideElement = document.querySelector(`[data-ride-id="${data.ride_request_id}"]`);
+        if (rideElement) {
+            // Add removal animation
+            rideElement.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+            rideElement.style.opacity = '0';
+            rideElement.style.transform = 'translateX(-100%)';
+            
+            setTimeout(() => {
+                rideElement.remove();
+            }, 300);
+        }
+        
+        // Clear timer
+        if (timers[data.ride_matching_id]) {
+            clearInterval(timers[data.ride_matching_id]);
+            delete timers[data.ride_matching_id];
+        }
+        
+        // Show notification based on who cancelled
+        const cancelledBy = data.cancelled_by || 'unknown';
+        if (cancelledBy === 'client') {
+            showToast('warning', `Client ${data.client_name} cancelled the ride request`, 4000);
+        } else if (cancelledBy === 'timeout') {
+            showToast('info', `Ride request from ${data.client_name} has expired`, 4000);
+        } else {
+            showToast('warning', 'Ride request was cancelled', 3000);
+        }
+        
+        // Check if no more pending requests
+        const container = document.getElementById('pendingRidesContainer');
+        if (container.children.length === 0) {
+            container.innerHTML = `
+                <div class="p-12 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No pending requests</h3>
+                    <p class="mt-1 text-sm text-gray-500">You'll see ride requests here when they come in.</p>
+                </div>
+            `;
+        }
+    }
+
+    function handleRideConfirmed(data) {
+        console.log('Ride confirmed:', data);
+        
+        // Remove from pending list
+        const rideElement = document.querySelector(`[data-ride-id="${data.ride_request_id}"]`);
+        if (rideElement) {
+            rideElement.remove();
+        }
+        
+        // Clear timer
+        if (timers[data.ride_matching_id]) {
+            clearInterval(timers[data.ride_matching_id]);
+            delete timers[data.ride_matching_id];
+        }
+        
+        // Show success notification
+        showToast('success', 'Ride confirmed! Please proceed to pickup location.', 4000);
+        
+        // Refresh page to show active ride
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+
+    function handleRideAccepted(data) {
+        console.log('Ride accepted:', data);
+        showToast('success', 'Ride accepted successfully!', 3000);
+        
+        // Refresh page to show updated status
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+
+    function handleRideStarted(data) {
+        console.log('Ride started:', data);
+        showToast('success', 'Ride started!', 3000);
+        
+        // Refresh page to show updated status
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+
+    function handleRideCompleted(data) {
+        console.log('Ride completed:', data);
+        showToast('success', 'Ride completed successfully!', 3000);
+        
+        // Refresh page to show updated statistics
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    }
+
+    function handleDriverStatusUpdate(data) {
+        console.log('Driver status update:', data);
+        
+        // Update status indicators in the header
+        const statusIndicator = document.querySelector('.status-indicator');
+        const statusText = document.querySelector('.status-indicator').nextElementSibling;
+        
+        if (data.is_online) {
+            statusIndicator.className = 'status-indicator status-online';
+            statusText.textContent = 'Online';
+            statusText.className = 'text-sm font-medium text-green-600';
+        } else {
+            statusIndicator.className = 'status-indicator status-offline';
+            statusText.textContent = 'Offline';
+            statusText.className = 'text-sm font-medium text-red-600';
+        }
+    }
+
+    function handleDriverAvailabilityUpdate(data) {
+        console.log('Driver availability update:', data);
+        
+        // Update availability status
+        const availabilityIndicator = document.querySelectorAll('.status-indicator')[1];
+        const availabilityText = availabilityIndicator.nextElementSibling;
+        
+        if (data.is_available) {
+            availabilityIndicator.className = 'status-indicator status-available';
+            availabilityText.textContent = 'Available';
+            availabilityText.className = 'text-sm font-medium text-blue-600';
+        } else {
+            availabilityIndicator.className = 'status-indicator status-busy';
+            availabilityText.textContent = 'Busy';
+            availabilityText.className = 'text-sm font-medium text-yellow-600';
+        }
+    }
+
+    function handleRideTimeout(data) {
+        console.log('Ride timeout:', data);
+        
+        // Remove expired ride from pending list
+        const rideElement = document.querySelector(`[data-ride-id="${data.ride_request_id}"]`);
+        if (rideElement) {
+            rideElement.remove();
+        }
+        
+        // Clear timer
+        if (timers[data.ride_matching_id]) {
+            clearInterval(timers[data.ride_matching_id]);
+            delete timers[data.ride_matching_id];
+        }
+        
+        // Show timeout notification
+        showToast('warning', 'Ride request expired', 3000);
+    }
+
+    // Notification sound function
+    function playNotificationSound() {
+        try {
+            // Create a simple notification sound
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        } catch (error) {
+            console.log('Could not play notification sound:', error);
+        }
+    }
+
+    function createRideCard(data) {
+        return `
+            <div class="p-6 border-b last:border-b-0 ride-card" data-ride-id="${data.ride_request_id}">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center">
+                        <div class="timer-ring mr-4"></div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">
+                                Ride Request #${data.ride_request_id}
+                            </h3>
+                            <p class="text-sm text-gray-500">
+                                Requested just now
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-bold text-gray-900">$${data.cost}</p>
+                        <p class="text-sm text-gray-500">${data.estimated_eta_minutes} min ETA</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Client</p>
+                        <p class="text-base font-semibold text-gray-900">
+                            ${data.client_name}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            ${data.client_phone}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500">Distance</p>
+                        <p class="text-base font-semibold text-gray-900">
+                            ${data.estimated_distance_km} km
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="flex items-start space-x-4">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-500">Pickup Location</p>
+                            <p class="text-base text-gray-900">${data.start_location}</p>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-500">Destination</p>
+                            <p class="text-base text-gray-900">${data.end_location}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button onclick="acceptRide(${data.ride_request_id}, ${data.ride_matching_id})" 
+                            class="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors">
+                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Accept Ride
+                    </button>
+                    <button onclick="declineRide(${data.ride_request_id}, ${data.ride_matching_id})" 
+                            class="flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium transition-colors">
+                        <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                        Decline Ride
+                    </button>
+                </div>
+                
+                <!-- Timer -->
+                <div class="mt-4 p-3 bg-yellow-50 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-yellow-800">
+                            Time remaining to respond:
+                        </span>
+                        <span id="timer-${data.ride_matching_id}" class="text-lg font-bold text-yellow-900">
+                            5:00
+                        </span>
+                    </div>
+                    <div class="mt-2 w-full bg-yellow-200 rounded-full h-2">
+                        <div id="progress-${data.ride_matching_id}" class="bg-yellow-600 h-2 rounded-full transition-all duration-1000"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function startTimer(rideMatchingId, expiresAt) {
+        const timerElement = document.getElementById(`timer-${rideMatchingId}`);
+        const progressElement = document.getElementById(`progress-${rideMatchingId}`);
+        
+        if (!timerElement || !progressElement) return;
+        
+        const startTime = new Date().getTime();
+        const endTime = new Date(expiresAt).getTime();
+        const totalTime = endTime - startTime;
+        
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const remaining = Math.max(0, endTime - now);
+            const elapsed = totalTime - remaining;
+            const progressPercent = Math.min(100, (elapsed / totalTime) * 100);
+            
+            const minutes = Math.floor(remaining / 60000);
+            const seconds = Math.floor((remaining % 60000) / 1000);
+            
+            timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            progressElement.style.width = `${progressPercent}%`;
+            
+            if (remaining <= 0) {
+                clearInterval(timers[rideMatchingId]);
+                delete timers[rideMatchingId];
+                
+                // Auto-remove expired requests with animation
+                const rideElement = document.querySelector(`[data-ride-id]`);
+                if (rideElement) {
+                    // Add removal animation
+                    rideElement.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                    rideElement.style.opacity = '0';
+                    rideElement.style.transform = 'translateX(-100%)';
+                    
+                    setTimeout(() => {
+                        rideElement.remove();
+                        
+                        // Check if no more pending requests
+                        const container = document.getElementById('pendingRidesContainer');
+                        if (container.children.length === 0) {
+                            container.innerHTML = `
+                                <div class="p-12 text-center">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No pending requests</h3>
+                                    <p class="mt-1 text-sm text-gray-500">You'll see ride requests here when they come in.</p>
+                                </div>
+                            `;
+                        }
+                    }, 300);
+                    
+                    // Show timeout notification
+                    showToast('warning', 'Ride request expired', 3000);
+                }
+            }
+        };
+        
+        updateTimer(); // Initial update
+        timers[rideMatchingId] = setInterval(updateTimer, 1000);
+    }
+
+    // Ride acceptance/decline functions
+    async function acceptRide(rideRequestId, rideMatchingId) {
+        showConfirm(
+            'Accept Ride Request',
+            'Are you sure you want to accept this ride request?',
+            {
+                confirmText: 'Accept Ride',
+                cancelText: 'Cancel',
+                confirmButtonColor: '#21c45d',
+                icon: 'question'
+            }
+        ).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch('/rides/api/accept-ride-match/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({
+                            ride_request_id: rideRequestId
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Remove from pending list
+                        const rideElement = document.querySelector(`[data-ride-id="${rideRequestId}"]`);
+                        if (rideElement) {
+                            rideElement.remove();
+                        }
+                        
+                        // Clear timer
+                        if (timers[rideMatchingId]) {
+                            clearInterval(timers[rideMatchingId]);
+                            delete timers[rideMatchingId];
+                        }
+                        
+                        // Show success message
+                        showAlert('success', 'Ride accepted successfully!');
+                        
+                        // Refresh page to show updated status
+                        location.reload();
+                    } else {
+                        showNotification('Error: ' + (data.error || 'Failed to accept ride'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Error accepting ride:', error);
+                    showNotification('Error accepting ride. Please try again.', 'error');
+                }
+            }
+        });
+    }
+
+    async function declineRide(rideRequestId, rideMatchingId) {
+        showConfirm(
+            'Decline Ride Request',
+            'Are you sure you want to decline this ride request?',
+            {
+                confirmText: 'Decline Ride',
+                cancelText: 'Keep Request',
+                confirmButtonColor: '#ef4444',
+                icon: 'warning'
+            }
+        ).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch('/rides/api/decline-ride-match/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({
+                            ride_request_id: rideRequestId
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Remove from pending list
+                        const rideElement = document.querySelector(`[data-ride-id="${rideRequestId}"]`);
+                        if (rideElement) {
+                            rideElement.remove();
+                        }
+                        
+                        // Clear timer
+                        if (timers[rideMatchingId]) {
+                            clearInterval(timers[rideMatchingId]);
+                            delete timers[rideMatchingId];
+                        }
+                        
+                        // Show success message
+                        showAlert('success', 'Ride declined');
+                    } else {
+                        showNotification('Error: ' + (data.error || 'Failed to decline ride'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Error declining ride:', error);
+                    showNotification('Error declining ride. Please try again.', 'error');
+                }
+            }
+        });
+    }
+
+    // Toggle availability
+    async function toggleAvailability() {
+        const button = document.getElementById('toggleAvailability');
+        const isCurrentlyAvailable = button.textContent.includes('Go Offline');
+        
+        try {
+            // This would need a new API endpoint to toggle driver availability
+            // For now, we'll just show a message
+            showNotification('Availability toggle functionality coming soon!', 'info');
+        } catch (error) {
+            console.error('Error toggling availability:', error);
+            showNotification('Error toggling availability. Please try again.', 'info');
+        }
+    }
+
+    // Initialize timers for existing pending matches
+    function initializeTimers() {
+        {% for match in pending_matches %}
+            startTimer({{ match.id }}, '{{ match.expires_at|date:"c" }}');
+        {% endfor %}
+    }
+
+    // Mobile actions menu toggle
+    function toggleMobileActionsMenu() {
+        const menu = document.getElementById('mobile-actions-menu');
+        const button = document.getElementById('mobile-actions-button');
+        const icon = button.querySelector('svg');
+        
+        if (menu.classList.contains('hidden')) {
+            menu.classList.remove('hidden');
+            icon.style.transform = 'rotate(180deg)';
+        } else {
+            menu.classList.add('hidden');
+            icon.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        connectWebSocket();
+        initializeTimers();
+        
+        // Add event listener for toggle availability button
+        document.getElementById('toggleAvailability').addEventListener('click', toggleAvailability);
+        
+        // Add event listener for mobile actions menu
+        const mobileActionsButton = document.getElementById('mobile-actions-button');
+        if (mobileActionsButton) {
+            mobileActionsButton.addEventListener('click', toggleMobileActionsMenu);
+        }
+    });
+
+    // Navigation functions
+    function markArrived(rideId) {
+        fetch(`/rides/api/arrive-at-pickup/${rideId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Marked as arrived at pickup location', 'success');
+                // Reload page to update status
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showNotification('Error marking arrival: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error marking arrival:', error);
+            showNotification('Error marking arrival', 'error');
+        });
+    }
+
+    function startRide(rideId) {
+        fetch(`/rides/api/start-ride/${rideId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Ride started successfully', 'success');
+                // Reload page to update status
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                showNotification('Error starting ride: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error starting ride:', error);
+            showNotification('Error starting ride', 'error');
+        });
+    }
+
+    function completeRide(rideId) {
+        showConfirm(
+            'Complete Ride',
+            'Are you sure you want to complete this ride?',
+            {
+                confirmText: 'Complete Ride',
+                cancelText: 'Cancel',
+                confirmButtonColor: '#21c45d'
+            }
+        ).then(result => {
+            if (result.isConfirmed) {
+                fetch(`/rides/api/complete-ride/${rideId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Ride completed successfully', 'success');
+                        // Reload page to update status
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        showNotification('Error completing ride: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error completing ride:', error);
+                    showNotification('Error completing ride', 'error');
+                });
+            }
+        });
+    }
+
+    function cancelRide(rideId) {
+        showConfirm(
+            'Cancel Ride',
+            'Are you sure you want to cancel this ride? This action cannot be undone.',
+            {
+                confirmText: 'Cancel Ride',
+                cancelText: 'Keep Ride',
+                confirmButtonColor: '#ef4444',
+                icon: 'warning'
+            }
+        ).then(result => {
+            if (result.isConfirmed) {
+                fetch(`/rides/api/cancel-ride/${rideId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('Ride cancelled successfully', 'success');
+                        // Reload page to update status
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        showNotification('Error cancelling ride: ' + data.error, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error cancelling ride:', error);
+                    showNotification('Error cancelling ride', 'error');
+                });
+            }
+        });
+    }
+
+    // Enhanced cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+        console.log('Cleaning up WebSocket connection and timers...');
+        
+        if (websocket) {
+            websocket.close(1000, 'Page unload');
+        }
+        
+        if (reconnectTimeout) {
+            clearTimeout(reconnectTimeout);
+        }
+        
+        // Clear all timers
+        Object.values(timers).forEach(timer => clearInterval(timer));
+        
+        // Clear timer object
+        timers = {};
+    });
+
+    // Add visibility change handler to pause/resume when tab is not active
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            console.log('Tab hidden - WebSocket connection maintained');
+        } else {
+            console.log('Tab visible - WebSocket connection active');
+            // Optionally refresh data when tab becomes visible again
+            if (websocket && websocket.readyState === WebSocket.OPEN) {
+                // Re-subscribe to ensure we don't miss any updates
+                websocket.send(JSON.stringify({
+                    'type': 'subscribe',
+                    'driver_id': {{ driver_profile.id }}
+                }));
+            }
+        }
+    });
+</script>
+
+<!-- CSRF Token for AJAX requests -->
+{% csrf_token %}
+{% endblock %}

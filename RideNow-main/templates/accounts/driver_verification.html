@@ -1,0 +1,694 @@
+{% extends 'base_tailwind.html' %}
+{% load static %}
+
+{% block title %}Driver Verification - Zyra{% endblock %}
+
+{% block extra_css %}
+<style>
+    .verification-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    .verification-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .verification-header h1 {
+        color: #1a1a1a;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .verification-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .verification-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+    
+    .verification-step {
+        margin-bottom: 40px;
+        padding: 30px;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        transition: all 0.3s;
+    }
+    
+    .verification-step.completed {
+        border-color: #28a745;
+        background: #f8fff9;
+    }
+    
+    .verification-step.active {
+        border-color: #21c45d;
+        background: #f0fdf4;
+    }
+    
+    .verification-step.pending {
+        border-color: #e9ecef;
+        background: #f8f9fa;
+        opacity: 0.6;
+    }
+    
+    .step-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 20px;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+    .step-icon.completed {
+        background: #28a745;
+        color: white;
+    }
+    
+    .step-icon.active {
+        background: #21c45d;
+        color: white;
+    }
+    
+    .step-icon.pending {
+        background: #e9ecef;
+        color: #6c757d;
+    }
+    
+    .step-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0;
+    }
+    
+    .step-description {
+        color: #666;
+        margin: 10px 0 0 0;
+    }
+    
+    .verification-form {
+        margin-top: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #21c45d;
+        box-shadow: 0 0 0 3px rgba(33, 196, 93, 0.1);
+    }
+    
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .btn-primary {
+        background: #21c45d;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #1db954;
+        transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+    
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .status-indicator {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-verified {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-active {
+        background: #cce5ff;
+        color: #004085;
+    }
+    
+    .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-danger {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .alert-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+    
+    .countdown {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #dc3545;
+        text-align: center;
+        margin: 20px 0;
+    }
+    
+    .resend-link {
+        text-align: center;
+        margin-top: 20px;
+    }
+    
+    .resend-link a {
+        color: #21c45d;
+        text-decoration: none;
+    }
+    
+    .resend-link a:hover {
+        text-decoration: underline;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 20px 0;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #21c45d, #1db954);
+        transition: width 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        .verification-container {
+            padding: 20px 10px;
+        }
+        
+        .verification-card {
+            padding: 20px;
+        }
+        
+        .step-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .step-icon {
+            margin-right: 0;
+            margin-bottom: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verification-container">
+    <div class="verification-header">
+        <h1>🔐 Driver Verification</h1>
+        <p>Complete the verification process to start driving with Zyra</p>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 20%;"></div>
+    </div>
+    
+    <div class="verification-card">
+        <!-- Email Verification Step -->
+        <div class="verification-step" id="emailStep">
+            <div class="step-header">
+                <div class="step-icon" id="emailIcon">📧</div>
+                <div>
+                    <h3 class="step-title">Email Verification</h3>
+                    <p class="step-description">Verify your email address with the code we sent</p>
+                </div>
+            </div>
+            
+            <div id="emailStatus" class="status-indicator status-pending">Pending</div>
+            
+            <div class="verification-form" id="emailForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address">
+                </div>
+                
+                <div class="form-group">
+                    <label for="emailCode">Verification Code</label>
+                    <input type="text" id="emailCode" name="emailCode" class="form-control" placeholder="Enter 6-digit code" maxlength="6">
+                </div>
+                
+                <button type="button" class="btn btn-primary" onclick="verifyEmail()">Verify Email</button>
+                
+                <div class="resend-link">
+                    <a href="#" id="resendEmailLink" onclick="animateResendEmailLink(event); resendEmailCode();">Resend verification code</a>
+                    <script>
+                        function animateResendEmailLink(event) {
+                            event.preventDefault();
+                            const link = document.getElementById('resendEmailLink');
+                            link.classList.add('animate-pulse');
+                            setTimeout(() => {
+                                link.classList.remove('animate-pulse');
+                            }, 600);
+                        }
+                    </script>
+                    <style>
+                        .animate-pulse {
+                            animation: pulse 0.6s;
+                        }
+                        @keyframes pulse {
+                            0% { transform: scale(1); color: #28a745; }
+                            50% { transform: scale(1.15); color: #1b8834; }
+                            100% { transform: scale(1); color: #28a745; }
+                        }
+                    </style>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Phone Verification Step -->
+        <div class="verification-step pending" id="phoneStep">
+            <div class="step-header">
+                <div class="step-icon pending" id="phoneIcon">📱</div>
+                <div>
+                    <h3 class="step-title">Phone Verification</h3>
+                    <p class="step-description">Verify your phone number with SMS code</p>
+                </div>
+            </div>
+            
+            <div id="phoneStatus" class="status-indicator status-pending">Pending</div>
+            
+            <div class="verification-form" id="phoneForm" style="display: none;">
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="+256 700 000 000">
+                </div>
+                
+                <div class="form-group">
+                    <label for="phoneCode">SMS Verification Code</label>
+                    <input type="text" id="phoneCode" name="phoneCode" class="form-control" placeholder="Enter 6-digit code" maxlength="6">
+                </div>
+                
+                <button type="button" class="btn btn-primary" onclick="sendPhoneCode()">Send SMS Code</button>
+                <button type="button" class="btn btn-secondary" onclick="verifyPhone()" style="display: none;">Verify Phone</button>
+                
+                <div class="resend-link">
+                    <a href="#" onclick="resendPhoneCode()">Resend SMS code</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Profile Completion Step -->
+        <div class="verification-step pending" id="profileStep">
+            <div class="step-header">
+                <div class="step-icon pending" id="profileIcon">👤</div>
+                <div>
+                    <h3 class="step-title">Profile Completion</h3>
+                    <p class="step-description">Complete your driver profile</p>
+                </div>
+            </div>
+            
+            <div id="profileStatus" class="status-indicator status-pending">Pending</div>
+            
+            <div class="alert alert-info">
+                <strong>Next Steps:</strong>
+                <ul style="margin: 10px 0 0 20px;">
+                    <li>Upload a clear profile photo</li>
+                    <li>Complete vehicle registration</li>
+                    <li>Submit required documents</li>
+                    <li>Wait for admin approval</li>
+                </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{% url 'driver_registration_dashboard' %}" class="btn btn-primary">Complete Profile</a>
+            </div>
+        </div>
+        
+        <!-- Admin Approval Step -->
+        <div class="verification-step pending" id="approvalStep">
+            <div class="step-header">
+                <div class="step-icon pending" id="approvalIcon">✅</div>
+                <div>
+                    <h3 class="step-title">Admin Approval</h3>
+                    <p class="step-description">Waiting for admin review and approval</p>
+                </div>
+            </div>
+            
+            <div id="approvalStatus" class="status-indicator status-pending">Pending</div>
+            
+            <div class="alert alert-info">
+                <strong>What happens next?</strong>
+                <p>Our team will review your application within 2-3 business days. You'll receive an email notification once approved.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Status Summary -->
+    <div class="verification-card">
+        <h3>📊 Verification Status</h3>
+        <div id="statusSummary">
+            <p>Email: <span id="emailSummary">Pending</span></p>
+            <p>Phone: <span id="phoneSummary">Pending</span></p>
+            <p>Profile: <span id="profileSummary">Pending</span></p>
+            <p>Approval: <span id="approvalSummary">Pending</span></p>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/accounts/driver/dashboard/" class="btn btn-secondary">Go to Dashboard</a>
+            <a href="/rides/driver-dashboard/" class="btn btn-primary">Driver Portal</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Verification state
+let verificationState = {
+    email: false,
+    phone: false,
+    profile: false,
+    approval: false
+};
+
+// Update progress bar
+function updateProgress() {
+    const completed = Object.values(verificationState).filter(Boolean).length;
+    const total = Object.keys(verificationState).length;
+    const percentage = (completed / total) * 100;
+    
+    document.getElementById('progressFill').style.width = percentage + '%';
+}
+
+// Update step status
+function updateStepStatus(step, status) {
+    const stepElement = document.getElementById(step + 'Step');
+    const iconElement = document.getElementById(step + 'Icon');
+    const statusElement = document.getElementById(step + 'Status');
+    
+    stepElement.className = `verification-step ${status}`;
+    iconElement.className = `step-icon ${status}`;
+    
+    switch(status) {
+        case 'completed':
+            statusElement.textContent = 'Verified';
+            statusElement.className = 'status-indicator status-verified';
+            break;
+        case 'active':
+            statusElement.textContent = 'In Progress';
+            statusElement.className = 'status-indicator status-active';
+            break;
+        case 'pending':
+            statusElement.textContent = 'Pending';
+            statusElement.className = 'status-indicator status-pending';
+            break;
+    }
+}
+
+// Verify email using existing verification system
+function verifyEmail() {
+    const email = document.getElementById('email').value;
+    const code = document.getElementById('emailCode').value;
+    
+    if (!email || !code) {
+        showAlert('error', 'Please enter email and verification code');
+        return;
+    }
+    
+    // Use existing verification endpoint
+    fetch('/accounts/api/auth/verify-account/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            verification_code: code
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            verificationState.email = true;
+            updateStepStatus('email', 'completed');
+            updateStepStatus('phone', 'active');
+            document.getElementById('phoneForm').style.display = 'block';
+            updateProgress();
+            
+            // Update summary
+            document.getElementById('emailSummary').textContent = 'Verified ✓';
+            
+            showToast('success', 'Email verified successfully!');
+        } else {
+            showAlert('error', 'Email verification failed: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('error', 'Email verification failed. Please try again.');
+    });
+}
+
+// Send phone verification code using existing OTP system
+function sendPhoneCode() {
+    const phone = document.getElementById('phone').value;
+    
+    if (!phone) {
+        showAlert('error', 'Please enter your phone number');
+        return;
+    }
+    
+    // Use existing OTP sending endpoint
+    fetch('/accounts/api/resend-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            phone_number: phone
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('success', 'SMS verification code sent!');
+            document.querySelector('#phoneForm .btn-primary').style.display = 'none';
+            document.querySelector('#phoneForm .btn-secondary').style.display = 'inline-block';
+        } else {
+            showAlert('error', 'Failed to send SMS code: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('error', 'Failed to send SMS code. Please try again.');
+    });
+}
+
+// Verify phone using existing OTP system
+function verifyPhone() {
+    const phone = document.getElementById('phone').value;
+    const code = document.getElementById('phoneCode').value;
+    
+    if (!phone || !code) {
+        showAlert('error', 'Please enter phone and verification code');
+        return;
+    }
+    
+    // Use existing OTP verification endpoint
+    fetch('/accounts/api/verify-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            phone_number: phone,
+            otp: code
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            verificationState.phone = true;
+            updateStepStatus('phone', 'completed');
+            updateStepStatus('profile', 'active');
+            updateProgress();
+            
+            // Update summary
+            document.getElementById('phoneSummary').textContent = 'Verified ✓';
+            
+            showToast('success', 'Phone verified successfully!');
+        } else {
+            showAlert('error', 'Phone verification failed: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('error', 'Phone verification failed. Please try again.');
+    });
+}
+
+// Resend email code
+function resendEmailCode() {
+    const email = document.getElementById('email').value;
+    if (!email) {
+        showAlert('error', 'Please enter your email address to resend the code');
+        return;
+    }
+
+    fetch('/accounts/api/auth/resend-verification/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            email: email,
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.message) {
+            showToast('success', 'Email verification code resent!');
+        } else {
+            showAlert('error', 'Failed to resend email code: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('error', 'Failed to resend email code. Please try again.');
+    });
+    // showToast('success', 'Email verification code resent!');
+}
+
+// Resend phone code
+function resendPhoneCode() {
+    fetch('/accounts/api/resend-otp/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('success', 'SMS verification code resent!');
+        } else {
+            showAlert('error', 'Failed to resend SMS code: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('error', 'Failed to resend SMS code. Please try again.');
+    });
+    // showToast('success', 'SMS verification code resent!');
+}
+
+// Load verification status on page load
+function loadVerificationStatus() {
+    // This would typically fetch from the API
+    // For now, we'll simulate the initial state
+    updateProgress();
+}
+
+// Note: showAlert and showToast functions are now available globally from base_tailwind.html
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    loadVerificationStatus();
+    
+    // Add CSRF token to page if not already present
+    let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (!csrfToken) {
+        const csrfCookie = getCookie('csrftoken');
+        if (csrfCookie) {
+            const form = document.createElement('form');
+            form.style.display = 'none';
+            form.innerHTML = `<input type="hidden" name="csrfmiddlewaretoken" value="${csrfCookie}">`;
+            document.body.appendChild(form);
+        }
+    }
+});
+</script>
+{% endblock %}

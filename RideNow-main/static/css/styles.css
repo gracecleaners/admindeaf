@@ -1,0 +1,116 @@
+:root {
+    --primary-teal: #008080;
+    --primary-persian: #1C39BB;
+    --primary-mint: #98FF98;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 18px; /* Base font size */
+}
+
+body {
+    font-family: 'Arial', sans-serif; /* Main font for the site */
+    font-size: 1rem; /* Relative to html font size */
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+}
+
+/* Paragraphs */
+p {
+    line-height: 1.6;
+}
+
+/* Background Colors */
+.bg-teal {
+    background-color: var(--primary-teal) !important;
+}
+
+/* Text Colors */
+.text-teal {
+    color: var(--primary-teal) !important;
+}
+
+.text-persian {
+    color: var(--primary-persian) !important;
+}
+
+.text-mint {
+    color: var(--primary-mint) !important;
+}
+
+/* Buttons */
+.btn-outline-teal {
+    border-color: none;
+    color: none;
+}
+
+.btn-outline-teal:hover {
+    background-color: none;
+    color: white;
+}
+
+/* Focus States */
+a:focus, button:focus {
+    outline: none;
+    outline-offset: none;
+}
+
+/* Navbar Styles */
+.navbar {
+    font-size: 23px; /* Set font size for the navbar */
+}
+
+.navbar .nav-link, 
+.navbar .dropdown-item, 
+.navbar .navbar-toggler-icon {
+    font-size: 23px; /* Uniform size for navbar elements */
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    /* Adjust font sizes for tablets */
+    html {
+        font-size: 16px; /* Reduce font size on smaller screens */
+    }
+
+    body {
+        font-size: 0.9rem; /* Adjust body font size */
+    }
+
+    .navbar {
+        font-size: 18px; /* Smaller font size for navbar on tablets */
+    }
+
+    .navbar .nav-link, 
+    .navbar .dropdown-item, 
+    .navbar .navbar-toggler-icon {
+        font-size: 18px; /* Smaller font size for navbar items */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Adjust font sizes for mobile */
+    html {
+        font-size: 14px; /* Further reduce font size on mobile */
+    }
+
+    body {
+        font-size: 0.8rem; /* Adjust body font size */
+    }
+
+    .navbar {
+        font-size: 16px; /* Smaller font size for navbar on mobile */
+    }
+
+    .navbar .nav-link, 
+    .navbar .dropdown-item, 
+    .navbar .navbar-toggler-icon {
+        font-size: 16px; /* Smaller font size for navbar items */
+    }
+}

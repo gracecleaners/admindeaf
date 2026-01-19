@@ -1,0 +1,474 @@
+{% extends 'base_tailwind.html' %}
+{% load static %}
+
+{% block title %}Update Profile - Zyra Driver{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-update-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .profile-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .profile-header h1 {
+        color: #1a1a1a;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .profile-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .profile-form {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .form-section {
+        margin-bottom: 40px;
+    }
+    
+    .form-section h3 {
+        color: #1a1a1a;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #21c45d;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #21c45d;
+        box-shadow: 0 0 0 3px rgba(33, 196, 93, 0.1);
+    }
+    
+    .form-control[type="file"] {
+        padding: 8px 12px;
+    }
+    
+    .current-photo {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .current-photo img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #21c45d;
+    }
+    
+    .photo-info h4 {
+        margin: 0 0 10px 0;
+        color: #1a1a1a;
+    }
+    
+    .photo-info p {
+        margin: 0;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .file-upload-area {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        background: #f8f9fa;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .file-upload-area:hover {
+        border-color: #21c45d;
+        background: #f0fdf4;
+    }
+    
+    .file-upload-area.dragover {
+        border-color: #21c45d;
+        background: #f0fdf4;
+    }
+    
+    .file-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .file-preview-item {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid #e9ecef;
+    }
+    
+    .file-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .file-preview-item .remove-file {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.8);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .btn-primary {
+        background: #21c45d;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #1db954;
+        transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+    
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    
+    .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-danger {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .form-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .current-photo {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-update-container">
+    <div class="profile-header">
+        <h1>👤 Update Driver Profile</h1>
+        <p>Keep your profile information up to date</p>
+    </div>
+    
+    <form method="post" class="profile-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Personal Information -->
+        <div class="form-section">
+            <h3>📝 Personal Information</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" value="{{ driver_profile.first_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" value="{{ driver_profile.last_name }}" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="other_name">Other Name</label>
+                    <input type="text" id="other_name" name="other_name" class="form-control" value="{{ driver_profile.other_name }}">
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" class="form-control" value="{{ driver_profile.city }}">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <select id="country" name="country" class="form-control">
+                        <option value="UG" {% if driver_profile.country == 'UG' %}selected{% endif %}>Uganda</option>
+                        <option value="KE" {% if driver_profile.country == 'KE' %}selected{% endif %}>Kenya</option>
+                        <option value="TZ" {% if driver_profile.country == 'TZ' %}selected{% endif %}>Tanzania</option>
+                        <option value="RW" {% if driver_profile.country == 'RW' %}selected{% endif %}>Rwanda</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" class="form-control" value="{{ driver_profile.date_of_birth|date:'Y-m-d' }}">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" class="form-control" rows="4" placeholder="Tell passengers about yourself...">{{ driver_profile.bio }}</textarea>
+            </div>
+        </div>
+        
+        <!-- Profile Photos -->
+        <div class="form-section">
+            <h3>📷 Profile Photos</h3>
+            
+            <!-- Current Profile Photo -->
+            {% if driver_profile.photo %}
+            <div class="current-photo">
+                <img src="{{ driver_profile.photo.url }}" alt="Current Profile Photo">
+                <div class="photo-info">
+                    <h4>Current Profile Photo</h4>
+                    <p>This is your current profile photo. Upload a new one to replace it.</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="photo">Profile Photo</label>
+                <div class="file-upload-area" onclick="document.getElementById('photo').click()">
+                    <i class="fas fa-camera" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p>Click to upload a new profile photo</p>
+                    <small>Recommended: Clear face photo, square aspect ratio</small>
+                </div>
+                <input type="file" id="photo" name="photo" accept="image/*" style="display: none;">
+                <div class="file-preview" id="photo-preview"></div>
+            </div>
+            
+            <!-- Current Cover Photo -->
+            {% if driver_profile.cover_photo %}
+            <div class="current-photo">
+                <img src="{{ driver_profile.cover_photo.url }}" alt="Current Cover Photo">
+                <div class="photo-info">
+                    <h4>Current Cover Photo</h4>
+                    <p>This is your current cover photo. Upload a new one to replace it.</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="cover_photo">Cover Photo</label>
+                <div class="file-upload-area" onclick="document.getElementById('cover_photo').click()">
+                    <i class="fas fa-image" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p>Click to upload a new cover photo</p>
+                    <small>Optional: Wide aspect ratio recommended</small>
+                </div>
+                <input type="file" id="cover_photo" name="cover_photo" accept="image/*" style="display: none;">
+                <div class="file-preview" id="cover-photo-preview"></div>
+            </div>
+        </div>
+        
+        <!-- Contact Information (Read-only) -->
+        <div class="form-section">
+            <h3>📞 Contact Information</h3>
+            <p style="color: #666; margin-bottom: 20px;">Contact information cannot be changed here. Please contact support if you need to update your email or phone number.</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="form-control" value="{{ driver_profile.email }}" readonly style="background: #f8f9fa;">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" class="form-control" value="{{ driver_profile.phone }}" readonly style="background: #f8f9fa;">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+            <a href="/accounts/driver/dashboard/" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// File upload handlers
+document.getElementById('photo').addEventListener('change', function(e) {
+    handleFileUpload(e, 'photo-preview');
+});
+
+document.getElementById('cover_photo').addEventListener('change', function(e) {
+    handleFileUpload(e, 'cover-photo-preview');
+});
+
+function handleFileUpload(event, previewId) {
+    const file = event.target.files[0];
+    const preview = document.getElementById(previewId);
+    
+    if (!file) return;
+    
+    preview.innerHTML = '';
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'file-preview-item';
+        previewItem.innerHTML = `
+            <img src="${e.target.result}" alt="${file.name}">
+            <button type="button" class="remove-file" onclick="removeFile('${previewId}')">×</button>
+        `;
+        preview.appendChild(previewItem);
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeFile(previewId) {
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    // Clear the file input
+    const input = preview.previousElementSibling;
+    input.value = '';
+}
+
+// Form validation
+document.querySelector('.profile-form').addEventListener('submit', function(e) {
+    const firstName = document.getElementById('first_name').value.trim();
+    const lastName = document.getElementById('last_name').value.trim();
+    
+    if (!firstName || !lastName) {
+        e.preventDefault();
+        alert('First name and last name are required.');
+        return;
+    }
+    
+    // Show loading state
+    const submitBtn = document.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Updating...';
+});
+
+// Drag and drop functionality
+function setupDragAndDrop(elementId, previewId) {
+    const uploadArea = document.querySelector(`#${elementId}`).previousElementSibling;
+    
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            document.getElementById(elementId).files = files;
+            handleFileUpload({ target: { files: files } }, previewId);
+        }
+    });
+}
+
+// Initialize drag and drop
+setupDragAndDrop('photo', 'photo-preview');
+setupDragAndDrop('cover_photo', 'cover-photo-preview');
+</script>
+{% endblock %}

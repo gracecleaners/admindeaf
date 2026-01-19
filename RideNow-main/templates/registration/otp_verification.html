@@ -1,0 +1,112 @@
+{% extends 'landing_page.html' %}
+
+{% block title %}OTP Verification - RideNow{% endblock %}
+
+{% block footer %}
+<!-- Empty block to remove the footer -->
+{% endblock %}
+
+{% block content %}
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    .card {
+        width: 100%;
+        max-width: 350px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        overflow: hidden;
+    }
+    .card-body {
+        padding: 2rem;
+    }
+    h2 {
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    p {
+        font-size: 0.9rem;
+        text-align: center;
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .form-control {
+        border-radius: 8px;
+        font-size: 0.95rem;
+        border: 1px solid #ced4da;
+        padding: 0.75rem;
+    }
+    .btn-primary {
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 100%;
+        background-color: #007bff;
+        border: none;
+        padding: 0.75rem;
+        margin-top: 1rem;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .text-muted {
+        font-size: 0.85rem;
+        text-align: center;
+        color: #6c757d;
+        margin-top: 1rem;
+    }
+    a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #007bff;
+    }
+    a:hover {
+        text-decoration: none;
+    }
+    footer {
+        display: none;
+    }
+</style>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-body p-4">
+            <h2>Enter OTP</h2>
+            <p>Please enter the OTP sent to your phone number</p>
+            <form method="POST" action="{% url 'verify_otp' phone_number %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="otp" class="form-label">OTP</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="otp"
+                        name="otp"
+                        placeholder="Enter OTP"
+                        required>
+                </div>
+                <button type="submit" class="btn btn-primary">Verify</button>
+            </form>
+            <p class="text-muted">
+                Didn't receive the OTP? <a href="{% url 'phone_login' %}">Try again</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

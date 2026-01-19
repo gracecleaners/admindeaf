@@ -1,0 +1,330 @@
+<!-- Wallet/Account Charging Modal -->
+<div id="walletModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto transform transition-all">
+        <!-- Header -->
+        <div class="sticky top-0 bg-white border-b border-gray-100 p-4 rounded-t-2xl">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-900">Wallet</h2>
+                <button id="closeWalletModal" class="text-gray-400 hover:text-gray-600 text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-4">
+            <!-- Wallet Balance - Compact -->
+            <div class="bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl p-4 mb-4 text-white">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-xs opacity-90 mb-1">Available Balance</p>
+                        <h3 class="text-2xl font-bold">
+                            UGX <span id="walletBalance">0</span>
+                        </h3>
+                    </div>
+                    <button id="refreshBalance" class="bg-white bg-opacity-20 hover:bg-opacity-30 p-2 rounded-lg transition-all">
+                        <i class="fas fa-sync-alt text-sm"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Insufficient Balance Notice - Compact -->
+            <div id="insufficientBalanceNotice" class="hidden mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle text-orange-500 mr-2"></i>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold text-orange-900">Insufficient Balance</p>
+                        <p class="text-xs text-orange-700">
+                            Need <span id="requiredAmount" class="font-bold"></span> for this ride
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tab Navigation -->
+            <div class="flex mb-4 bg-gray-100 rounded-lg p-1">
+                <button id="topupTab" class="flex-1 py-2 px-3 text-sm font-medium rounded-md bg-white shadow-sm text-primary-600 transition-all">
+                    <i class="fas fa-plus mr-1"></i>Top Up
+                </button>
+                <button id="historyTab" class="flex-1 py-2 px-3 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 transition-all">
+                    <i class="fas fa-history mr-1"></i>History
+                </button>
+            </div>
+            
+            <!-- Top Up Section -->
+            <div id="topupSection">
+                <!-- Quick Amount Buttons - Smaller -->
+                <div class="grid grid-cols-4 gap-2 mb-3">
+                    <button class="quick-amount-btn border border-gray-300 hover:border-primary-500 hover:bg-primary-50 py-2 px-3 rounded-lg text-sm font-medium transition-all" data-amount="5000">
+                        5K
+                    </button>
+                    <button class="quick-amount-btn border border-gray-300 hover:border-primary-500 hover:bg-primary-50 py-2 px-3 rounded-lg text-sm font-medium transition-all" data-amount="10000">
+                        10K
+                    </button>
+                    <button class="quick-amount-btn border border-gray-300 hover:border-primary-500 hover:bg-primary-50 py-2 px-3 rounded-lg text-sm font-medium transition-all" data-amount="20000">
+                        20K
+                    </button>
+                    <button class="quick-amount-btn border border-gray-300 hover:border-primary-500 hover:bg-primary-50 py-2 px-3 rounded-lg text-sm font-medium transition-all" data-amount="50000">
+                        50K
+                    </button>
+                </div>
+                
+                <!-- Custom Amount - Compact -->
+                <div class="mb-3">
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">UGX</span>
+                        <input 
+                            type="number" 
+                            id="topupAmount" 
+                            class="w-full pl-12 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="Custom amount"
+                            min="1000"
+                            step="1000">
+                    </div>
+                </div>
+                
+                <!-- Payment Method - Compact -->
+                <div class="mb-3">
+                    <select id="paymentMethod" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <option value="mobile_money">Mobile Money</option>
+                        <option value="airtel_money">Airtel Money</option>
+                        <option value="mtn_momo">MTN Mobile Money</option>
+                        <option value="card">Credit/Debit Card</option>
+                    </select>
+                </div>
+                
+                <button 
+                    id="topupBtn"
+                    class="w-full bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg font-medium text-sm transition-colors">
+                    <i class="fas fa-plus mr-2"></i>Top Up Wallet
+                </button>
+            </div>
+            
+            <!-- Transaction History Section -->
+            <div id="historySection" class="hidden">
+                <div class="mb-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-semibold text-gray-900">Recent Transactions</h3>
+                        <button id="loadMoreTransactions" class="text-xs text-primary-600 hover:text-primary-700">
+                            Load More
+                        </button>
+                    </div>
+                </div>
+                <div id="recentTransactions" class="space-y-2 max-h-48 overflow-y-auto">
+                    <div class="text-center py-6">
+                        <i class="fas fa-receipt text-gray-300 text-2xl mb-2"></i>
+                        <p class="text-sm text-gray-500">No recent transactions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Wallet Modal Controls
+    async function showWalletModal(requiredAmount = null) {
+        document.getElementById('walletModal').classList.remove('hidden');
+        
+        // Reset to top-up tab
+        showTopUpTab();
+        
+        // Fetch current balance
+        await fetchWalletBalanceForModal();
+        
+        // Show insufficient balance notice if needed
+        if (requiredAmount && currentUserBalance < requiredAmount) {
+            document.getElementById('insufficientBalanceNotice').classList.remove('hidden');
+            document.getElementById('requiredAmount').textContent = `UGX ${requiredAmount.toLocaleString()}`;
+        } else {
+            document.getElementById('insufficientBalanceNotice').classList.add('hidden');
+        }
+    }
+    
+    function hideWalletModal() {
+        document.getElementById('walletModal').classList.add('hidden');
+        // Reset form
+        document.getElementById('topupAmount').value = '';
+        document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+            btn.classList.remove('border-primary-500', 'bg-primary-50');
+            btn.classList.add('border-gray-300');
+        });
+    }
+    
+    document.getElementById('closeWalletModal').addEventListener('click', hideWalletModal);
+    
+    // Tab functionality
+    function showTopUpTab() {
+        document.getElementById('topupTab').classList.add('bg-white', 'shadow-sm', 'text-primary-600');
+        document.getElementById('topupTab').classList.remove('text-gray-600');
+        document.getElementById('historyTab').classList.remove('bg-white', 'shadow-sm', 'text-primary-600');
+        document.getElementById('historyTab').classList.add('text-gray-600');
+        
+        document.getElementById('topupSection').classList.remove('hidden');
+        document.getElementById('historySection').classList.add('hidden');
+    }
+    
+    function showHistoryTab() {
+        document.getElementById('historyTab').classList.add('bg-white', 'shadow-sm', 'text-primary-600');
+        document.getElementById('historyTab').classList.remove('text-gray-600');
+        document.getElementById('topupTab').classList.remove('bg-white', 'shadow-sm', 'text-primary-600');
+        document.getElementById('topupTab').classList.add('text-gray-600');
+        
+        document.getElementById('historySection').classList.remove('hidden');
+        document.getElementById('topupSection').classList.add('hidden');
+        
+        // Load transactions when switching to history tab
+        loadTransactionHistory();
+    }
+    
+    document.getElementById('topupTab').addEventListener('click', showTopUpTab);
+    document.getElementById('historyTab').addEventListener('click', showHistoryTab);
+    
+    // Fetch wallet balance for modal
+    async function fetchWalletBalanceForModal() {
+        try {
+            const response = await fetch('/finance/api/wallet/balance/', {
+                headers: getPostHeaders(true) // Use JWT authentication
+            });
+            const data = await response.json();
+            
+            if (response.ok) {
+                currentUserBalance = data.balance || 0;
+                userAuth.walletBalance = currentUserBalance;
+                document.getElementById('walletBalance').textContent = currentUserBalance.toLocaleString();
+                
+                // Update navigation balance display
+                if (document.getElementById('navWalletBalance')) {
+                    document.getElementById('navWalletBalance').textContent = `UGX ${currentUserBalance.toLocaleString()}`;
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching balance:', error);
+        }
+    }
+    
+    // Refresh balance button
+    document.getElementById('refreshBalance').addEventListener('click', async () => {
+        const btn = document.getElementById('refreshBalance');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin text-sm"></i>';
+        
+        await fetchWalletBalanceForModal();
+        
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-sync-alt text-sm"></i>';
+        }, 1000);
+    });
+    
+    // Load transaction history
+    async function loadTransactionHistory() {
+        try {
+            const response = await fetch('/finance/api/wallet/transactions/', {
+                headers: getPostHeaders(true) // Use JWT authentication
+            });
+            const data = await response.json();
+            
+            const transactionsContainer = document.getElementById('recentTransactions');
+            
+            if (response.ok && data.transactions && data.transactions.length > 0) {
+                transactionsContainer.innerHTML = data.transactions.map(transaction => `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full ${transaction.type === 'credit' ? 'bg-green-100' : 'bg-red-100'} flex items-center justify-center mr-3">
+                                <i class="fas fa-${transaction.type === 'credit' ? 'plus' : 'minus'} text-xs ${transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-900">${transaction.description}</p>
+                                <p class="text-xs text-gray-500">${new Date(transaction.created_at).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-semibold ${transaction.type === 'credit' ? 'text-green-600' : 'text-red-600'}">
+                                ${transaction.type === 'credit' ? '+' : '-'}UGX ${transaction.amount.toLocaleString()}
+                            </p>
+                            <p class="text-xs text-gray-500">${transaction.status}</p>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                transactionsContainer.innerHTML = `
+                    <div class="text-center py-6">
+                        <i class="fas fa-receipt text-gray-300 text-2xl mb-2"></i>
+                        <p class="text-sm text-gray-500">No recent transactions</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading transactions:', error);
+            document.getElementById('recentTransactions').innerHTML = `
+                <div class="text-center py-6">
+                    <i class="fas fa-exclamation-triangle text-gray-300 text-2xl mb-2"></i>
+                    <p class="text-sm text-gray-500">Failed to load transactions</p>
+                </div>
+            `;
+        }
+    }
+    
+    // Quick amount buttons
+    document.querySelectorAll('.quick-amount-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const amount = btn.dataset.amount;
+            document.getElementById('topupAmount').value = amount;
+            
+            // Visual feedback
+            document.querySelectorAll('.quick-amount-btn').forEach(b => {
+                b.classList.remove('border-primary-500', 'bg-primary-50');
+                b.classList.add('border-gray-300');
+            });
+            btn.classList.remove('border-gray-300');
+            btn.classList.add('border-primary-500', 'bg-primary-50');
+        });
+    });
+    
+    // Top up button
+    document.getElementById('topupBtn').addEventListener('click', async () => {
+        const amount = document.getElementById('topupAmount').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        
+        if (!amount || amount < 1000) {
+            SweetAlert.warning('Invalid Amount', 'Please enter an amount of at least UGX 1,000');
+            return;
+        }
+        
+        const btn = document.getElementById('topupBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+        
+        try {
+            const csrftoken = getCookie('csrftoken');
+            
+            const response = await fetch('/finance/api/wallet/topup/', {
+                method: 'POST',
+                headers: getPostHeaders(true), // Use JWT authentication
+                body: JSON.stringify({
+                    amount: amount,
+                    payment_method: paymentMethod
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                SweetAlert.info('Payment Initiated', `Please complete the payment on your ${paymentMethod.replace('_', ' ')} device`, {
+                    confirmText: 'Done'
+                }).then(() => {
+                    fetchWalletBalance();
+                    document.getElementById('topupAmount').value = '';
+                });
+            } else {
+                SweetAlert.error('Error', data.error || 'Payment failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Top up error:', error);
+            SweetAlert.error('Error', 'An error occurred. Please try again.');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-plus-circle mr-2"></i>Top Up Now';
+        }
+    });
+</script>
+
+

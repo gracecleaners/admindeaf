@@ -1,0 +1,203 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}RideNow - Your ultimate ride-sharing solution. Safe, reliable, and easy to use.{% endblock %}">
+    <meta name="author" content="RideNow Team">
+    <meta name="keywords" content="{% block meta_keywords %}ride-sharing, transportation, app, mobility, ride-hailing{% endblock %}">
+
+    <!-- Uncomment if you need a favicon -->
+    <!-- <link rel="icon" href="{% static 'images/favicon.ico' %}"> -->
+
+    <title>{% block title %}RideNow{% endblock %} | Your Ride, Your Way</title>
+
+    {% block extra_css %}
+    <!-- Custom Styles -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    {% endblock %}
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .bg-teal {
+            background-color: #008080;
+        }
+        .offcanvas-body {
+            background-color: #008080;
+            color: white;
+        }
+        .offcanvas-header {
+            background-color: #008080;
+            color: white;
+        }
+        .offcanvas-title {
+            color: white;
+        }
+        .nav-link, .dropdown-item {
+            color: white;
+        }
+        .nav-link:hover, .dropdown-item:hover {
+            background-color: #006666;
+        }
+        .dropdown-menu {
+            background-color: #008080;
+            z-index: 1050; /* Ensure the dropdown menu is above other elements */
+        }
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #006666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Accessibility Skip Link -->
+    <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-teal sticky-top">
+        <div class="container">
+            <!-- Logo - RideNow (Clickable) -->
+            <a class="navbar-brand" href="{% url 'landing_page' %}" style="font-size: 1.8rem; font-weight: bold; color: white;">
+                RideNow
+            </a>
+
+            <!-- Toggler for mobile view -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Navbar links for desktop view -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'features' %}">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="btn btn-light btn-sm ms-2 dropdown-toggle" href="#" id="workWithUsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Work With Us
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="workWithUsDropdown">
+                            <li><a class="dropdown-item" href="{% url 'signup' %}">Register as a Driver</a></li>
+                            <li><a class="dropdown-item" href="{% url 'signup' %}">Register as a Rider</a></li>
+                            <li><a class="dropdown-item" href="{% url 'signup' %}">Register for Delivery</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light btn-sm ms-2" href="{% url 'login' %}">Log In</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Offcanvas menu for mobile view -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'features' %}">Features</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="mobileWorkWithUsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Work With Us
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="mobileWorkWithUsDropdown">
+                        <li><a class="dropdown-item" href="{% url 'signup' %}">Register as a Driver</a></li>
+                        <li><a class="dropdown-item" href="{% url 'signup' %}">Register as a Rider</a></li>
+                        <li><a class="dropdown-item" href="{% url 'signup' %}">Register for Delivery</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5 class="mb-3">Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'faq' %}" class="text-white text-decoration-none">FAQ</a></li>
+                        <li class="mb-2"><a href="{% url 'features' %}" class="text-white text-decoration-none">Features</a></li>
+                        <li class="mb-2"><a href="{% url 'contact' %}" class="text-white text-decoration-none">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Connect With Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-3" aria-label="Facebook">
+                            <i class="fab fa-facebook-f fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-white me-3" aria-label="Twitter">
+                            <i class="fab fa-twitter fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-white me-3" aria-label="Instagram">
+                            <i class="fab fa-instagram fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-white" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
+                        </a>
+                    </div>
+                    <div class="mt-3">
+                        <h6 class="text-muted">Stay Updated</h6>
+                        <form class="d-flex">
+                            <input type="email" class="form-control form-control-sm me-2" placeholder="Enter your email" aria-label="Email for newsletter">
+                            <button type="submit" class="btn btn-outline-light btn-sm">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <hr class="bg-light my-4">
+            <div class="text-center">
+                <p class="mb-2">&copy; {{ year }} RideNow. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Performance and Accessibility Optimization -->
+    <script>
+        // Defer non-critical CSS and font loading
+        const loadFont = () => {
+            const link = document.createElement('link');
+            link.href = 'https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap';
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
+        };
+
+        if ('fonts' in document) {
+            document.fonts.ready.then(loadFont);
+        } else {
+            loadFont();
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

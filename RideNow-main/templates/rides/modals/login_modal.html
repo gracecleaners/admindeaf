@@ -1,0 +1,399 @@
+<!-- Login Modal -->
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 transform transition-all">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Login to Continue</h2>
+                <button id="closeLoginModal" class="text-gray-400 hover:text-gray-600 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <p class="text-gray-600 mb-6">Login to complete your ride booking</p>
+            
+            <form id="loginForm">
+                <!-- Login Method Toggle -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-center">
+                        <div class="bg-gray-100 p-1 rounded-lg flex">
+                            <button type="button" id="modalPhoneLoginBtn" class="login-method-btn active px-4 py-2 text-sm font-medium rounded-md transition-all duration-200">
+                                <i class="fas fa-mobile-alt mr-2"></i>Phone
+                            </button>
+                            <button type="button" id="modalEmailLoginBtn" class="login-method-btn px-4 py-2 text-sm font-medium rounded-md transition-all duration-200">
+                                <i class="fas fa-envelope mr-2"></i>Email
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone Number Field with Country Selector -->
+                <div id="modalPhoneLoginSection">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-mobile-alt mr-2 text-primary-500"></i>Phone Number
+                    </label>
+                    <div id="loginPhoneSelector"></div>
+                </div>
+
+                <!-- Email Field -->
+                <div id="modalEmailLoginSection" class="hidden">
+                    <label for="modalEmail" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-primary-500"></i>Email Address
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                        </div>
+                        <input id="modalEmail" name="modalEmail" type="email" 
+                               class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                               placeholder="Enter your email address">
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-2 text-primary-500"></i>Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="loginPassword" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            placeholder="Enter your password"
+                            required>
+                        <button type="button" id="toggleLoginPassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="loginError" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span id="loginErrorText"></span>
+                </div>
+                
+                <button 
+                    type="submit" 
+                    id="loginSubmitBtn"
+                    class="w-full bg-primary-500 hover:bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold text-lg transition-colors">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                </button>
+            </form>
+            
+            <div class="mt-6 text-center">
+                <p class="text-gray-600 text-sm">
+                    Don't have an account? 
+                    <button id="showSignupModal" class="text-primary-500 hover:text-primary-600 font-semibold">
+                        Sign Up
+                    </button>
+                </p>
+                <button id="showForgotPasswordModal" class="text-primary-500 hover:text-primary-600 text-sm mt-2">
+                    Forgot Password?
+                </button>
+            </div>
+            <div class="flex items-center my-4">
+                <div class="flex-1 border-t border-gray-300"></div>
+                <span class="px-4 text-sm text-gray-500 font-medium">or continue with</span>
+                <div class="flex-1 border-t border-gray-300"></div>
+            </div>
+            <!-- Social Login Options -->
+            <div class="mb-6 space-y-3">
+                <a href="/accounts/google/login/?next={{ request.path|urlencode }}" class="flex items-center justify-center w-full px-4 py-3 border-2 border-blue-500 text-blue-500 rounded-lg hover:bg-blue-500 hover:text-white transition-all duration-200 font-medium">
+                    <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span class="text-sm">Sign in with Google</span>
+                </a>
+                
+                <a href="/accounts/apple/login/?next={{ request.path|urlencode }}" class="flex items-center justify-center w-full px-4 py-3 border-2 border-black text-black rounded-lg hover:bg-black hover:text-white transition-all duration-200 font-medium">
+                    <i class="fab fa-apple text-xl mr-2"></i>
+                    <span class="text-sm">Sign in with Apple</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add CSS styles for login method buttons
+    const style = document.createElement('style');
+    style.textContent = `
+        .login-method-btn {
+            color: #6b7280;
+            background: transparent;
+        }
+        .login-method-btn.active {
+            color: #21c45d;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .login-method-btn:hover {
+            color: #16a34a;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Login Modal Controls
+    let loginPhoneSelector = null;
+    let currentModalLoginMethod = 'phone'; // Default to phone
+    
+    function showLoginModal() {
+        document.getElementById('loginModal').classList.remove('hidden');
+        
+        // Wait a bit for the modal to be visible before initializing
+        setTimeout(() => {
+            // Initialize country code selector using manager
+            if (window.countryCodeManager) {
+                loginPhoneSelector = countryCodeManager.create('loginPhoneSelector', {
+                    defaultCountry: 'UG',
+                    searchEnabled: true
+                });
+                console.log('Login phone selector initialized:', loginPhoneSelector); // Debug log
+            } else {
+                console.error('Country code manager not available'); // Debug log
+            }
+        }, 100);
+    }
+    
+    function hideLoginModal() {
+        document.getElementById('loginModal').classList.add('hidden');
+        document.getElementById('loginForm').reset();
+        document.getElementById('loginError').classList.add('hidden');
+        
+        // Reset phone selector if it exists
+        if (loginPhoneSelector) {
+            loginPhoneSelector.setValue('');
+        }
+        
+        // Reset to phone method
+        switchModalLoginMethod('phone');
+        
+        // Don't destroy the selector, just reset it
+        // This allows for faster re-opening
+    }
+    
+    // Function to switch between phone and email login methods
+    function switchModalLoginMethod(method) {
+        const phoneBtn = document.getElementById('modalPhoneLoginBtn');
+        const emailBtn = document.getElementById('modalEmailLoginBtn');
+        const phoneSection = document.getElementById('modalPhoneLoginSection');
+        const emailSection = document.getElementById('modalEmailLoginSection');
+        
+        // Update button states
+        phoneBtn.classList.toggle('active', method === 'phone');
+        emailBtn.classList.toggle('active', method === 'email');
+        
+        // Show/hide sections and manage required attributes
+        if (method === 'phone') {
+            phoneSection.classList.remove('hidden');
+            emailSection.classList.add('hidden');
+            
+            // Remove required from email field
+            document.getElementById('modalEmail').removeAttribute('required');
+        } else {
+            phoneSection.classList.add('hidden');
+            emailSection.classList.remove('hidden');
+            
+            // Set required on email field
+            document.getElementById('modalEmail').setAttribute('required', 'required');
+        }
+        
+        currentModalLoginMethod = method;
+    }
+    
+    document.getElementById('closeLoginModal').addEventListener('click', hideLoginModal);
+    
+    // Add event listeners for login method toggle
+    document.getElementById('modalPhoneLoginBtn').addEventListener('click', () => switchModalLoginMethod('phone'));
+    document.getElementById('modalEmailLoginBtn').addEventListener('click', () => switchModalLoginMethod('email'));
+    
+    // Debug function - can be called from browser console
+    window.debugLoginPhone = function() {
+        console.log('=== Login Phone Debug ===');
+        console.log('Login phone selector:', loginPhoneSelector);
+        console.log('Country code manager:', window.countryCodeManager);
+        if (loginPhoneSelector) {
+            console.log('Phone value:', loginPhoneSelector.getValue());
+            console.log('Phone validation:', loginPhoneSelector.validate());
+            console.log('Validation message:', loginPhoneSelector.getValidationMessage());
+        }
+        return loginPhoneSelector;
+    };
+    
+    // Toggle password visibility
+    document.getElementById('toggleLoginPassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('loginPassword');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+    
+    // Login form submission
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('loginSubmitBtn');
+        const errorDiv = document.getElementById('loginError');
+        const errorText = document.getElementById('loginErrorText');
+        
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Logging in...';
+        errorDiv.classList.add('hidden');
+        
+        try {
+            const password = document.getElementById('loginPassword').value;
+            const csrftoken = getCookie('csrftoken');
+            
+            let loginIdentifier = '';
+            let isValid = true;
+            
+            // Get login identifier based on current method
+            if (currentModalLoginMethod === 'phone') {
+                if (loginPhoneSelector) {
+                    loginIdentifier = loginPhoneSelector.getValue();
+                    console.log('Login phone from selector:', loginIdentifier); // Debug log
+                    
+                    // Validate phone number format
+                    if (loginIdentifier && !loginPhoneSelector.validate()) {
+                        const validationMessage = loginPhoneSelector.getValidationMessage();
+                        errorText.textContent = validationMessage;
+                        errorDiv.classList.remove('hidden');
+                        return;
+                    }
+                } else {
+                    console.error('Login phone selector not initialized'); // Debug log
+                    errorText.textContent = 'Phone selector not initialized. Please refresh and try again.';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+            } else {
+                loginIdentifier = document.getElementById('modalEmail').value;
+                
+                // Validate email format
+                if (loginIdentifier && !isValidEmail(loginIdentifier)) {
+                    errorText.textContent = 'Please enter a valid email address.';
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+            }
+            
+            // Validate inputs
+            if (!loginIdentifier) {
+                const fieldName = currentModalLoginMethod === 'phone' ? 'phone number' : 'email address';
+                errorText.textContent = `Please enter your ${fieldName}.`;
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            if (!password) {
+                errorText.textContent = 'Please enter your password.';
+                errorDiv.classList.remove('hidden');
+                return;
+            } else if (password.length < 6) {
+                errorText.textContent = 'Password must be at least 6 characters long.';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            const loginData = {
+                username_or_email_or_phone: loginIdentifier,
+                password: password
+            };
+            
+            const response = await fetch('/accounts/api/auth/login/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify(loginData)
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                hideLoginModal();
+                SweetAlert.success('Login Successful!', 'Welcome back! Continuing with your ride booking...', {
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                
+                // Store tokens if provided
+                if (data.access) {
+                    localStorage.setItem('access_token', data.access);
+                }
+                if (data.refresh) {
+                    // Set refresh token as HTTP-only cookie via backend
+                    document.cookie = `refresh_token=${data.refresh}; path=/; secure; samesite=strict`;
+                }
+                
+                // Refresh page to get authenticated state
+                setTimeout(() => {
+                    location.reload();
+                }, 2000);
+            } else {
+                // Handle specific error cases
+                let errorMessage = 'Login failed. Please try again.';
+                
+                if (response.status === 401) {
+                    if (data.detail && data.detail.includes('not active')) {
+                        errorMessage = 'Your account is not active. Please verify your email or phone number first.';
+                    } else if (data.detail && data.detail.includes('Invalid credentials')) {
+                        errorMessage = 'Invalid credentials. Please check your login details and try again.';
+                    } else {
+                        errorMessage = 'Invalid credentials. Please check your login details and try again.';
+                    }
+                } else if (response.status === 400) {
+                    if (data.username_or_email_or_phone) {
+                        errorMessage = 'Please check your login details and try again.';
+                    } else if (data.password) {
+                        errorMessage = 'Please check your password and try again.';
+                    }
+                } else if (response.status === 429) {
+                    errorMessage = 'Too many login attempts. Please wait a few minutes before trying again.';
+                } else if (response.status >= 500) {
+                    errorMessage = 'Server error. Please try again in a few moments.';
+                }
+                
+                errorText.textContent = errorMessage;
+                errorDiv.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            errorText.textContent = 'An error occurred. Please try again.';
+            errorDiv.classList.remove('hidden');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Login';
+        }
+    });
+    
+    // Show signup modal
+    document.getElementById('showSignupModal').addEventListener('click', () => {
+        hideLoginModal();
+        showSignupModal();
+    });
+    
+    // Show forgot password modal
+    document.getElementById('showForgotPasswordModal').addEventListener('click', () => {
+        hideLoginModal();
+        showForgotPasswordModal();
+    });
+    
+    // Email validation function
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+</script>
+

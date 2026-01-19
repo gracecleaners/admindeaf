@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service & Booking Test - RideNow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">📋 Terms of Service & Booking Test</h1>
+        
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- Terms of Service Test -->
+            <div class="bg-blue-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 text-blue-800">
+                    <i class="fas fa-file-contract mr-2"></i>Terms of Service
+                </h2>
+                
+                <div class="space-y-3">
+                    <button onclick="getTermsOfService()" class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">
+                        📄 Get Terms of Service
+                    </button>
+                    
+                    <button onclick="getPrivacyPolicy()" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
+                        🔒 Get Privacy Policy
+                    </button>
+                    
+                    <button onclick="getSystemInfo()" class="w-full bg-blue-700 text-white py-2 px-4 rounded-lg hover:bg-blue-800">
+                        ℹ️ Get System Info
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Terms Acceptance Test -->
+            <div class="bg-green-50 p-6 rounded-lg">
+                <h2 class="text-xl font-semibold mb-4 text-green-800">
+                    <i class="fas fa-check-circle mr-2"></i>Terms Acceptance
+                </h2>
+                
+                <div class="space-y-3">
+                    <button onclick="checkTermsAcceptance()" class="w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">
+                        ✅ Check Acceptance Status
+                    </button>
+                    
+                    <button onclick="acceptTerms()" class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700">
+                        ✍️ Accept Terms
+                    </button>
+                    
+                    <button onclick="simulateBookingFlow()" class="w-full bg-green-700 text-white py-2 px-4 rounded-lg hover:bg-green-800">
+                        🚗 Simulate Booking Flow
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="bg-gray-50 p-6 rounded-lg mb-6">
+            <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                <i class="fas fa-clipboard-list mr-2"></i>Test Results
+            </h3>
+            <div id="testResults" class="text-sm text-gray-600 min-h-32 max-h-64 overflow-y-auto">
+                Click a button above to test the Terms of Service functionality...
+            </div>
+        </div>
+        
+        <!-- Dummy Data Summary -->
+        <div class="bg-yellow-50 p-6 rounded-lg mb-6">
+            <h3 class="text-lg font-semibold mb-4 text-yellow-800">
+                <i class="fas fa-database mr-2"></i>Available Test Data
+            </h3>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Test Users:</h4>
+                    <ul class="space-y-1 text-gray-600">
+                        <li><strong>Client 1:</strong> test.client@ridenow.test</li>
+                        <li><strong>Client 2:</strong> test.client2@ridenow.test</li>
+                        <li><strong>Client 3:</strong> test.client3@ridenow.test</li>
+                        <li><strong>Driver 1:</strong> driver1@ridenow.test</li>
+                        <li><strong>Driver 2:</strong> driver2@ridenow.test</li>
+                        <li><strong>Driver 3:</strong> driver3@ridenow.test</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Available Data:</h4>
+                    <ul class="space-y-1 text-gray-600">
+                        <li>✅ Terms of Service</li>
+                        <li>✅ Privacy Policy</li>
+                        <li>✅ Vehicle Types (5)</li>
+                        <li>✅ Vehicles (8)</li>
+                        <li>✅ Ride Requests (6)</li>
+                        <li>✅ User Wallets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="bg-blue-50 p-6 rounded-lg">
+            <div class="flex items-start">
+                <i class="fas fa-info-circle text-blue-500 mt-0.5 mr-2"></i>
+                <div class="text-sm text-blue-700">
+                    <strong>Test Instructions:</strong>
+                    <ul class="mt-2 space-y-1">
+                        <li>1. <strong>Get Terms of Service:</strong> Retrieves Terms of Service from database</li>
+                        <li>2. <strong>Check Acceptance:</strong> Checks if current user has accepted terms</li>
+                        <li>3. <strong>Accept Terms:</strong> Accepts Terms of Service for current user</li>
+                        <li>4. <strong>Simulate Booking:</strong> Tests the complete booking flow with terms check</li>
+                    </ul>
+                    <p class="mt-3"><strong>Note:</strong> You need to be logged in to test terms acceptance and booking flow.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert-theme.js"></script>
+    <script>
+        function updateResults(message, isError = false) {
+            const resultsDiv = document.getElementById('testResults');
+            const timestamp = new Date().toLocaleTimeString();
+            const colorClass = isError ? 'text-red-600' : 'text-gray-600';
+            resultsDiv.innerHTML += `<div class="${colorClass}">[${timestamp}] ${message}</div>`;
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+        
+        async function getTermsOfService() {
+            updateResults('Fetching Terms of Service from database...');
+            
+            try {
+                const response = await fetch('/core/api/terms-of-service/');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateResults('✅ Terms of Service retrieved successfully');
+                    updateResults(`📅 Last Updated: ${new Date(data.last_updated).toLocaleDateString()}`);
+                    
+                    // Show terms in a modal
+                    SweetAlert.custom({
+                        title: 'Terms of Service',
+                        html: `
+                            <div class="text-left max-h-96 overflow-y-auto text-sm">
+                                ${data.terms_of_service}
+                            </div>
+                        `,
+                        width: '700px',
+                        showCloseButton: true
+                    });
+                } else {
+                    updateResults(`❌ Error: ${data.error}`, true);
+                }
+            } catch (error) {
+                updateResults(`❌ Network error: ${error.message}`, true);
+            }
+        }
+        
+        async function getPrivacyPolicy() {
+            updateResults('Fetching Privacy Policy from database...');
+            
+            try {
+                const response = await fetch('/core/api/privacy-policy/');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateResults('✅ Privacy Policy retrieved successfully');
+                    updateResults(`📅 Last Updated: ${new Date(data.last_updated).toLocaleDateString()}`);
+                    
+                    SweetAlert.custom({
+                        title: 'Privacy Policy',
+                        html: `
+                            <div class="text-left max-h-96 overflow-y-auto text-sm">
+                                ${data.privacy_policy}
+                            </div>
+                        `,
+                        width: '700px',
+                        showCloseButton: true
+                    });
+                } else {
+                    updateResults(`❌ Error: ${data.error}`, true);
+                }
+            } catch (error) {
+                updateResults(`❌ Network error: ${error.message}`, true);
+            }
+        }
+        
+        async function getSystemInfo() {
+            updateResults('Fetching system information...');
+            
+            try {
+                const response = await fetch('/core/api/system-info/');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateResults('✅ System info retrieved successfully');
+                    updateResults(`📧 Support Email: ${data.system_info.support_email}`);
+                    updateResults(`📱 Support Phone: ${data.system_info.support_phone || 'N/A'}`);
+                    updateResults(`📍 Address: ${data.system_info.address}`);
+                    
+                    SweetAlert.custom({
+                        title: 'System Information',
+                        html: `
+                            <div class="text-left text-sm space-y-2">
+                                <p><strong>Support Email:</strong> ${data.system_info.support_email}</p>
+                                <p><strong>Support Phone:</strong> ${data.system_info.support_phone || 'N/A'}</p>
+                                <p><strong>Address:</strong> ${data.system_info.address}</p>
+                                <p><strong>Last Updated:</strong> ${new Date(data.system_info.last_updated).toLocaleDateString()}</p>
+                            </div>
+                        `,
+                        showCloseButton: true
+                    });
+                } else {
+                    updateResults(`❌ Error: ${data.error}`, true);
+                }
+            } catch (error) {
+                updateResults(`❌ Network error: ${error.message}`, true);
+            }
+        }
+        
+        async function checkTermsAcceptance() {
+            updateResults('Checking terms acceptance status...');
+            
+            try {
+                const response = await fetch('/accounts/api/terms/check-acceptance/');
+                const data = await response.json();
+                
+                if (data.has_accepted_terms) {
+                    updateResults('✅ User has accepted Terms of Service');
+                    updateResults(`📅 Accepted on: ${new Date(data.accepted_at).toLocaleDateString()}`);
+                } else {
+                    updateResults('⚠️ User has not accepted Terms of Service yet');
+                }
+            } catch (error) {
+                updateResults(`❌ Error: ${error.message}`, true);
+            }
+        }
+        
+        async function acceptTerms() {
+            updateResults('Accepting Terms of Service...');
+            
+            try {
+                const response = await fetch('/accounts/api/terms/accept/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        terms_version: '1.0'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    updateResults('✅ Terms of Service accepted successfully');
+                    updateResults(`📅 Accepted at: ${new Date(data.accepted_at).toLocaleString()}`);
+                } else {
+                    updateResults(`❌ Error: ${data.error || 'Failed to accept terms'}`, true);
+                }
+            } catch (error) {
+                updateResults(`❌ Network error: ${error.message}`, true);
+            }
+        }
+        
+        async function simulateBookingFlow() {
+            updateResults('Simulating ride booking flow with terms check...');
+            
+            try {
+                // Step 1: Check authentication
+                updateResults('Step 1: Checking authentication...');
+                
+                // Step 2: Check terms acceptance
+                updateResults('Step 2: Checking terms acceptance...');
+                const termsResponse = await fetch('/accounts/api/terms/check-acceptance/');
+                const termsData = await termsResponse.json();
+                
+                if (!termsData.has_accepted_terms) {
+                    updateResults('⚠️ Terms not accepted - would show terms modal');
+                    
+                    // Get terms content
+                    const tosResponse = await fetch('/core/api/terms-of-service/');
+                    const tosData = await tosResponse.json();
+                    
+                    if (tosData.success) {
+                        const result = await SweetAlert.custom({
+                            title: 'Terms of Service',
+                            html: `
+                                <div class="text-left max-h-96 overflow-y-auto text-sm">
+                                    ${tosData.terms_of_service}
+                                </div>
+                            `,
+                            icon: 'info',
+                            showCancelButton: true,
+                            confirmButtonText: 'I Accept',
+                            cancelButtonText: 'Cancel',
+                            width: '600px'
+                        });
+                        
+                        if (result.isConfirmed) {
+                            updateResults('✅ User accepted terms in simulation');
+                        } else {
+                            updateResults('❌ User cancelled terms acceptance');
+                            return;
+                        }
+                    }
+                } else {
+                    updateResults('✅ Terms already accepted');
+                }
+                
+                // Step 3: Check profile completeness
+                updateResults('Step 3: Checking profile completeness...');
+                const profileResponse = await fetch('/accounts/api/profile/check-completeness/');
+                const profileData = await profileResponse.json();
+                
+                if (!profileData.is_complete) {
+                    updateResults(`⚠️ Profile incomplete: ${profileData.completion_percentage}%`);
+                    updateResults(`Missing fields: ${profileData.missing_fields.join(', ')}`);
+                } else {
+                    updateResults('✅ Profile is complete');
+                }
+                
+                // Step 4: Simulate successful booking
+                updateResults('Step 4: Proceeding with ride booking...');
+                updateResults('✅ Booking flow simulation completed successfully!');
+                
+            } catch (error) {
+                updateResults(`❌ Error in booking simulation: ${error.message}`, true);
+            }
+        }
+        
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        console.log('=== Terms of Service & Booking Test Page Loaded ===');
+        console.log('Test the complete Terms of Service and booking flow functionality');
+    </script>
+</body>
+</html>

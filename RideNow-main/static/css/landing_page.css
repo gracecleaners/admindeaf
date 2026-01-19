@@ -1,0 +1,173 @@
+/* Navbar Styling */
+.navbar {
+    position: relative;
+    background-color: #008080; /* Teal color */
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    text-decoration: none;
+}
+
+.navbar-brand:hover {
+    color: #f0f0f0; /* Slight hover effect */
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-link, .dropdown-item {
+    color: white;
+}
+
+.nav-link:hover, .dropdown-item:hover {
+    color: #f0f0f0;
+}
+
+.btn-light {
+    color: #008080;
+}
+
+.btn-outline-light {
+    color: white;
+    border-color: white;
+}
+
+.btn-outline-light:hover {
+    background-color: white;
+    color: #008080;
+}
+
+/* Hero Section Styling */
+.hero-section {
+    background: linear-gradient(135deg, #008080, #0c6d6d); /* Teal to Mint gradient */
+    color: white;
+    height: 90vh; /* 90% of the viewport height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 20px; /* Optional: adjust the left and right padding */
+}
+
+.text-teal {
+    color: #008080;
+}
+
+.text-mint {
+    color: #98FF98;
+}
+
+.text-persian {
+    color: #1C39BB;
+}
+
+.bg-persian {
+    background-color: #1C39BB;
+}
+
+.testimonial-card {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    height: 100%;
+}
+
+.step-number {
+    background: #1C39BB;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 18px;
+}
+
+.features .feature-icon {
+    margin-bottom: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    /* Navbar */
+    .navbar-brand {
+        font-size: 1.5rem;  /* Smaller navbar brand font size for tablets */
+        position: relative; /* Adjust for mobile layout */
+        top: 0;
+        left: 0;
+    }
+
+    .navbar-nav {
+        font-size: 1rem;  /* Adjust nav links font size */
+    }
+
+    .navbar-toggler {
+        font-size: 1.2rem;  /* Adjust toggle button size */
+    }
+
+    /* Hero Section */
+    .hero-section {
+        height: 70vh;  /* Reduce height of hero section for smaller screens */
+        padding: 0 15px;  /* Adjust padding */
+    }
+
+    .testimonial-card {
+        padding: 1rem;  /* Adjust padding for smaller screens */
+    }
+
+    .step-number {
+        font-size: 16px;  /* Reduce step number font size */
+        width: 40px;
+        height: 40px;
+    }
+
+    .features .feature-icon {
+        font-size: 2rem;  /* Adjust icon size */
+    }
+}
+
+@media (max-width: 480px) {
+    /* Navbar */
+    .navbar-brand {
+        font-size: 1.2rem;  /* Further reduce font size for small screens */
+    }
+
+    .navbar-nav {
+        font-size: 0.9rem;  /* Smaller font size for nav links */
+    }
+
+    .navbar-toggler {
+        font-size: 1rem;  /* Adjust toggle button font size */
+    }
+
+    /* Hero Section */
+    .hero-section {
+        height: 60vh;  /* Reduce height of hero section even more for small screens */
+    }
+
+    .testimonial-card {
+        padding: 0.8rem;  /* Adjust testimonial card padding */
+    }
+
+    .step-number {
+        font-size: 14px;  /* Smaller font size for step numbers */
+        width: 35px;
+        height: 35px;
+    }
+
+    .features .feature-icon {
+        font-size: 1.8rem;  /* Smaller icon size */
+    }
+}

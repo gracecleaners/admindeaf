@@ -1,0 +1,2436 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zyra - Get a ride in minutes</title>
+    <link rel="favicon" type="image/png" href="{% static 'img/favicons/favion-32x32.png' %}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #333;
+            --accent: #21c45d;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f8f8;
+            color: var(--primary);
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 4%;
+            background-color: var(--primary);
+            color: var(--text);
+            position: fixed;
+            width: 100%;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+        
+        .logo span {
+            color: var(--text);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-links li {
+            margin-left: 24px;
+        }
+        
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            font-size: 15px;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-buttons .btn {
+            margin-left: 12px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--text);
+            color: var(--text);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            border: 1px solid var(--accent);
+            color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background: #1db954;
+            border-color: #1db954;
+            transform: translateY(-1px);
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text);
+            padding: 8px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .mobile-menu:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            color: var(--text);
+            padding-top: 80px;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .hero-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 4%;
+            max-width: 100%;
+            text-align: center;
+            order: 2;
+        }
+        
+        .hero-content h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+        
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-form {
+            background: var(--text);
+            border-radius: 12px;
+            padding: 0;
+            width: 100%;
+            max-width: 500px;
+            min-width: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 70vh;
+            max-height: 600px;
+            min-height: 500px;
+            order: 1;
+        }
+        
+        .hero-form h3 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 24px;
+            padding: 20px 20px 0;
+        }
+        
+        .hero-map-container {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .hero-map-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 350px;
+            background: #f3f4f6;
+        }
+        
+        #heroMap {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        .map-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #6b7280;
+            z-index: 1;
+        }
+        
+        .map-loading i {
+            font-size: 32px;
+            color: var(--accent);
+            margin-bottom: 10px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hero-map-overlay {
+            position: relative;
+            background: white;
+            padding: 16px;
+            z-index: 10;
+            border-top: 1px solid #e5e7eb;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        
+        .location-display {
+            background: #f9fafb;
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 2px solid #e5e7eb;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        
+        .location-display.has-location {
+            background: #f0fdf4;
+            border-color: var(--accent);
+        }
+        
+        .location-display.has-location.destination {
+            background: #fef2f2;
+            border-color: #ef4444;
+        }
+        
+        .location-text {
+            flex: 1;
+            font-size: 13px;
+            color: #6b7280;
+            font-style: italic;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+        }
+        
+        .location-text.filled {
+            color: var(--primary);
+            font-weight: 500;
+            font-style: normal;
+        }
+        
+        .location-buttons {
+            display: flex;
+            gap: 4px;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        
+        .search-toggle {
+            background: white;
+            border: 1px solid #d1d5db;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        
+        .search-toggle:hover {
+            background: #f9fafb;
+            border-color: var(--accent);
+        }
+        
+        .search-toggle i {
+            font-size: 9px;
+        }
+        
+        .hero-marker {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            margin-top: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+        }
+        
+        .search-suggestion-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #f3f4f6;
+            transition: background 0.2s;
+        }
+        
+        .search-suggestion-item:hover {
+            background: #f9fafb;
+        }
+        
+        .search-suggestion-item:last-child {
+            border-bottom: none;
+        }
+        
+        .search-suggestion-item i {
+            margin-right: 10px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .form-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            border: none;
+            border-radius: 5px;
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .form-btn:hover {
+            background: #1db954;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 5%;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 36px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--secondary);
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            padding: 30px;
+            border-radius: 10px;
+            background: var(--text);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-desc {
+            color: var(--secondary);
+            line-height: 1.6;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 5%;
+            background: #f1f1f1;
+            text-align: center;
+        }
+        
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+        
+        .step {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: var(--text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 auto 20px;
+        }
+        
+        .step-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .step-desc {
+            color: var(--secondary);
+            line-height: 1.6;
+        }
+        
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            right: -50px;
+            width: 100px;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        /* Download Section */
+        .download {
+            padding: 100px 5%;
+            text-align: center;
+            background: var(--primary);
+            color: var(--text);
+        }
+        
+        .download .section-title {
+            color: var(--text);
+        }
+        
+        .download .section-subtitle {
+            color: var(--text-secondary);
+        }
+        
+        .download-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .download-btn {
+            display: flex;
+            align-items: center;
+            background: var(--text);
+            color: var(--primary);
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-5px);
+        }
+        
+        .download-btn i {
+            font-size: 28px;
+            margin-right: 15px;
+        }
+        
+        .download-btn-text {
+            text-align: left;
+        }
+        
+        .download-btn-text span {
+            display: block;
+            font-size: 12px;
+        }
+        
+        .download-btn-text strong {
+            font-size: 18px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--secondary);
+            color: var(--text);
+            padding: 60px 5% 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-links a {
+            color: var(--text);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent);
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        /* Driver Registration Button Hover Effects */
+        .driver-registration a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .driver-registration a[style*="background: transparent"]:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px);
+        }
+        
+        .driver-registration a[style*="background: white"]:hover {
+            background: #f8f9fa !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Cookie Notice Styles */
+        .cookie-notice {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 20px;
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .cookie-notice.show {
+            transform: translateY(0);
+        }
+        
+        .cookie-notice-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .cookie-notice-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .cookie-notice-text p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cookie-notice-text a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .cookie-notice-text a:hover {
+            text-decoration: underline;
+        }
+        
+        .cookie-notice-buttons {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        
+        .cookie-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .cookie-btn-accept {
+            background: var(--accent);
+            color: var(--primary);
+        }
+        
+        .cookie-btn-accept:hover {
+            background: #1db954;
+            transform: translateY(-1px);
+        }
+        
+        .cookie-btn-decline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .cookie-btn-decline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .cookie-btn-settings {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border: none;
+            text-decoration: underline;
+        }
+        
+        .cookie-btn-settings:hover {
+            color: white;
+        }
+        
+        /* Responsive Styles */
+        @media (min-width: 1024px) {
+            .hero {
+                flex-direction: row;
+                align-items: center;
+                padding: 80px 4% 0;
+                gap: 4%;
+            }
+            
+            .hero-content {
+                flex: 1;
+                max-width: 600px;
+                text-align: left;
+                order: 1;
+            }
+            
+            .hero-content h1 {
+                font-size: 48px;
+            }
+            
+            .hero-form {
+                width: 48%;
+                max-width: 650px;
+                min-width: 500px;
+                margin: 0;
+                height: 85vh;
+                max-height: 700px;
+                order: 2;
+            }
+            
+            .hero-map-wrapper {
+                min-height: 350px;
+            }
+        }
+        
+        @media (max-width: 1023px) and (min-width: 769px) {
+            .hero {
+                flex-direction: column;
+                padding: 80px 4% 40px;
+                gap: 30px;
+            }
+            
+            .hero-content {
+                order: 1;
+                text-align: center;
+            }
+            
+            .hero-content h1 {
+                font-size: 40px;
+            }
+            
+            .hero-form {
+                order: 2;
+                width: 100%;
+                max-width: 600px;
+                height: 65vh;
+                min-height: 450px;
+            }
+            
+            .hero-map-wrapper {
+                min-height: 300px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                padding: 12px 4%;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .nav-links, .nav-buttons {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .hero {
+                padding: 70px 4% 30px;
+                gap: 25px;
+            }
+            
+            .hero-content h1 {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+            
+            .hero-content p {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+            
+            .hero-form {
+                width: 100%;
+                max-width: 100%;
+                height: 60vh;
+                min-height: 400px;
+                max-height: 500px;
+            }
+            
+            .hero-form h3 {
+                font-size: 20px;
+                padding: 15px 15px 0;
+            }
+            
+            .hero-map-wrapper {
+                min-height: 200px;
+            }
+            
+            .section-title {
+                font-size: 28px;
+            }
+            
+            .section-subtitle {
+                font-size: 16px;
+                padding: 0 4%;
+            }
+            
+            .features {
+                padding: 60px 4%;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin-top: 40px;
+            }
+            
+            .feature-card {
+                padding: 25px;
+            }
+            
+            .feature-title {
+                font-size: 20px;
+            }
+            
+            .how-it-works {
+                padding: 60px 4%;
+            }
+            
+            .steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            
+            .step {
+                max-width: 300px;
+            }
+            
+            .step:not(:last-child)::after {
+                display: none;
+            }
+            
+            .download {
+                padding: 60px 4%;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            
+            /* Driver Registration Mobile Styles */
+            .driver-registration {
+                padding: 60px 4% !important;
+            }
+            
+            .driver-registration h2 {
+                font-size: 28px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .driver-registration p {
+                font-size: 16px !important;
+                margin-bottom: 30px !important;
+            }
+            
+            .driver-registration div[style*="display: flex"] {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 15px !important;
+            }
+            
+            .driver-registration div[style*="display: grid"] {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+                text-align: center !important;
+                margin-top: 30px !important;
+            }
+            
+            /* Cookie Notice Mobile Styles */
+            .cookie-notice-content {
+                flex-direction: column !important;
+                text-align: center !important;
+                gap: 15px !important;
+            }
+            
+            .cookie-notice-text {
+                min-width: auto !important;
+            }
+            
+            .cookie-notice-buttons {
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+            }
+            
+            .cookie-btn {
+                padding: 12px 16px !important;
+                font-size: 13px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            nav {
+                padding: 10px 4%;
+            }
+            
+            .logo {
+                font-size: 18px;
+            }
+            
+            .hero {
+                padding: 65px 4% 25px;
+                gap: 20px;
+            }
+            
+            .hero-content h1 {
+                font-size: 24px;
+                line-height: 1.3;
+            }
+            
+            .hero-content p {
+                font-size: 14px;
+            }
+            
+            .hero-form {
+                height: 55vh;
+                min-height: 350px;
+                max-height: 450px;
+            }
+            
+            .hero-form h3 {
+                font-size: 18px;
+                padding: 12px 12px 0;
+            }
+            
+            .hero-map-wrapper {
+                min-height: 180px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .features {
+                padding: 50px 4%;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .feature-icon {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+            
+            .feature-title {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+            
+            .how-it-works {
+                padding: 50px 4%;
+            }
+            
+            .download {
+                padding: 50px 4%;
+            }
+            
+            .driver-registration {
+                padding: 50px 4% !important;
+            }
+            
+            .driver-registration h2 {
+                font-size: 24px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Zyra</div>
+        <ul class="nav-links">
+            <li><a href="{% url 'profile' %}">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#download">Download</a></li>
+        </ul>
+        <div class="nav-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}"><button class="btn btn-secondary">Profile</button></a>
+                <a href="{% url 'logout' %}"><button class="btn btn-primary">Logout</button></a>
+            {% else %}
+            <a href="{% url 'login' %}"><button class="btn btn-secondary">Log In</button></a>
+            <a href="{% url 'signup' %}"><button class="btn btn-primary">Sign Up</button></a>
+            {% endif %}
+        </div>
+        <div class="mobile-menu">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Hero Content -->
+        <div class="hero-content">
+            <h1>Get a ride in minutes</h1>
+            <p>Zyra connects you with reliable rides. Simply tap on the map to set your pickup and destination.</p>
+            <div class="download-buttons">
+                <a href="#" class="download-btn">
+                    <i class="fab fa-apple"></i>
+                    <div class="download-btn-text">
+                        <span>Download on the</span>
+                        <strong>App Store</strong>
+                    </div>
+                </a>
+                <a href="#" class="download-btn">
+                    <i class="fab fa-google-play"></i>
+                    <div class="download-btn-text">
+                        <span>Get it on</span>
+                        <strong>Google Play</strong>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Ride Request Form with Map -->
+        <div class="hero-form">
+            <h3>Request a ride now</h3>
+            <div class="hero-map-container">
+                <!-- Map Section -->
+                <div class="hero-map-wrapper">
+                    <div class="map-loading" id="mapLoading">
+                        <i class="fas fa-spinner"></i>
+                        <p>Loading map...</p>
+                </div>
+                    <div id="heroMap"></div>
+                </div>
+                
+                <!-- Form Overlay -->
+                <div class="hero-map-overlay">
+                    <!-- Pickup Location -->
+                    <div style="margin-bottom: 10px;">
+                        <!-- Location Display with Inline Search -->
+                        <div style="position: relative;">
+                            <div id="pickupDisplay" class="location-display">
+                                <i class="fas fa-map-marker-alt" style="color: var(--accent); font-size: 14px; margin-right: 10px; flex-shrink: 0;"></i>
+                                <div style="flex: 1; min-width: 0; position: relative;">
+                                    <input 
+                                        type="text" 
+                                        id="pickupSearch" 
+                                        placeholder="Type to search or click/drag pin on map..." 
+                                        style="border: none; background: transparent; width: 100%; outline: none; color: var(--primary); font-size: 13px; padding: 0;"
+                                        autocomplete="off">
+                                    <div id="pickupText" style="display: none; font-size: 13px; color: var(--primary); font-weight: 500; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="Click to change"></div>
+                                </div>
+                                <button id="pickupClear" class="search-toggle" style="display: none; background: #fee2e2; border-color: #ef4444; color: #ef4444;" title="Clear pickup">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div id="pickupSuggestions" class="search-suggestions" style="display: none;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Destination Location -->
+                    <div style="margin-bottom: 12px;">
+                        <!-- Location Display with Inline Search -->
+                        <div style="position: relative;">
+                            <div id="destinationDisplay" class="location-display">
+                                <i class="fas fa-map-marker-alt" style="color: #ef4444; font-size: 14px; margin-right: 10px; flex-shrink: 0;"></i>
+                                <div style="flex: 1; min-width: 0; position: relative;">
+                                    <input 
+                                        type="text" 
+                                        id="destinationSearch" 
+                                        placeholder="Type to search or click/drag pin on map..." 
+                                        style="border: none; background: transparent; width: 100%; outline: none; color: var(--primary); font-size: 13px; padding: 0;"
+                                        autocomplete="off">
+                                    <div id="destinationText" style="display: none; font-size: 13px; color: var(--primary); font-weight: 500; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="Click to change"></div>
+                                </div>
+                                <button id="destinationClear" class="search-toggle" style="display: none; background: #fee2e2; border-color: #ef4444; color: #ef4444;" title="Clear destination">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div id="destinationSuggestions" class="search-suggestions" style="display: none;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 6px; margin-top: 12px;">
+                        <button id="heroGetRide" class="form-btn" disabled style="flex: 1; padding: 12px;">
+                            <i class="fas fa-car" style="margin-right: 6px;"></i> Get Ride
+                        </button>
+                        
+                        <button id="heroReset" class="form-btn" style="background: #6b7280; display: none; width: auto; padding: 0 16px;">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Info Tip -->
+                    <div style="text-align: center; margin-top: 8px; padding: 6px 8px; background: #f0fdf4; border-radius: 4px;">
+                        <p style="font-size: 9px; color: #15803d; line-height: 1.3;">
+                            <i class="fas fa-info-circle" style="margin-right: 3px;"></i>
+                            Click map, drag pins, or use search
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2 class="section-title">Why Choose Zyra</h2>
+        <p class="section-subtitle">We provide the best ride-sharing experience with our innovative features and dedicated drivers.</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">Fast Pickups</h3>
+                <p class="feature-desc">Get picked up by a nearby driver in minutes, any time of day or night.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <h3 class="feature-title">Affordable Rides</h3>
+                <p class="feature-desc">Know the price before you ride. No surprise charges.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Safe Rides</h3>
+                <p class="feature-desc">All drivers are thoroughly vetted to ensure your safety.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3 class="feature-title">Live Tracking</h3>
+                <p class="feature-desc">Track your driver in real-time and share your trip details with loved ones.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h3 class="feature-title">24/7 Support</h3>
+                <p class="feature-desc">Our support team is available around the clock to assist you.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h3 class="feature-title">Multiple Options</h3>
+                <p class="feature-desc">Choose from economy, premium, or XL vehicles based on your needs.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <h2 class="section-title">How Zyra Works</h2>
+        <p class="section-subtitle">Getting a ride has never been easier. Just follow these simple steps.</p>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3 class="step-title">Request a Ride</h3>
+                <p class="step-desc">Open the app and enter your destination to see your ride options.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3 class="step-title">Get Matched</h3>
+                <p class="step-desc">We'll match you with a nearby driver based on your location and ride preference.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3 class="step-title">Track Your Driver</h3>
+                <p class="step-desc">See your driver's location and estimated time of arrival in real-time.</p>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3 class="step-title">Enjoy Your Ride</h3>
+                <p class="step-desc">Sit back and relax. We'll get you there safely and comfortably.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Driver Registration Section -->
+    <section class="driver-registration" style="padding: 100px 5%; background: linear-gradient(135deg, var(--accent), #1db954); color: white; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <h2 style="font-size: 36px; margin-bottom: 15px; color: white;">Drive with Zyra</h2>
+            <p style="font-size: 18px; margin-bottom: 40px; color: rgba(255,255,255,0.9); line-height: 1.6;">
+                Join thousands of drivers earning money on their own schedule. Set your own hours, keep your earnings, and be your own boss.
+            </p>
+            
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px;">
+                <a href="{% url 'driver_registration' %}" style="display: inline-flex; align-items: center; background: white; color: var(--accent); padding: 15px 30px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: transform 0.3s, box-shadow 0.3s;">
+                    <i class="fas fa-car" style="margin-right: 10px; font-size: 18px;"></i>
+                    Start Driving Today
+                </a>
+                <a href="{% url 'login' %}" style="display: inline-flex; align-items: center; background: transparent; color: white; padding: 15px 30px; border: 2px solid white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; transition: all 0.3s;">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 10px; font-size: 18px;"></i>
+                    Driver Login
+                </a>
+            </div>
+            
+            <div style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: left;">
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; backdrop-filter: blur(10px);">
+                    <i class="fas fa-money-bill-wave" style="font-size: 24px; margin-bottom: 10px; color: white;"></i>
+                    <h4 style="margin-bottom: 10px; font-size: 18px;">Earn More</h4>
+                    <p style="font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5;">Keep 80% of your earnings with competitive rates and flexible hours.</p>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; backdrop-filter: blur(10px);">
+                    <i class="fas fa-clock" style="font-size: 24px; margin-bottom: 10px; color: white;"></i>
+                    <h4 style="margin-bottom: 10px; font-size: 18px;">Flexible Schedule</h4>
+                    <p style="font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5;">Drive when you want, where you want. No minimum hours required.</p>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; backdrop-filter: blur(10px);">
+                    <i class="fas fa-shield-alt" style="font-size: 24px; margin-bottom: 10px; color: white;"></i>
+                    <h4 style="margin-bottom: 10px; font-size: 18px;">Safe & Secure</h4>
+                    <p style="font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.5;">Comprehensive insurance coverage and 24/7 support for drivers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Download Section -->
+    <section class="download" id="download">
+        <h2 class="section-title">Download the Zyra App</h2>
+        <p class="section-subtitle">Available now on iOS and Android. Get a ride in minutes.</p>
+        
+        <div class="download-buttons">
+            <a href="#" class="download-btn">
+                <i class="fab fa-apple"></i>
+                <div class="download-btn-text">
+                    <span>Download on the</span>
+                    <strong>App Store</strong>
+                </div>
+            </a>
+            <a href="#" class="download-btn">
+                <i class="fab fa-google-play"></i>
+                <div class="download-btn-text">
+                    <span>Get it on</span>
+                    <strong>Google Play</strong>
+                </div>
+            </a>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Zyra</h3>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Products</h3>
+                <ul class="footer-links">
+                    <li><a href="/rides/book/">Ride</a></li>
+                    <li><a href="{% url 'driver_registration' %}">Drive</a></li>
+                    <li><a href="#">Deliver</a></li>
+                    <li><a href="#">Business</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>For Drivers</h3>
+                <ul class="footer-links">
+                    <li><a href="{% url 'driver_registration' %}">Sign up to drive</a></li>
+                    <li><a href="{% url 'login' %}">Driver login</a></li>
+                    <li><a href="{% url 'rides:driver_dashboard' %}">Driver dashboard</a></li>
+                    <li><a href="#">Driver requirements</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Global Citizenship</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Safety</a></li>
+                    <li><a href="#">Diversity</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Community Guidelines</a></li>
+                    <li><a href="#">COVID-19 Resources</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; {{ year }} Zyra Technologies. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Cookie Notice -->
+    <div id="cookieNotice" class="cookie-notice">
+        <div class="cookie-notice-content">
+            <div class="cookie-notice-text">
+                <p>
+                    We use cookies to enhance your experience, analyze site traffic, and personalize content. 
+                    By continuing to use our site, you consent to our use of cookies. 
+                    <a href="{% url 'cookie_policy' %}">Learn more</a>
+                </p>
+            </div>
+            <div class="cookie-notice-buttons">
+                <button class="cookie-btn cookie-btn-accept" onclick="acceptCookies()">
+                    Accept All
+                </button>
+                <button class="cookie-btn cookie-btn-decline" onclick="declineCookies()">
+                    Decline
+                </button>
+                <!-- <button class="cookie-btn cookie-btn-settings" onclick="showCookieSettings()">
+                    Settings
+                </button> -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Mobile Menu Toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            const navButtons = document.querySelector('.nav-buttons');
+            const mobileMenuIcon = this.querySelector('i');
+            
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+                navButtons.style.display = 'none';
+                mobileMenuIcon.className = 'fas fa-bars';
+            } else {
+                navLinks.style.display = 'flex';
+                navButtons.style.display = 'flex';
+                mobileMenuIcon.className = 'fas fa-times';
+                
+                // Style mobile menu
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.backgroundColor = 'var(--primary)';
+                navLinks.style.padding = '20px 4%';
+                navLinks.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                navLinks.style.borderTop = '1px solid rgba(255, 255, 255, 0.1)';
+                
+                navButtons.style.flexDirection = 'column';
+                navButtons.style.position = 'absolute';
+                navButtons.style.top = 'calc(100% + 120px)';
+                navButtons.style.left = '0';
+                navButtons.style.right = '0';
+                navButtons.style.backgroundColor = 'var(--primary)';
+                navButtons.style.padding = '0 4% 20px';
+                navButtons.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                
+                // Adjust nav links for mobile
+                navLinks.querySelectorAll('li').forEach(li => {
+                    li.style.margin = '10px 0';
+                });
+                
+                navButtons.querySelectorAll('.btn').forEach(btn => {
+                    btn.style.margin = '5px 0';
+                    btn.style.width = '100%';
+                    btn.style.textAlign = 'center';
+                });
+            }
+        });
+        
+        // Hero Map Initialization
+        console.log('Initializing hero map...');
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYWpyYWxsYW4iLCJhIjoiY21hd3N5bWJjMGY4YzJqc2V6aG55MHU4byJ9.LHLL7YKtl_V-1xkGVyFhcw';
+        
+        let heroMap;
+        
+        // Wait for DOM to be fully loaded
+        if (document.getElementById('heroMap')) {
+            heroMap = new mapboxgl.Map({
+                container: 'heroMap',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [32.2998, 2.7747],
+                zoom: 13,
+                interactive: true
+            });
+            
+            console.log('Map created successfully');
+            
+            const heroState = {
+            pickupLocation: null,
+            destinationLocation: null,
+            pickupMarker: null,
+            destinationMarker: null,
+            pickupAddress: '',
+            destinationAddress: ''
+        };
+        
+        // Search functions using OpenStreetMap Nominatim API
+        const geocodeSearch = async (query) => {
+            console.log('🔍 Starting search for:', query);
+            
+            try {
+                // Use OpenStreetMap Nominatim API for comprehensive local search
+                const nominatimUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&countrycodes=ug&limit=5&addressdetails=1&extratags=1&namedetails=1`;
+                console.log('📍 Nominatim API URL:', nominatimUrl);
+                
+                const response = await fetch(nominatimUrl, {
+                    headers: {
+                        'User-Agent': 'RideNow/1.0 (ride booking app)'
+                    }
+                });
+                console.log('📡 Nominatim API Response status:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    console.error('❌ Nominatim API error:', response.status, response.statusText);
+                    throw new Error(`Nominatim API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📦 Nominatim API Data:', data);
+                
+                if (data && data.length > 0) {
+                    console.log('✅ Found', data.length, 'results from Nominatim API');
+                    
+                    // Convert Nominatim results to Mapbox-style features
+                    const convertedFeatures = data.map((result, index) => {
+                        console.log(`📍 Converting result ${index + 1}:`, result.display_name);
+                        
+                        // Determine place type based on class and type
+                        let placeType = 'place';
+                        let iconClass = 'fas fa-map-marker-alt';
+                        
+                        if (result.class === 'amenity') {
+                            if (result.type === 'university' || result.type === 'college') {
+                                placeType = 'university';
+                                iconClass = 'fas fa-university';
+                            } else if (result.type === 'school') {
+                                placeType = 'school';
+                                iconClass = 'fas fa-school';
+                            } else if (result.type === 'hospital') {
+                                placeType = 'hospital';
+                                iconClass = 'fas fa-hospital';
+                            } else if (result.type === 'bank') {
+                                placeType = 'bank';
+                                iconClass = 'fas fa-university';
+                            } else if (result.type === 'restaurant' || result.type === 'cafe') {
+                                placeType = 'restaurant';
+                                iconClass = 'fas fa-utensils';
+                            } else if (result.type === 'fuel') {
+                                placeType = 'fuel';
+                                iconClass = 'fas fa-gas-pump';
+                            } else {
+                                placeType = 'amenity';
+                                iconClass = 'fas fa-building';
+                            }
+                        } else if (result.class === 'shop') {
+                            placeType = 'shop';
+                            iconClass = 'fas fa-shopping-cart';
+                        } else if (result.class === 'tourism') {
+                            placeType = 'tourism';
+                            iconClass = 'fas fa-camera';
+                        } else if (result.class === 'highway') {
+                            placeType = 'highway';
+                            iconClass = 'fas fa-road';
+                        } else if (result.class === 'place') {
+                            if (result.type === 'city' || result.type === 'town') {
+                                placeType = 'city';
+                                iconClass = 'fas fa-city';
+                            } else if (result.type === 'village') {
+                                placeType = 'village';
+                                iconClass = 'fas fa-home';
+                            } else {
+                                placeType = 'place';
+                                iconClass = 'fas fa-map-marker-alt';
+                            }
+                        }
+                        
+                        // Build address from components
+                        const address = result.address || {};
+                        let fullAddress = result.display_name;
+                        
+                        // Try to build a more concise address
+                        const addressParts = [];
+                        if (address.house_number) addressParts.push(address.house_number);
+                        if (address.road) addressParts.push(address.road);
+                        if (address.suburb) addressParts.push(address.suburb);
+                        if (address.city_district) addressParts.push(address.city_district);
+                        if (address.city) addressParts.push(address.city);
+                        if (addressParts.length > 0) {
+                            fullAddress = addressParts.join(', ') + (address.country ? ', ' + address.country : '');
+                        }
+                        
+                        return {
+                            id: result.place_id,
+                            type: 'Feature',
+                            place_type: [placeType],
+                            relevance: 1 - (index * 0.1), // Higher relevance for earlier results
+                            text: result.name || result.display_name.split(',')[0],
+                            place_name: fullAddress,
+                            center: [parseFloat(result.lon), parseFloat(result.lat)],
+                            geometry: {
+                                type: 'Point',
+                                coordinates: [parseFloat(result.lon), parseFloat(result.lat)]
+                            },
+                            context: [],
+                            properties: {
+                                address: fullAddress,
+                                category: [result.class, result.type].filter(Boolean),
+                                maki: 'marker',
+                                iconClass: iconClass,
+                                placeType: placeType
+                            },
+                            // Add original Nominatim data for reference
+                            _nominatim: result
+                        };
+                    });
+                    
+                    console.log('🔄 Converted features:', convertedFeatures);
+                    return convertedFeatures;
+                } else {
+                    console.log('❌ No results found from Nominatim API');
+                }
+                
+                console.log('🔄 Falling back to Mapbox Geocoding API...');
+                // Fallback to Mapbox Geocoding API for additional results
+                const geocodingUrl = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxgl.accessToken}&country=UG&types=address,locality,neighborhood,place,postcode,district,region,poi&limit=5`;
+                console.log('📍 Mapbox Geocoding API URL:', geocodingUrl);
+                
+                const fallbackResponse = await fetch(geocodingUrl);
+                console.log('📡 Mapbox Geocoding API Response status:', fallbackResponse.status, fallbackResponse.statusText);
+                
+                if (!fallbackResponse.ok) {
+                    console.error('❌ Mapbox Geocoding API error:', fallbackResponse.status, fallbackResponse.statusText);
+                    throw new Error(`Mapbox Geocoding API error: ${fallbackResponse.status}`);
+                }
+                
+                const fallbackData = await fallbackResponse.json();
+                console.log('📦 Mapbox Geocoding API Data:', fallbackData);
+                
+                const features = fallbackData.features || [];
+                console.log('✅ Found', features.length, 'features from Mapbox Geocoding API');
+                return features;
+                
+            } catch (error) {
+                console.error('❌ Search error:', error);
+                return [];
+            }
+        };
+        
+        // Get detailed address from geocoding response
+        const getDetailedAddress = (feature) => {
+            if (!feature) return 'Selected location';
+            
+            // Try to get more detailed address from context
+            const context = feature.context || [];
+            let address = '';
+            
+            // If it's an address type, use the full place_name
+            if (feature.place_type && feature.place_type.includes('address')) {
+                return feature.place_name;
+            }
+            
+            // If it's a POI or specific location, use place_name
+            if (feature.place_type && (feature.place_type.includes('poi') || feature.place_type.includes('locality'))) {
+                return feature.place_name;
+            }
+            
+            // For neighborhood, include the city
+            if (feature.place_type && feature.place_type.includes('neighborhood')) {
+                const city = context.find(c => c.id.includes('place'));
+                if (city) {
+                    return `${feature.text}, ${city.text}`;
+                }
+                return feature.place_name;
+            }
+            
+            // Default to place_name
+            return feature.place_name;
+        };
+        
+        // Reverse geocode with detailed address
+        const reverseGeocode = async (coords) => {
+            try {
+                const response = await fetch(
+                    `https://api.mapbox.com/geocoding/v5/mapbox.places/${coords[0]},${coords[1]}.json?access_token=${mapboxgl.accessToken}&types=address,poi,locality,neighborhood,place&limit=1`
+                );
+                const data = await response.json();
+                if (data.features && data.features.length > 0) {
+                    return getDetailedAddress(data.features[0]);
+                }
+                return 'Selected location';
+            } catch (error) {
+                console.error('Reverse geocoding error:', error);
+                return 'Selected location';
+            }
+        };
+        
+        // Clear individual location functions
+        const clearPickupLocation = () => {
+            if (heroState.pickupMarker) heroState.pickupMarker.remove();
+            heroState.pickupLocation = null;
+            heroState.pickupMarker = null;
+            heroState.pickupAddress = '';
+            
+            const pickupTextEl = document.getElementById('pickupText');
+            const pickupSearchInput = document.getElementById('pickupSearch');
+            const pickupDisplayEl = document.getElementById('pickupDisplay');
+            
+            // Show input, hide text
+            pickupSearchInput.style.display = 'block';
+            pickupSearchInput.value = '';
+            pickupTextEl.style.display = 'none';
+            pickupDisplayEl.classList.remove('has-location');
+            document.getElementById('pickupClear').style.display = 'none';
+            document.getElementById('pickupSuggestions').style.display = 'none';
+            
+            // Clear route if exists
+            if (heroMap.getLayer('route')) {
+                heroMap.removeLayer('route');
+                heroMap.removeSource('route');
+            }
+            
+            checkLocationsReady();
+        };
+        
+        const clearDestinationLocation = () => {
+            if (heroState.destinationMarker) heroState.destinationMarker.remove();
+            heroState.destinationLocation = null;
+            heroState.destinationMarker = null;
+            heroState.destinationAddress = '';
+            
+            const destinationTextEl = document.getElementById('destinationText');
+            const destinationSearchInput = document.getElementById('destinationSearch');
+            const destinationDisplayEl = document.getElementById('destinationDisplay');
+            
+            // Show input, hide text
+            destinationSearchInput.style.display = 'block';
+            destinationSearchInput.value = '';
+            destinationTextEl.style.display = 'none';
+            destinationDisplayEl.classList.remove('has-location', 'destination');
+            document.getElementById('destinationClear').style.display = 'none';
+            document.getElementById('destinationSuggestions').style.display = 'none';
+            document.getElementById('heroReset').style.display = 'none';
+            
+            // Clear route if exists
+            if (heroMap.getLayer('route')) {
+                heroMap.removeLayer('route');
+                heroMap.removeSource('route');
+            }
+            
+            checkLocationsReady();
+        };
+        
+        // Clear button event listeners
+        document.getElementById('pickupClear').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            clearPickupLocation();
+        });
+        document.getElementById('destinationClear').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            clearDestinationLocation();
+        });
+        
+        // Click on address text to edit
+        document.getElementById('pickupText').addEventListener('click', () => {
+            const pickupTextEl = document.getElementById('pickupText');
+            const pickupSearchInput = document.getElementById('pickupSearch');
+            
+            pickupTextEl.style.display = 'none';
+            pickupSearchInput.style.display = 'block';
+            pickupSearchInput.value = '';
+            pickupSearchInput.focus();
+        });
+        
+        document.getElementById('destinationText').addEventListener('click', () => {
+            const destinationTextEl = document.getElementById('destinationText');
+            const destinationSearchInput = document.getElementById('destinationSearch');
+            
+            destinationTextEl.style.display = 'none';
+            destinationSearchInput.style.display = 'block';
+            destinationSearchInput.value = '';
+            destinationSearchInput.focus();
+        });
+        
+        // Search functionality for pickup
+        const pickupSearchInput = document.getElementById('pickupSearch');
+        const pickupSuggestionsDiv = document.getElementById('pickupSuggestions');
+        let pickupSearchTimeout;
+        
+        pickupSearchInput.addEventListener('input', async (e) => {
+            const query = e.target.value;
+            
+            // Clear previous timeout
+            clearTimeout(pickupSearchTimeout);
+            
+            if (query.length >= 2) {
+                // Show loading state
+                pickupSuggestionsDiv.innerHTML = '<div style="padding: 10px; text-align: center; color: #6b7280;"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+                pickupSuggestionsDiv.style.display = 'block';
+                
+                // Debounce the search
+                pickupSearchTimeout = setTimeout(async () => {
+                    const features = await geocodeSearch(query);
+                    pickupSuggestionsDiv.innerHTML = '';
+                    
+                    if (features.length > 0) {
+                        pickupSuggestionsDiv.style.display = 'block';
+                        features.forEach(feature => {
+                            const div = document.createElement('div');
+                            div.className = 'search-suggestion-item';
+                            
+                            const icon = document.createElement('i');
+                            // Use iconClass from Nominatim results if available
+                            if (feature.properties && feature.properties.iconClass) {
+                                icon.className = feature.properties.iconClass;
+                                icon.style.color = '#21c45d'; // Use accent color for OSM results
+                            } else {
+                                icon.className = 'fas fa-map-marker-alt';
+                                icon.style.color = '#6b7280';
+                            }
+                            icon.style.marginRight = '10px';
+                            icon.style.fontSize = '12px';
+                            
+                            const text = document.createElement('span');
+                            const detailedAddress = getDetailedAddress(feature);
+                            text.textContent = detailedAddress;
+                            text.style.fontSize = '13px';
+                            text.style.color = '#1a1a1a';
+                            
+                            div.appendChild(icon);
+                            div.appendChild(text);
+                            
+                            div.addEventListener('click', () => {
+                                setPickupLocation(feature.center, detailedAddress);
+                                pickupSuggestionsDiv.style.display = 'none';
+                            });
+                            
+                            pickupSuggestionsDiv.appendChild(div);
+                        });
+                    } else {
+                        pickupSuggestionsDiv.style.display = 'none';
+                    }
+                }, 300);
+            } else {
+                pickupSuggestionsDiv.style.display = 'none';
+            }
+        });
+        
+        // Search functionality for destination
+        const destinationSearchInput = document.getElementById('destinationSearch');
+        const destinationSuggestionsDiv = document.getElementById('destinationSuggestions');
+        let destinationSearchTimeout;
+        
+        destinationSearchInput.addEventListener('input', async (e) => {
+            const query = e.target.value;
+            
+            // Clear previous timeout
+            clearTimeout(destinationSearchTimeout);
+            
+            if (query.length >= 2) {
+                // Show loading state
+                destinationSuggestionsDiv.innerHTML = '<div style="padding: 10px; text-align: center; color: #6b7280;"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+                destinationSuggestionsDiv.style.display = 'block';
+                
+                // Debounce the search
+                destinationSearchTimeout = setTimeout(async () => {
+                    const features = await geocodeSearch(query);
+                    destinationSuggestionsDiv.innerHTML = '';
+                    
+                    if (features.length > 0) {
+                        destinationSuggestionsDiv.style.display = 'block';
+                        features.forEach(feature => {
+                            const div = document.createElement('div');
+                            div.className = 'search-suggestion-item';
+                            
+                            const icon = document.createElement('i');
+                            // Use iconClass from Nominatim results if available
+                            if (feature.properties && feature.properties.iconClass) {
+                                icon.className = feature.properties.iconClass;
+                                icon.style.color = '#21c45d'; // Use accent color for OSM results
+                            } else {
+                                icon.className = 'fas fa-map-marker-alt';
+                                icon.style.color = '#6b7280';
+                            }
+                            icon.style.marginRight = '10px';
+                            icon.style.fontSize = '12px';
+                            
+                            const text = document.createElement('span');
+                            const detailedAddress = getDetailedAddress(feature);
+                            text.textContent = detailedAddress;
+                            text.style.fontSize = '13px';
+                            text.style.color = '#1a1a1a';
+                            
+                            div.appendChild(icon);
+                            div.appendChild(text);
+                            
+                            div.addEventListener('click', () => {
+                                setDestinationLocation(feature.center, detailedAddress);
+                                destinationSuggestionsDiv.style.display = 'none';
+                            });
+                            
+                            destinationSuggestionsDiv.appendChild(div);
+                        });
+                    } else {
+                        destinationSuggestionsDiv.style.display = 'none';
+                    }
+                }, 300);
+            } else {
+                destinationSuggestionsDiv.style.display = 'none';
+            }
+        });
+        
+        // Close suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!pickupSearchInput.contains(e.target) && !pickupSuggestionsDiv.contains(e.target)) {
+                pickupSuggestionsDiv.style.display = 'none';
+            }
+            if (!destinationSearchInput.contains(e.target) && !destinationSuggestionsDiv.contains(e.target)) {
+                destinationSuggestionsDiv.style.display = 'none';
+            }
+        });
+
+        // Helper function to draw route using Mapbox Directions API
+        const drawRoute = async (start, end) => {
+            try {
+                const response = await fetch(
+                    `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&overview=full&access_token=${mapboxgl.accessToken}`
+                );
+                const data = await response.json();
+                
+                if (data.routes && data.routes.length > 0) {
+                    const route = data.routes[0];
+                    const geojson = {
+                        type: 'Feature',
+                        properties: {},
+                        geometry: route.geometry
+                    };
+                    
+                    if (heroMap.getSource('route')) {
+                        heroMap.getSource('route').setData(geojson);
+                    } else {
+                        heroMap.addLayer({
+                            id: 'route',
+                            type: 'line',
+                            source: {
+                                type: 'geojson',
+                                data: geojson
+                            },
+                            layout: {
+                                'line-join': 'round',
+                                'line-cap': 'round'
+                            },
+                            paint: {
+                                'line-color': '#21c45d',
+                                'line-width': 5,
+                                'line-opacity': 0.75
+                            }
+                        });
+                    }
+                    
+                    // Fit map to show the route
+                    const bounds = new mapboxgl.LngLatBounds()
+                        .extend(start)
+                        .extend(end);
+                    heroMap.fitBounds(bounds, { padding: 80, maxZoom: 14 });
+                }
+            } catch (error) {
+                console.error('Error drawing route:', error);
+                // Fallback to straight line if routing fails
+                const straightLine = {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: [start, end]
+                    }
+                };
+                
+                if (heroMap.getSource('route')) {
+                    heroMap.getSource('route').setData(straightLine);
+                } else {
+                    heroMap.addLayer({
+                        id: 'route',
+                        type: 'line',
+                        source: {
+                            type: 'geojson',
+                            data: straightLine
+                        },
+                        layout: {
+                            'line-join': 'round',
+                            'line-cap': 'round'
+                        },
+                        paint: {
+                            'line-color': '#21c45d',
+                            'line-width': 4,
+                            'line-opacity': 0.6,
+                            'line-dasharray': [2, 2]
+                        }
+                    });
+                }
+            }
+        };
+        
+        // Function to set pickup location
+        const setPickupLocation = async (coords, address = null) => {
+            heroState.pickupLocation = coords;
+            
+            if (heroState.pickupMarker) heroState.pickupMarker.remove();
+            
+            const el = document.createElement('div');
+            el.innerHTML = '<i class="fas fa-map-marker-alt" style="color: #21c45d; font-size: 30px;"></i>';
+            el.className = 'hero-marker';
+            el.style.cursor = 'grab';
+            
+            heroState.pickupMarker = new mapboxgl.Marker({ 
+                element: el, 
+                anchor: 'bottom',
+                draggable: true 
+            })
+                .setLngLat(coords)
+                .addTo(heroMap);
+            
+            // Handle marker drag
+            heroState.pickupMarker.on('dragstart', () => {
+                el.style.cursor = 'grabbing';
+            });
+            
+            heroState.pickupMarker.on('dragend', async () => {
+                el.style.cursor = 'grab';
+                const lngLat = heroState.pickupMarker.getLngLat();
+                const newCoords = [lngLat.lng, lngLat.lat];
+                heroState.pickupLocation = newCoords;
+                
+                // Update address based on new position
+                const newAddress = await reverseGeocode(newCoords);
+                heroState.pickupAddress = newAddress;
+                
+                document.getElementById('pickupText').textContent = newAddress;
+                
+                // Redraw route if destination exists
+                if (heroState.destinationLocation) {
+                    await drawRoute(heroState.pickupLocation, heroState.destinationLocation);
+                }
+            });
+            
+            if (!address) {
+                address = await reverseGeocode(coords);
+            }
+            
+            heroState.pickupAddress = address;
+            
+            // Update display - hide input, show text
+            const pickupTextEl = document.getElementById('pickupText');
+            const pickupSearchInput = document.getElementById('pickupSearch');
+            const pickupDisplayEl = document.getElementById('pickupDisplay');
+            
+            pickupSearchInput.style.display = 'none';
+            pickupTextEl.style.display = 'block';
+            pickupTextEl.textContent = address;
+            pickupDisplayEl.classList.add('has-location');
+            document.getElementById('pickupClear').style.display = 'inline-block';
+            
+            heroMap.flyTo({ center: coords, zoom: 14 });
+            
+            if (heroState.destinationLocation) {
+                await drawRoute(heroState.pickupLocation, heroState.destinationLocation);
+            }
+            
+            checkLocationsReady();
+        };
+        
+        // Function to set destination location
+        const setDestinationLocation = async (coords, address = null) => {
+            heroState.destinationLocation = coords;
+            
+            if (heroState.destinationMarker) heroState.destinationMarker.remove();
+            
+            const el = document.createElement('div');
+            el.innerHTML = '<i class="fas fa-map-marker-alt" style="color: #ef4444; font-size: 30px;"></i>';
+            el.className = 'hero-marker';
+            el.style.cursor = 'grab';
+            
+            heroState.destinationMarker = new mapboxgl.Marker({ 
+                element: el, 
+                anchor: 'bottom',
+                draggable: true 
+            })
+                .setLngLat(coords)
+                .addTo(heroMap);
+            
+            // Handle marker drag
+            heroState.destinationMarker.on('dragstart', () => {
+                el.style.cursor = 'grabbing';
+            });
+            
+            heroState.destinationMarker.on('dragend', async () => {
+                el.style.cursor = 'grab';
+                const lngLat = heroState.destinationMarker.getLngLat();
+                const newCoords = [lngLat.lng, lngLat.lat];
+                heroState.destinationLocation = newCoords;
+                
+                // Update address based on new position
+                const newAddress = await reverseGeocode(newCoords);
+                heroState.destinationAddress = newAddress;
+                
+                document.getElementById('destinationText').textContent = newAddress;
+                
+                // Redraw route if pickup exists
+                if (heroState.pickupLocation) {
+                    await drawRoute(heroState.pickupLocation, heroState.destinationLocation);
+                }
+            });
+            
+            if (!address) {
+                address = await reverseGeocode(coords);
+            }
+            
+            heroState.destinationAddress = address;
+            
+            // Update display - hide input, show text
+            const destinationTextEl = document.getElementById('destinationText');
+            const destinationSearchInput = document.getElementById('destinationSearch');
+            const destinationDisplayEl = document.getElementById('destinationDisplay');
+            
+            destinationSearchInput.style.display = 'none';
+            destinationTextEl.style.display = 'block';
+            destinationTextEl.textContent = address;
+            destinationDisplayEl.classList.add('has-location', 'destination');
+            document.getElementById('destinationClear').style.display = 'inline-block';
+            
+            if (heroState.pickupLocation) {
+                await drawRoute(heroState.pickupLocation, heroState.destinationLocation);
+            }
+            
+            document.getElementById('heroGetRide').disabled = false;
+            document.getElementById('heroReset').style.display = 'block';
+            
+            checkLocationsReady();
+        };
+        
+        // Check if both locations are set
+        const checkLocationsReady = () => {
+            const btn = document.getElementById('heroGetRide');
+            btn.disabled = !(heroState.pickupLocation && heroState.destinationLocation);
+        };
+
+        // Get user location on map load
+        heroMap.on('load', () => {
+            // Hide loading indicator
+            const loadingEl = document.getElementById('mapLoading');
+            if (loadingEl) {
+                loadingEl.style.display = 'none';
+            }
+            
+            console.log('Map loaded successfully');
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const coords = [position.coords.longitude, position.coords.latitude];
+                        heroMap.flyTo({ center: coords, zoom: 13 });
+                        console.log('User location detected:', coords);
+                    },
+                    (error) => {
+                        console.log('Location access denied:', error.message);
+                    }
+                );
+            }
+        });
+
+        // Map click handler
+        heroMap.on('click', async (e) => {
+            const coords = [e.lngLat.lng, e.lngLat.lat];
+            
+            if (!heroState.pickupLocation) {
+                await setPickupLocation(coords);
+            } else if (!heroState.destinationLocation) {
+                await setDestinationLocation(coords);
+            }
+        });
+        
+        // Reset button
+        document.getElementById('heroReset').addEventListener('click', function() {
+            // Clear markers
+            if (heroState.pickupMarker) heroState.pickupMarker.remove();
+            if (heroState.destinationMarker) heroState.destinationMarker.remove();
+            
+            // Clear route
+            if (heroMap.getLayer('route')) {
+                heroMap.removeLayer('route');
+                heroMap.removeSource('route');
+            }
+            
+            // Reset state
+            heroState.pickupLocation = null;
+            heroState.destinationLocation = null;
+            heroState.pickupMarker = null;
+            heroState.destinationMarker = null;
+            heroState.pickupAddress = '';
+            heroState.destinationAddress = '';
+            
+            // Reset pickup display
+            const pickupTextEl = document.getElementById('pickupText');
+            const pickupSearchInput = document.getElementById('pickupSearch');
+            const pickupDisplayEl = document.getElementById('pickupDisplay');
+            
+            pickupSearchInput.style.display = 'block';
+            pickupSearchInput.value = '';
+            pickupTextEl.style.display = 'none';
+            pickupDisplayEl.classList.remove('has-location');
+            document.getElementById('pickupClear').style.display = 'none';
+            document.getElementById('pickupSuggestions').style.display = 'none';
+            
+            // Reset destination display
+            const destinationTextEl = document.getElementById('destinationText');
+            const destinationSearchInput = document.getElementById('destinationSearch');
+            const destinationDisplayEl = document.getElementById('destinationDisplay');
+            
+            destinationSearchInput.style.display = 'block';
+            destinationSearchInput.value = '';
+            destinationTextEl.style.display = 'none';
+            destinationDisplayEl.classList.remove('has-location', 'destination');
+            document.getElementById('destinationClear').style.display = 'none';
+            document.getElementById('destinationSuggestions').style.display = 'none';
+            
+            // Disable button
+            document.getElementById('heroGetRide').disabled = true;
+            this.style.display = 'none';
+            
+            // Reset map view
+            heroMap.flyTo({ 
+                center: [32.2998, 2.7747], 
+                zoom: 12,
+                essential: true 
+            });
+        });
+
+        // Get Ride button
+        document.getElementById('heroGetRide').addEventListener('click', function() {
+            // Store locations in sessionStorage
+            sessionStorage.setItem('pickupLocation', JSON.stringify(heroState.pickupLocation));
+            sessionStorage.setItem('destinationLocation', JSON.stringify(heroState.destinationLocation));
+            sessionStorage.setItem('pickupAddress', heroState.pickupAddress);
+            sessionStorage.setItem('destinationAddress', heroState.destinationAddress);
+            
+            // Redirect to full ride page
+            window.location.href = '/rides/book/';
+        });
+        
+        } else {
+            console.error('Hero map container not found! Map will not initialize.');
+        }
+        
+        // Cookie Notice Functionality
+        const COOKIE_CONSENT_KEY = 'zyra_cookie_consent';
+        const COOKIE_CONSENT_VERSION = '1.0';
+        
+        // Check if user has already made a choice
+        function hasCookieConsent() {
+            const consent = localStorage.getItem(COOKIE_CONSENT_KEY);
+            return consent && JSON.parse(consent).version === COOKIE_CONSENT_VERSION;
+        }
+        
+        // Show cookie notice if no consent given
+        function showCookieNotice() {
+            if (!hasCookieConsent()) {
+                setTimeout(() => {
+                    document.getElementById('cookieNotice').classList.add('show');
+                }, 1000); // Show after 1 second
+            }
+        }
+        
+        // Accept all cookies
+        function acceptCookies() {
+            const consent = {
+                version: COOKIE_CONSENT_VERSION,
+                timestamp: new Date().toISOString(),
+                essential: true,
+                analytics: true,
+                marketing: true,
+                preferences: true
+            };
+            
+            localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consent));
+            hideCookieNotice();
+            
+            // Enable analytics, marketing cookies here
+            enableAnalytics();
+            enableMarketing();
+            
+            console.log('Cookies accepted:', consent);
+        }
+        
+        // Decline non-essential cookies
+        function declineCookies() {
+            const consent = {
+                version: COOKIE_CONSENT_VERSION,
+                timestamp: new Date().toISOString(),
+                essential: true,
+                analytics: false,
+                marketing: false,
+                preferences: false
+            };
+            
+            localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(consent));
+            hideCookieNotice();
+            
+            // Only enable essential cookies
+            enableEssentialOnly();
+            
+            console.log('Non-essential cookies declined:', consent);
+        }
+        
+        // Show cookie settings modal (placeholder)
+        function showCookieSettings() {
+            alert('Cookie settings panel would open here. You can customize which types of cookies to accept.');
+        }
+        
+        // Hide cookie notice
+        function hideCookieNotice() {
+            document.getElementById('cookieNotice').classList.remove('show');
+        }
+        
+        // Cookie functions (placeholders for actual implementation)
+        function enableAnalytics() {
+            // Enable Google Analytics, tracking pixels, etc.
+            console.log('Analytics cookies enabled');
+        }
+        
+        function enableMarketing() {
+            // Enable marketing cookies, retargeting pixels, etc.
+            console.log('Marketing cookies enabled');
+        }
+        
+        function enableEssentialOnly() {
+            // Only enable essential cookies (session, CSRF, etc.)
+            console.log('Only essential cookies enabled');
+        }
+        
+        // Initialize cookie notice
+        document.addEventListener('DOMContentLoaded', function() {
+            showCookieNotice();
+        });
+        
+        // Smooth Scrolling for Anchor Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Responsive Navbar
+        window.addEventListener('resize', function() {
+            const navLinks = document.querySelector('.nav-links');
+            const navButtons = document.querySelector('.nav-buttons');
+            const mobileMenuIcon = document.querySelector('.mobile-menu i');
+            
+            if (window.innerWidth > 768) {
+                // Reset to desktop styles
+                navLinks.style.display = 'flex';
+                navLinks.style.flexDirection = 'row';
+                navLinks.style.position = 'static';
+                navLinks.style.backgroundColor = 'transparent';
+                navLinks.style.padding = '0';
+                navLinks.style.boxShadow = 'none';
+                navLinks.style.borderTop = 'none';
+                
+                navButtons.style.display = 'flex';
+                navButtons.style.flexDirection = 'row';
+                navButtons.style.position = 'static';
+                navButtons.style.backgroundColor = 'transparent';
+                navButtons.style.padding = '0';
+                navButtons.style.boxShadow = 'none';
+                
+                // Reset nav links
+                navLinks.querySelectorAll('li').forEach(li => {
+                    li.style.margin = '0 0 0 24px';
+                });
+                
+                navButtons.querySelectorAll('.btn').forEach(btn => {
+                    btn.style.margin = '0 0 0 12px';
+                    btn.style.width = 'auto';
+                    btn.style.textAlign = 'left';
+                });
+                
+                // Reset mobile menu icon
+                mobileMenuIcon.className = 'fas fa-bars';
+            } else {
+                navLinks.style.display = 'none';
+                navButtons.style.display = 'none';
+                mobileMenuIcon.className = 'fas fa-bars';
+            }
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const nav = document.querySelector('nav');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (window.innerWidth <= 768 && 
+                !nav.contains(event.target) && 
+                document.querySelector('.nav-links').style.display === 'flex') {
+                
+                const navLinks = document.querySelector('.nav-links');
+                const navButtons = document.querySelector('.nav-buttons');
+                const mobileMenuIcon = document.querySelector('.mobile-menu i');
+                
+                navLinks.style.display = 'none';
+                navButtons.style.display = 'none';
+                mobileMenuIcon.className = 'fas fa-bars';
+            }
+        });
+    </script>
+</body>
+</html>

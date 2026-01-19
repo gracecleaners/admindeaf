@@ -1,0 +1,851 @@
+{% extends 'base_tailwind.html' %}
+{% load static %}
+
+{% block title %}Profile Management - Zyra {% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Profile Management</h1>
+            <p class="mt-2 text-gray-600">Manage your account settings, preferences, and security</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar Navigation -->
+            <div class="lg:col-span-1">
+                <nav class="bg-white rounded-lg shadow-sm p-6">
+                    <ul class="space-y-2">
+                        <li>
+                            <button onclick="showSection('profile')" 
+                                    class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600 active">
+                                <i class="fas fa-user mr-3"></i>
+                                Profile Information
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('photos')" 
+                                    class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-camera mr-3"></i>
+                                Photos
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('preferences')" 
+                                    class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-cog mr-3"></i>
+                                Preferences
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('security')" 
+                                    class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-shield-alt mr-3"></i>
+                                Security
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('password')" 
+                                    class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-blue-50 hover:text-blue-600">
+                                <i class="fas fa-key mr-3"></i>
+                                Change Password
+                            </button>
+                        </li>
+                        <li>
+                            <button onclick="showSection('delete')" 
+                                    class="nav-item w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 hover:bg-red-50 hover:text-red-600">
+                                <i class="fas fa-trash-alt mr-3"></i>
+                                Delete Account
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-3">
+                <!-- Profile Information Section -->
+                <div id="profile-section" class="section">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-xl font-semibold text-gray-900">Profile Information</h2>
+                            <button onclick="editProfile()" class="btn-primary">
+                                <i class="fas fa-edit mr-2"></i>
+                                Edit Profile
+                            </button>
+                        </div>
+
+                        <form id="profile-form" method="post" action="{% url 'update_profile' %}" enctype="multipart/form-data" class="space-y-6">
+                            {% csrf_token %}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                    <input type="text" name="first_name" value="{{ profile.first_name }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                    <input type="text" name="last_name" value="{{ profile.last_name }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Other Name</label>
+                                    <input type="text" name="other_name" value="{{ profile.other_name }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                    <input type="email" name="email" value="{{ profile.email }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                                    <input type="tel" name="phone" value="{{ profile.phone }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Country</label>
+                                    <select name="country" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="{{ profile.country.code }}" selected>{{ profile.country.name }}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+                                    <select name="gender" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        <option value="">Select Gender</option>
+                                        <option value="M" {% if profile.gender == 'M' %}selected{% endif %}>Male</option>
+                                        <option value="F" {% if profile.gender == 'F' %}selected{% endif %}>Female</option>
+                                        <option value="O" {% if profile.gender == 'O' %}selected{% endif %}>Other</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                                    <input type="date" name="date_of_birth" value="{{ profile.date_of_birth|date:'Y-m-d' }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                    <input type="text" name="city" value="{{ profile.city }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                                    <textarea name="bio" rows="4" 
+                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ profile.bio }}</textarea>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Interests</label>
+                                    <input type="text" name="interests" value="{{ profile.interests }}" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                           placeholder="e.g Sports, Travel, Vlogging, Engineering, Medicine">
+                                </div>
+                            </div>
+
+                            {% if user.is_driver %}
+                            <div class="border-t pt-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-4">Driver Information</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Vehicle Registration</label>
+                                        <input type="text" name="vehicle_registration" value="{{ profile.vehicle_registration }}" 
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Driver's License Number</label>
+                                        <input type="text" name="drivers_license_no" value="{{ profile.drivers_license_no }}" 
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="flex justify-end space-x-4">
+                                <button type="button" onclick="cancelEdit()" class="btn-secondary">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Photos Section -->
+                <div id="photos-section" class="section hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Profile Photos</h2>
+                        
+                        <form id="photos-form" method="post" action="{% url 'update_photos' %}" enctype="multipart/form-data" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <!-- Profile Photo -->
+                            <div class="flex items-center space-x-6">
+                                <div class="flex-shrink-0">
+                                    <div class="relative">
+                                        {% if profile.photo %}
+                                            <img id="profile-photo-preview" src="{{ profile.photo.url }}" alt="Profile Photo" 
+                                                 class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg">
+                                        {% else %}
+                                            <div id="profile-photo-preview" class="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center">
+                                                <i class="fas fa-user text-gray-500 text-2xl"></i>
+                                            </div>
+                                        {% endif %}
+                                        <button type="button" onclick="document.getElementById('profile-photo-input').click()" 
+                                                class="absolute -bottom-2 -right-2 bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600 transition-colors">
+                                            <i class="fas fa-camera text-sm"></i>
+                                        </button>
+                                    </div>
+                                    <input type="file" id="profile-photo-input" name="photo" accept="image/*" class="hidden" onchange="previewImage(this, 'profile-photo-preview')">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">Profile Photo</h3>
+                                    <p class="text-sm text-gray-500">Upload a clear photo of yourself. JPG, PNG up to 5MB.</p>
+                                </div>
+                            </div>
+
+                            <!-- Cover Photo -->
+                            <div class="space-y-4">
+                                <div class="relative">
+                                    {% if profile.cover_photo %}
+                                        <img id="cover-photo-preview" src="{{ profile.cover_photo.url }}" alt="Cover Photo" 
+                                             class="w-full h-48 object-cover rounded-lg border border-gray-200">
+                                    {% else %}
+                                        <div id="cover-photo-preview" class="w-full h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                                            <div class="text-center">
+                                                <i class="fas fa-image text-gray-400 text-4xl mb-2"></i>
+                                                <p class="text-gray-500">No cover photo</p>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    <button type="button" onclick="document.getElementById('cover-photo-input').click()" 
+                                            class="absolute top-4 right-4 bg-white bg-opacity-90 text-gray-700 rounded-lg px-4 py-2 hover:bg-opacity-100 transition-colors">
+                                        <i class="fas fa-camera mr-2"></i>
+                                        Change Cover
+                                    </button>
+                                    <input type="file" id="cover-photo-input" name="cover_photo" accept="image/*" class="hidden" onchange="previewImage(this, 'cover-photo-preview')">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-medium text-gray-900">Cover Photo</h3>
+                                    <p class="text-sm text-gray-500">Upload a cover photo for your profile. JPG, PNG up to 10MB.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Save Photos
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Preferences Section -->
+                <div id="preferences-section" class="section hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Preferences & Settings</h2>
+                        
+                        <form id="preferences-form" method="post" action="{% url 'update_preferences' %}" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <!-- Notifications -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Notifications</h3>
+                                <div class="space-y-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="email_notifications" {% if preferences.email_notifications %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Email notifications</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="sms_notifications" {% if preferences.sms_notifications %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">SMS notifications</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="push_notifications" {% if preferences.push_notifications %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Push notifications</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="marketing_emails" {% if preferences.marketing_emails %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Marketing emails</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Privacy -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Privacy</h3>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Profile Visibility</label>
+                                    <select name="profile_visibility" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        {% for value, label in preferences.PROFILE_VISIBILITY_CHOICES %}
+                                            <option value="{{ value }}" {% if preferences.profile_visibility == value %}selected{% endif %}>{{ label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Language & Region -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Language & Region</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                                        <select name="language" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            {% for value, label in preferences.LANGUAGE_CHOICES %}
+                                                <option value="{{ value }}" {% if preferences.language == value %}selected{% endif %}>{{ label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
+                                        <select name="timezone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            {% for value, label in preferences.TIMEZONE_CHOICES %}
+                                                <option value="{{ value }}" {% if preferences.timezone == value %}selected{% endif %}>{{ label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ride Preferences -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Ride Preferences</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Payment Method</label>
+                                        <select name="preferred_payment_method" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="cash" {% if preferences.preferred_payment_method == 'cash' %}selected{% endif %}>Cash</option>
+                                            <option value="mobile_money" {% if preferences.preferred_payment_method == 'mobile_money' %}selected{% endif %}>Mobile Money</option>
+                                            <option value="card" {% if preferences.preferred_payment_method == 'card' %}selected{% endif %}>Card</option>
+                                            <option value="wallet" {% if preferences.preferred_payment_method == 'wallet' %}selected{% endif %}>Wallet</option>
+                                        </select>
+                                    </div>
+                                    {% if user.is_driver %}
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Max Ride Distance (km)</label>
+                                        <input type="number" name="max_ride_distance" value="{{ preferences.max_ride_distance }}" min="1" max="200"
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if user.is_driver %}
+                                <div class="space-y-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="auto_accept_rides" {% if preferences.auto_accept_rides %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Auto-accept ride requests</span>
+                                    </label>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Ride Types</label>
+                                        <input type="text" name="preferred_ride_types" value="{{ preferences.preferred_ride_types }}"
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                               placeholder="e.g. Standard, Premium, Shared">
+                                    </div>
+                                </div>
+                                {% endif %}
+                                
+                                {% if user.is_client %}
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Min Driver Rating</label>
+                                        <input type="number" name="preferred_driver_rating" value="{{ preferences.preferred_driver_rating }}" min="1.0" max="5.0" step="0.1"
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Vehicle Type</label>
+                                        <select name="preferred_vehicle_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                            <option value="any" {% if preferences.preferred_vehicle_type == 'any' %}selected{% endif %}>Any</option>
+                                            <option value="sedan" {% if preferences.preferred_vehicle_type == 'sedan' %}selected{% endif %}>Sedan</option>
+                                            <option value="suv" {% if preferences.preferred_vehicle_type == 'suv' %}selected{% endif %}>SUV</option>
+                                            <option value="hatchback" {% if preferences.preferred_vehicle_type == 'hatchback' %}selected{% endif %}>Hatchback</option>
+                                            <option value="motorcycle" {% if preferences.preferred_vehicle_type == 'motorcycle' %}selected{% endif %}>Motorcycle</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Save Preferences
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Security Section -->
+                <div id="security-section" class="section hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Security Settings</h2>
+                        
+                        <form id="security-form" method="post" action="{% url 'update_security' %}" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Security Features</h3>
+                                <div class="space-y-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="two_factor_enabled" {% if security_settings.two_factor_enabled %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Two-factor authentication</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="login_alerts" {% if security_settings.login_alerts %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Login alerts</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Session Management</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
+                                        <input type="number" name="session_timeout" value="{{ security_settings.session_timeout }}" min="15" max="1440"
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Max Concurrent Sessions</label>
+                                        <input type="number" name="max_concurrent_sessions" value="{{ security_settings.max_concurrent_sessions }}" min="1" max="10"
+                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Privacy & Data</h3>
+                                <div class="space-y-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="data_sharing_consent" {% if security_settings.data_sharing_consent %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Data sharing consent</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="analytics_consent" {% if security_settings.analytics_consent %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Analytics tracking</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="location_tracking" {% if security_settings.location_tracking %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Location tracking</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">API Access</h3>
+                                <div class="space-y-3">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="api_access_enabled" {% if security_settings.api_access_enabled %}checked{% endif %}
+                                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                        <span class="ml-3 text-sm text-gray-700">Enable API access</span>
+                                    </label>
+                                    {% if security_settings.api_key %}
+                                    <div class="bg-gray-50 p-3 rounded-lg">
+                                        <p class="text-sm text-gray-600">API Key: <code class="bg-gray-200 px-2 py-1 rounded">{{ security_settings.api_key }}</code></p>
+                                        <p class="text-xs text-gray-500 mt-1">Created: {{ security_settings.api_key_created_at|date:"M d, Y H:i" }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium text-gray-900">Connected Social Accounts</h3>
+                                <div class="space-y-3" id="socialAccountsList">
+                                    <!-- Social accounts will be loaded here -->
+                                    <div class="text-sm text-gray-500">Loading connected accounts...</div>
+                                </div>
+                                <div class="flex space-x-3">
+                                    <a href="/accounts/google/login/" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                        <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24">
+                                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                                        </svg>
+                                        Connect Google
+                                    </a>
+                                    <a href="/accounts/apple/login/" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                        <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                                        </svg>
+                                        Connect Apple
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save mr-2"></i>
+                                    Save Security Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Password Change Section -->
+                <div id="password-section" class="section hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-6">Change Password</h2>
+                        
+                        <form id="password-form" method="post" action="{% url 'change_password' %}" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                                <input type="password" name="old_password" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                                <input type="password" name="new_password1" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                                <input type="password" name="new_password2" required
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-key mr-2"></i>
+                                    Change Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Account Deletion Section -->
+                <div id="delete-section" class="section hidden">
+                    <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-red-500">
+                        <h2 class="text-xl font-semibold text-red-600 mb-6">Delete Account</h2>
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                            <div class="flex">
+                                <i class="fas fa-exclamation-triangle text-red-400 mt-1"></i>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">Warning</h3>
+                                    <p class="text-sm text-red-700 mt-1">
+                                        This action cannot be undone. This will permanently delete your account and remove all your data from our servers.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form id="delete-form" method="post" action="{% url 'delete_account' %}" class="space-y-6">
+                            {% csrf_token %}
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Reason for leaving (optional)</label>
+                                <select name="reason" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent">
+                                    <option value="">Select a reason</option>
+                                    <option value="privacy">Privacy concerns</option>
+                                    <option value="not_using">Not using the service</option>
+                                    <option value="found_alternative">Found a better alternative</option>
+                                    <option value="technical_issues">Technical issues</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Feedback (optional)</label>
+                                <textarea name="feedback" rows="3" 
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                                          placeholder="Please let us know how we can improve..."></textarea>
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center">
+                                    <input type="checkbox" name="confirm_deletion" required
+                                           class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500">
+                                    <span class="ml-3 text-sm text-gray-700">
+                                        I understand that this action cannot be undone and I want to permanently delete my account.
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button type="submit" class="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors">
+                                    <i class="fas fa-trash-alt mr-2"></i>
+                                    Delete Account
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Navigation functionality
+function showSection(sectionName) {
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.add('hidden');
+    });
+    
+    // Remove active class from all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active', 'bg-blue-50', 'text-blue-600');
+        item.classList.add('text-gray-700');
+    });
+    
+    // Show selected section
+    document.getElementById(sectionName + '-section').classList.remove('hidden');
+    
+    // Add active class to selected nav item
+    event.target.classList.add('active', 'bg-blue-50', 'text-blue-600');
+    event.target.classList.remove('text-gray-700');
+}
+
+// Photo preview functionality
+function previewImage(input, previewId) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById(previewId);
+            if (preview.tagName === 'IMG') {
+                preview.src = e.target.result;
+            } else {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover rounded-lg">`;
+            }
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Form submission with loading states
+document.addEventListener('DOMContentLoaded', function() {
+    // Profile form
+    document.getElementById('profile-form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        submitBtn.disabled = true;
+    });
+    
+    // Photos form
+    document.getElementById('photos-form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading...';
+        submitBtn.disabled = true;
+    });
+    
+    // Preferences form
+    document.getElementById('preferences-form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        submitBtn.disabled = true;
+    });
+    
+    // Security form
+    document.getElementById('security-form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Saving...';
+        submitBtn.disabled = true;
+    });
+    
+    // Password form
+    document.getElementById('password-form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Changing...';
+        submitBtn.disabled = true;
+    });
+    
+    // Delete form
+    document.getElementById('delete-form').addEventListener('submit', function(e) {
+        if (!confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+            e.preventDefault();
+            return;
+        }
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Deleting...';
+        submitBtn.disabled = true;
+    });
+    
+    // Load connected social accounts on page load
+    loadConnectedSocialAccounts();
+});
+
+// Edit profile functionality
+function editProfile() {
+    const form = document.getElementById('profile-form');
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        input.disabled = false;
+        input.classList.remove('bg-gray-100');
+    });
+    
+    const editBtn = document.querySelector('button[onclick="editProfile()"]');
+    editBtn.style.display = 'none';
+}
+
+function cancelEdit() {
+    location.reload();
+}
+
+// Load connected social accounts
+function loadConnectedSocialAccounts() {
+    fetch('/accounts/api/auth/social/accounts/', {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            displaySocialAccounts(data.accounts);
+        } else {
+            document.getElementById('socialAccountsList').innerHTML = 
+                '<div class="text-sm text-red-500">Failed to load connected accounts</div>';
+        }
+    })
+    .catch(error => {
+        console.error('Error loading social ', error);
+        document.getElementById('socialAccountsList').innerHTML = 
+            '<div class="text-sm text-red-500">Error loading connected accounts</div>';
+    });
+}
+
+// Display connected social accounts
+function displaySocialAccounts(accounts) {
+    const container = document.getElementById('socialAccountsList');
+    
+    if (accounts.length === 0) {
+        container.innerHTML = '<div class="text-sm text-gray-500">No connected social accounts</div>';
+        return;
+    }
+    
+    let html = '';
+    accounts.forEach(account => {
+        const providerIcon = getProviderIcon(account.provider);
+        const connectedDate = new Date(account.date_joined).toLocaleDateString();
+        
+        html += `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div class="flex items-center">
+                    ${providerIcon}
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">${account.provider_display}</p>
+                        <p class="text-xs text-gray-500">Connected on ${connectedDate}</p>
+                    </div>
+                </div>
+                <button onclick="disconnectSocialAccount('${account.provider}')" 
+                        class="text-red-600 hover:text-red-800 text-sm font-medium">
+                    Disconnect
+                </button>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+// Get provider icon
+function getProviderIcon(provider) {
+    if (provider === 'google') {
+        return `
+            <svg class="w-6 h-6" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+        `;
+    } else if (provider === 'apple') {
+        return `
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+        `;
+    }
+    return '<div class="w-6 h-6 bg-gray-300 rounded"></div>';
+}
+
+// Disconnect social account
+function disconnectSocialAccount(provider) {
+    if (!confirm(`Are you sure you want to disconnect your ${provider} account?`)) {
+        return;
+    }
+    
+    fetch('/accounts/api/auth/social/disconnect/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            provider: provider
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification(data.message, 'success');
+            loadConnectedSocialAccounts(); // Reload the list
+        } else {
+            showNotification(data.error, 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error disconnecting social account:', error);
+        showNotification('Failed to disconnect account', 'error');
+    });
+}
+</script>
+
+<style>
+.nav-item.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.btn-primary {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #1d4ed8;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+</style>
+{% endblock %}

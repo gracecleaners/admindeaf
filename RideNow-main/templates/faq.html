@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+
+{% block title %}RideNow - FAQ{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/faq.css' %}">
+{% endblock %}
+
+{% block content %}
+<header>
+    <h1>RideNow - Frequently Asked Questions</h1>
+</header>
+<main>
+    <section>
+        <h2>General Questions</h2>
+        <div>
+            <h3>What is RideNow?</h3>
+            <p>RideNow is a ride-sharing app that connects drivers with passengers looking for a ride.</p>
+        </div>
+        <div>
+            <h3>How do I sign up?</h3>
+            <p>You can sign up by downloading the RideNow app from the App Store or Google Play and following the registration process.</p>
+        </div>
+    </section>
+    <section>
+        <h2>Driver Questions</h2>
+        <div>
+            <h3>How do I become a driver?</h3>
+            <p>To become a driver, you need to sign up on the RideNow app and complete the driver registration process, which includes a background check and vehicle inspection.</p>
+        </div>
+        <div>
+            <h3>What are the requirements to drive?</h3>
+            <p>Drivers must be at least 21 years old, have a valid driver's license, and own a vehicle that meets our safety standards.</p>
+        </div>
+    </section>
+    <section>
+        <h2>Passenger Questions</h2>
+        <div>
+            <h3>How do I request a ride?</h3>
+            <p>To request a ride, open the RideNow app, enter your destination, and choose a ride option that suits your needs.</p>
+        </div>
+        <div>
+            <h3>How do I pay for my ride?</h3>
+            <p>Payments are processed through the RideNow app using your preferred payment method, such as a credit card or digital wallet.</p>
+        </div>
+    </section>
+    <section>
+        <h2>Technical Support</h2>
+        <div>
+            <h3>How do I contact support?</h3>
+            <p>You can contact our support team through the RideNow app by navigating to the 'Help' section and selecting 'Contact Support'.</p>
+        </div>
+        <div>
+            <h3>What should I do if I encounter a bug?</h3>
+            <p>If you encounter a bug, please report it through the 'Report a Problem' feature in the app, providing as much detail as possible.</p>
+        </div>
+    </section>
+</main>
+{% endblock %}

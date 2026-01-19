@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}RideNow - Your Ride, Your Way{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/landing_page.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="landing-page">
+    <!-- Hero Section -->
+    <header class="hero-section text-white text-center py-5">
+        <div class="container">
+            <h1 class="display-4 mb-4">RideNow: Ride Smarter, Ride Faster</h1>
+            <p class="lead mb-5">Your convenient, reliable transportation solution at your fingertips.</p>
+            <div class="cta-buttons">
+                <a href="{% url 'phone_login' %}" class="btn btn-light btn-lg me-3">Ride Now</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Login with Email</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Display Users (Admin Only) -->
+    {% if users %}
+    <section class="admin-users bg-light py-4">
+        <div class="container">
+            <h3 class="text-center mb-3">Admin Users</h3>
+            <ul class="list-group">
+                {% for user in users %}
+                <li class="list-group-item">{{ user.username }} - {{ user.email }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Features Section -->
+    <section class="features py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-route fa-3x text-teal"></i>
+                    </div>
+                    <h3>Flexible Routes</h3>
+                    <p>Customize your journey with multiple pickup and drop-off options.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-car-alt fa-3x text-mint"></i>
+                    </div>
+                    <h3>Diverse Fleet</h3>
+                    <p>Choose from a wide range of vehicles to suit your style and needs.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-wallet fa-3x text-persian"></i>
+                    </div>
+                    <h3>Transparent Pricing</h3>
+                    <p>Fair, upfront pricing with no hidden charges or surprises.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Your RideNow Journey</h2>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <div class="step-number">1</div>
+                    <h4>Create Account</h4>
+                    <p>Quick and easy registration in minutes.</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="step-number">2</div>
+                    <h4>Set Destination</h4>
+                    <p>Enter your desired location with precision.</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="step-number">3</div>
+                    <h4>Match & Track</h4>
+                    <p>Get matched with the perfect ride and track in real-time.</p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="step-number">4</div>
+                    <h4>Enjoy Your Ride</h4>
+                    <p>Sit back, relax, and enjoy a smooth journey.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Riders' Experiences</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p>"RideNow has transformed my daily commute. Reliable, comfortable, and always on time!"</p>
+                        <div class="testimonial-author">- Alex P.</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p>"The app is intuitive, the drivers are professional, and I feel completely safe."</p>
+                        <div class="testimonial-author">- Jessica L.</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <p>"Best transportation app I've used. Quick, efficient, and reasonably priced!"</p>
+                        <div class="testimonial-author">- David M.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="download-cta bg-persian text-white text-center py-5">
+        <div class="container">
+            <h2 class="mb-4">Your Ride Awaits</h2>
+            <p class="lead mb-4">Download RideNow and revolutionize your transportation experience!</p>
+            <div class="app-store-buttons">
+                <a href="#" class="btn btn-light btn-lg me-3">
+                    <i class="fab fa-apple me-2"></i>App Store
+                </a>
+                <a href="#" class="btn btn-light btn-lg">
+                    <i class="fab fa-google-play me-2"></i>Google Play
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

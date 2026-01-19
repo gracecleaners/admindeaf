@@ -1,0 +1,153 @@
+{% extends "admin/base_site.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Initiate Payment | Shukrani Admin{% endblock %}
+{% block content %}
+    <style>
+        body {
+            background-color: azure;
+            color: black;
+        }
+        .content-section {
+            width: 50%;
+            margin: auto;
+            font-size: medium;
+            padding: 0.1em;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .form-title {
+            margin: 0.3em;
+            /*text-align: center;*/
+            color: black;
+            font-size: 1.3rem;
+        }
+        input[type=text] {
+            width: 100%;
+            font-size: 1rem;
+            padding: 0.5rem;
+            background-color: white;
+            color: black;
+        }
+        .btn {
+            font-size: 1rem;
+            padding: 0.7em;
+            width: 30%;
+            border-radius: 0.3em;
+        }
+        .btn-outline-success:hover {
+            background-color: lightgreen;
+            transform: scale(1);
+            transition: 1s;
+        }
+        .btn-outline-danger:hover {
+            background-color: bisque;
+            transform: scale(1);
+            transition: 1s;
+        }
+    </style>
+    {% load i18n admin_urls %}
+
+    <div class="content-section">
+        {% if payment.is_complete == False %}
+        {% if payment.declined == False %}
+        <div class="form" id="form">
+            <h1 class="form-title">Approve Payment</h1>
+            <h2 style="color: grey;">{{payment}}</h2>
+            <div>
+                <small>
+                    <h2><b>Phone Number:</b> {{payment.phone}}</h2>
+                    <h2 style="color: green;"><b>Amount:</b> UGX {{payment.amount}}</h2>
+                    <br>
+                    <h3 style="color: grey;"><b>Payment ID</b> {{payment.payment_id}}</h3>
+                    <br>
+                    <p><b>Date:</b> {{payment.created}}</p>
+                    <p><b>Note:</b> {{payment.note}}</p>
+                </small>
+            </div>
+            <form method="POST" action="{% url 'admin:approve_payment' payment.id %}"  id="formdata" role="form">
+                {% csrf_token %}
+                <input type="number" id="transactionId" name="code" placeholder="Enter transaction ID" min="1000000000" max="999999999999" style="width: 50%;" required="required">
+                <div class="form-group">
+                    <button class="btn btn-outline-success"  id="successful" type="submit">Succesful</button>
+                    <button class="btn btn-outline-danger" id="declined" type="button">Decline</button>
+                </div>
+            </form>
+        </div>
+        <div class="response-message" id="response-message" style="padding: 0.7em; width: 100%; border-radius: 0.3em; display: none;">
+        </div>
+        {% else %}
+            <div class="message" id="message" style="padding: 0.7em; background-color: bisque; border-radius: 0.3em;">
+            <h1>This transaction was declined!</h1>
+        </div>
+        {% endif %}
+        {% else %}
+        <div style="padding: 0.7em; background-color: white; border-radius: 0.3em;">
+            <h2 class="form-title">{{payment}}</h2>
+            <div>
+                <small>
+                    <p><b>Phone Number:</b> {{payment.phone}}</p>
+                    <p><b>Date:</b> {{payment.created}}</p>
+                    <p><b>Note:</b> {{payment.note}}</p>
+                </small>
+            </div>
+        </div>
+        <div class="message" id="message" style="padding: 0.7em; background-color: green; border-radius: 0.3em;">
+            <h1 style="color: white;">This transaction is complete!</h1>
+        </div>
+        {% endif %}
+    </div>
+    <script type="text/javascript">
+    document.getElementById("formdata").addEventListener("submit", function(e){
+        e.preventDefault();
+
+        transactionCode = document.getElementById("transactionId").value;
+        const formData = new FormData();
+        formData.append('transactionId', transactionCode);
+        formData.append('paymentId', '{{payment.id}}');
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        // console.log(formData);
+        fetch('{% url "admin:approve_payment" payment.id %}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // console.log('Success:', data);
+            document.getElementById("response-message").innerText = "Payment transaction successful";
+            document.getElementById('response-message').style.backgroundColor='green';
+            document.getElementById('response-message').style.color='white';
+            document.getElementById('response-message').style.display='block';
+            document.getElementById("form").style.display = "none";
+        })
+        .catch(error => {
+            // console.error('Error:', error);
+            document.getElementById("response-message").innerText = "Sorry! There was an error encountered";
+            document.getElementById('response-message').style.backgroundColor='bisque';
+            document.getElementById('response-message').style.display='block';
+            document.getElementById("form").style.display = "none";
+        });
+    });
+    document.getElementById("declined").addEventListener('click', function(e){
+        e.preventDefault();
+        const formData = new FormData(); // For carrying the csrftoken
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        fetch('{% url "decline_payment" payment.id %}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+             document.getElementById("response-message").innerText = "Payment Declined and Unsuccesful";
+            document.getElementById('response-message').style.backgroundColor='bisque';
+            document.getElementById('response-message').style.display='block';
+            document.getElementById("form").style.display = "none";
+        })
+        .catch(error => {
+            document.getElementById("response-message").innerText = "Sorry! There was an error encountered";
+            document.getElementById('response-message').style.backgroundColor='bisque';
+            document.getElementById('response-message').style.display='block';
+            document.getElementById("form").style.display = "none";
+        });
+    });
+</script>
+{% endblock content %}

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Zyra API</title>
+    <link rel="icon" type="image/png" href="/static/img/favicons/favicon-32x32.png">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css">
+    <style>
+        /* Zyra Custom Branding */
+        :root {
+            --zyra-green: #21c45d;
+            --zyra-green-dark: #1db954;
+            --zyra-green-light: #34d36b;
+            --zyra-dark: #1a1a1a;
+            --zyra-gray: #333333;
+        }
+        
+        /* Custom Header */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+        
+        .custom-header {
+            background: linear-gradient(135deg, var(--zyra-green) 0%, var(--zyra-green-dark) 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .custom-header-content {
+            max-width: 1460px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-logo h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .header-logo .emoji {
+            font-size: 32px;
+        }
+        
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 14px;
+        }
+        
+        .header-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .header-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        
+        .header-links a:hover {
+            opacity: 1;
+        }
+        
+        /* Swagger UI Customization */
+        .swagger-ui .topbar {
+            display: none; /* Hide default topbar */
+        }
+        
+        .swagger-ui .info {
+            margin: 30px 0;
+        }
+        
+        .swagger-ui .info .title {
+            font-size: 36px;
+            color: var(--zyra-dark);
+            font-weight: 700;
+        }
+        
+        .swagger-ui .info .description {
+            color: #555;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+        
+        /* Primary button styling */
+        .swagger-ui .btn.authorize,
+        .swagger-ui .btn.execute {
+            background-color: var(--zyra-green) !important;
+            border-color: var(--zyra-green) !important;
+            color: white !important;
+        }
+        
+        .swagger-ui .btn.authorize:hover,
+        .swagger-ui .btn.execute:hover {
+            background-color: var(--zyra-green-dark) !important;
+            border-color: var(--zyra-green-dark) !important;
+        }
+        
+        /* Operation headers */
+        .swagger-ui .opblock.opblock-post {
+            border-color: var(--zyra-green);
+            background: rgba(33, 196, 93, 0.05);
+        }
+        
+        .swagger-ui .opblock.opblock-post .opblock-summary-method {
+            background: var(--zyra-green);
+        }
+        
+        .swagger-ui .opblock.opblock-get {
+            border-color: #61affe;
+            background: rgba(97, 175, 254, 0.05);
+        }
+        
+        .swagger-ui .opblock.opblock-put {
+            border-color: #fca130;
+            background: rgba(252, 161, 48, 0.05);
+        }
+        
+        .swagger-ui .opblock.opblock-delete {
+            border-color: #f93e3e;
+            background: rgba(249, 62, 62, 0.05);
+        }
+        
+        .swagger-ui .opblock.opblock-patch {
+            border-color: #50e3c2;
+            background: rgba(80, 227, 194, 0.05);
+        }
+        
+        /* Authorization button */
+        .swagger-ui .authorization__btn {
+            background-color: var(--zyra-green) !important;
+            border-color: var(--zyra-green) !important;
+            color: white !important;
+        }
+        
+        .swagger-ui .authorization__btn:hover {
+            background-color: var(--zyra-green-dark) !important;
+        }
+        
+        /* Links */
+        .swagger-ui a {
+            color: var(--zyra-green);
+        }
+        
+        .swagger-ui a:hover {
+            color: var(--zyra-green-dark);
+        }
+        
+        /* Try it out button */
+        .swagger-ui .try-out__btn {
+            color: var(--zyra-green);
+            border-color: var(--zyra-green);
+        }
+        
+        .swagger-ui .btn-group .btn.cancel {
+            background-color: transparent;
+            color: #555;
+            border-color: #555;
+        }
+        
+        /* Response highlighting */
+        .swagger-ui .responses-inner h4,
+        .swagger-ui .responses-inner h5 {
+            color: var(--zyra-dark);
+        }
+        
+        /* Model toggle */
+        .swagger-ui .model-toggle {
+            color: var(--zyra-green);
+        }
+        
+        /* Tab active state */
+        .swagger-ui .tab li.active {
+            background: var(--zyra-green);
+            border-color: var(--zyra-green);
+        }
+        
+        /* Parameter table */
+        .swagger-ui table thead tr th,
+        .swagger-ui table thead tr td {
+            color: var(--zyra-dark);
+            border-bottom: 2px solid var(--zyra-green);
+        }
+        
+        /* Info section custom styling */
+        .custom-info-banner {
+            background: linear-gradient(135deg, rgba(33, 196, 93, 0.1) 0%, rgba(29, 185, 84, 0.1) 100%);
+            border-left: 4px solid var(--zyra-green);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .custom-info-banner h3 {
+            margin-top: 0;
+            color: var(--zyra-dark);
+            font-size: 18px;
+        }
+        
+        .custom-info-banner p {
+            margin: 5px 0;
+            color: #555;
+        }
+        
+        /* Override default purple/blue info section with green */
+        .swagger-ui .info .title small {
+            background: var(--zyra-green) !important;
+            color: white !important;
+        }
+        
+        .swagger-ui .info .markdown code,
+        .swagger-ui .info .markdown pre {
+            background: rgba(33, 196, 93, 0.1) !important;
+            border-color: var(--zyra-green) !important;
+        }
+        
+        .swagger-ui .info .markdown h1,
+        .swagger-ui .info .markdown h2,
+        .swagger-ui .info .markdown h3 {
+            color: var(--zyra-dark) !important;
+            border-color: var(--zyra-green) !important;
+        }
+        
+        .swagger-ui .info .markdown a {
+            color: var(--zyra-green) !important;
+        }
+        
+        .swagger-ui .info .markdown a:hover {
+            color: var(--zyra-green-dark) !important;
+        }
+        
+        .swagger-ui .info .markdown blockquote {
+            border-left: 4px solid var(--zyra-green) !important;
+            background: rgba(33, 196, 93, 0.05) !important;
+        }
+        
+        .swagger-ui .info .markdown li::before {
+            color: var(--zyra-green) !important;
+        }
+        
+        .swagger-ui .info .markdown strong {
+            color: var(--zyra-dark) !important;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--zyra-green);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--zyra-green-dark);
+        }
+    </style>
+</head>
+<body>
+    <!-- Custom Header -->
+    <div class="custom-header">
+        <div class="custom-header-content">
+            <div class="header-logo">
+                <span class="emoji">🚗</span>
+                <div>
+                    <h1>Zyra API</h1>
+                    <p style="margin: 0; opacity: 0.9; font-size: 14px;">Your ride, your way</p>
+                </div>
+            </div>
+            <div class="header-info">
+                <span class="header-badge">v{{ version }}</span>
+                <div class="header-links">
+                    <a href="/" target="_blank">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="/admin/" target="_blank">
+                        <i class="fas fa-cog"></i> Admin
+                    </a>
+                    <a href="/api/redoc/" target="_blank">
+                        <i class="fas fa-book"></i> ReDoc
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Banner -->
+    <div style="max-width: 1460px; margin: 0 auto; padding: 0 20px;">
+        <div class="custom-info-banner">
+            <h3>🔐 Authentication Required</h3>
+            <p><strong>Step 1:</strong> Click the <strong>"Authorize"</strong> button (🔓 icon at the top right)</p>
+            <p><strong>Step 2:</strong> Get your JWT token from: <code>POST /api/accounts/auth/login/</code></p>
+            <p><strong>Step 3:</strong> Enter token as: <code>Bearer &lt;your_token&gt;</code></p>
+            <p><strong>Step 4:</strong> Click "Authorize" and start testing!</p>
+        </div>
+    </div>
+    
+    <!-- Swagger UI Container -->
+    <div id="swagger-ui"></div>
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Swagger UI Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+    
+    <script>
+        window.onload = function() {
+            const ui = SwaggerUIBundle({
+                url: "{{ schema_url }}",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                persistAuthorization: true,
+                filter: true,
+                tryItOutEnabled: true,
+                syntaxHighlight: {
+                    activated: true,
+                    theme: "monokai"
+                },
+                defaultModelsExpandDepth: 2,
+                defaultModelExpandDepth: 3,
+                docExpansion: "list",
+                displayOperationId: true,
+                displayRequestDuration: true,
+                requestInterceptor: (req) => {
+                    // Log requests for debugging
+                    console.log('API Request:', req.method, req.url);
+                    return req;
+                },
+                responseInterceptor: (res) => {
+                    // Log responses for debugging
+                    console.log('API Response:', res.status, res.url);
+                    return res;
+                }
+            });
+            
+            window.ui = ui;
+        };
+    </script>
+</body>
+</html>
+

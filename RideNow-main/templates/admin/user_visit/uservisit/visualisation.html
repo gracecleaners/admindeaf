@@ -1,0 +1,88 @@
+{% extends "admin/base_site.html" %}
+{% load crispy_forms_tags %}
+{% block title %}User Traffic Visualisation | Shukrani Admin{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="https://cdn.flexmonster.com/demo.css">
+{% endblock %}
+{% block content %}
+    <style>
+        /*body {
+            background-color: azure;
+            color: black;
+        }*/
+    </style>
+    {% load i18n admin_urls %}
+    <h1>User Traffic Visualisation</h1>
+    <div class="content-section">
+        <div id="pivot-table-container" data-url="{% url 'pivot_data' %}"></div>
+        <div id="pivot-chart-container"></div>
+    </div>
+    <script src="https://cdn.flexmonster.com/flexmonster.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        function processData(dataset) {
+            var result = []
+            dataset = JSON.parse(dataset);
+            dataset.forEach(item => result.push(item.fields));
+            return result;
+        }
+        $.ajax({
+            url: $("#pivot-table-container").attr("data-url"),
+            dataType: 'json',
+            success: function(data) {
+                new Flexmonster({
+                    container: "#pivot-table-container",
+                    componentFolder: "https://cdn.flexmonster.com/",
+                    width: "100%",
+                    height: 430,
+                    toolbar: true,
+                    report: {
+                        dataSource: {
+                            type: "json",
+                            data: processData(data)
+                        },
+                        slice: {},
+                        mapping: {
+                            "user": {
+                                "caption": "Users",
+                                "type": "string"
+                            },
+                            "timestamp": {
+                                "caption": "Timestamp",
+                                "type": "string"
+                            },
+                            // "shipping_cost": {
+                            //     "caption": "Shipping Cost",
+                            //     "type": "number"
+                            // },
+                            // "unit_price": {
+                            //     "caption": "Unit Price",
+                            //     "type": "number"
+                            // }
+                        },
+                    }
+                });
+                new Flexmonster({
+                    container: "#pivot-chart-container",
+                    componentFolder: "https://cdn.flexmonster.com/",
+                    width: "100%",
+                    height: 430,
+                    //toolbar: true,
+                    report: {
+                        dataSource: {
+                            type: "json",
+                            data: processData(data)
+                        },
+                        slice: {},
+                        "options": {
+                            "viewType": "charts",
+                            "chart": {
+                                "type": "pie"
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock content %}

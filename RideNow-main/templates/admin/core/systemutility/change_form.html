@@ -1,0 +1,33 @@
+{% extends "admin/change_form.html" %}
+{% block after_field_sets %}{{ block.super }}
+	<script>
+		// Email server toggle option
+		function clickEmailOption1() {
+			if (document.getElementById("id_use_gmail_smtp").checked){
+				document.getElementById("id_use_gmail_smtp").checked = false;
+			}
+		}
+		function clickEmailOption2() {
+			if (document.getElementById("id_use_zohomail_smtp").checked){
+				document.getElementById("id_use_zohomail_smtp").checked = false;
+			}
+		}
+		document.getElementById("id_use_zohomail_smtp").onchange = clickEmailOption1;
+		document.getElementById("id_use_gmail_smtp").onchange = clickEmailOption2;
+		
+		// SMS server toggle option
+		function clickSMSOption1() {
+			if (document.getElementById("id_use_twilio_sms").checked) {
+				document.getElementById("id_use_twilio_sms").checked = false;
+			}
+		}
+		function clickSMSOption2() {
+			if (document.getElementById("id_use_africas_taking_sms").checked) {
+				document.getElementById("id_use_africas_taking_sms").checked = false;
+			}
+		}
+		document.getElementById("id_use_africas_taking_sms").onchange = clickSMSOption1;
+		document.getElementById("id_use_twilio_sms").onchange = clickSMSOption2;
+	</script>
+	{% for item in original.items_set.all %} {{ item }} {% endfor %}
+{% endblock %}

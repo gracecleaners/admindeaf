@@ -1,0 +1,291 @@
+{% extends 'base_tailwind.html' %}
+{% load static %}
+
+{% block title %}API Documentation - Zyra{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-primary-500 to-primary-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 py-16">
+            <div class="flex items-center gap-6 mb-8">
+                <div class="text-6xl">🚗</div>
+                <div>
+                    <h1 class="text-5xl font-bold mb-2">Zyra API</h1>
+                    <p class="text-xl opacity-90">Powerful APIs for your ride-sharing integration</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                    <div class="text-3xl mb-3">⚡</div>
+                    <h3 class="text-lg font-semibold mb-2">Fast & Reliable</h3>
+                    <p class="text-sm opacity-90">High-performance REST APIs with sub-second response times</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                    <div class="text-3xl mb-3">🔒</div>
+                    <h3 class="text-lg font-semibold mb-2">Secure</h3>
+                    <p class="text-sm opacity-90">JWT authentication, OAuth 2.0, and rate limiting built-in</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6">
+                    <div class="text-3xl mb-3">📚</div>
+                    <h3 class="text-lg font-semibold mb-2">Well Documented</h3>
+                    <p class="text-sm opacity-90">Interactive docs with examples and real-time testing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Documentation Links -->
+    <div class="max-w-7xl mx-auto px-4 py-16">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Choose Your Documentation Style</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Swagger UI -->
+            <a href="{% url 'swagger-ui' %}" class="group block bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
+                    <div class="flex items-center gap-4 text-white">
+                        <div class="text-5xl">📝</div>
+                        <div>
+                            <h3 class="text-2xl font-bold">Swagger UI</h3>
+                            <p class="opacity-90">Interactive API Testing</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Test API endpoints directly from your browser with an intuitive interface. 
+                        Ideal for developers who want to experiment and debug.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Interactive request/response testing
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Built-in authentication support
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Try out API calls in real-time
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Code examples in multiple languages
+                        </li>
+                    </ul>
+                    <div class="mt-6">
+                        <span class="inline-flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-medium group-hover:bg-blue-100 transition-colors">
+                            Open Swagger UI
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            
+            <!-- ReDoc -->
+            <a href="{% url 'redoc' %}" class="group block bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                <div class="bg-gradient-to-r from-primary-500 to-primary-600 p-6">
+                    <div class="flex items-center gap-4 text-white">
+                        <div class="text-5xl">📖</div>
+                        <div>
+                            <h3 class="text-2xl font-bold">ReDoc</h3>
+                            <p class="opacity-90">Beautiful Reference Docs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <p class="text-gray-600 mb-4">
+                        Clean, responsive documentation perfect for reading and understanding the API structure. 
+                        Great for integration planning and reference.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-700">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Three-panel responsive layout
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Advanced search functionality
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Detailed schema information
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-check-circle text-primary-500"></i>
+                            Clean, printable format
+                        </li>
+                    </ul>
+                    <div class="mt-6">
+                        <span class="inline-flex items-center px-4 py-2 bg-primary-50 text-primary-700 rounded-lg font-medium group-hover:bg-primary-100 transition-colors">
+                            Open ReDoc
+                            <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Quick Start Guide -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">Quick Start</h2>
+            
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <div class="space-y-6">
+                    <div class="flex gap-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold text-xl">
+                            1
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Get Your Access Token</h3>
+                            <p class="text-gray-600 mb-3">Login to obtain your JWT access token:</p>
+                            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+<span class="text-gray-500"># POST</span> /api/accounts/auth/login/
+{
+  "username_or_email_or_phone": "your_email@example.com",
+  "password": "your_password"
+}
+
+<span class="text-gray-500"># Response:</span>
+{
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGc..."
+}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold text-xl">
+                            2
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Authorize in Swagger</h3>
+                            <p class="text-gray-600 mb-3">Click the "Authorize" button and enter:</p>
+                            <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm">
+Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center text-primary-600 font-bold text-xl">
+                            3
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold text-gray-900 mb-2">Start Testing!</h3>
+                            <p class="text-gray-600">Explore endpoints, test requests, and build your integration.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- API Endpoints Overview -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">API Endpoints</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <i class="fas fa-user-shield text-blue-500 mr-2"></i>
+                        Authentication
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">Login, signup, JWT tokens, social OAuth</p>
+                    <code class="text-xs text-blue-600">/api/accounts/auth/*</code>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-primary-500">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <i class="fas fa-car text-primary-500 mr-2"></i>
+                        Rides
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">Book rides, track status, manage bookings</p>
+                    <code class="text-xs text-primary-600">/api/rides/*</code>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <i class="fas fa-user-circle text-yellow-500 mr-2"></i>
+                        User Profile
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">Profile management, preferences, security</p>
+                    <code class="text-xs text-yellow-600">/api/accounts/profile/*</code>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <i class="fas fa-id-card text-purple-500 mr-2"></i>
+                        Drivers
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">Driver registration, verification, dashboard</p>
+                    <code class="text-xs text-purple-600">/api/drivers/*</code>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-orange-500">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <i class="fas fa-wallet text-orange-500 mr-2"></i>
+                        Payments
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">Wallet, transactions, refunds, history</p>
+                    <code class="text-xs text-orange-600">/api/finance/*</code>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                        <i class="fas fa-chart-line text-red-500 mr-2"></i>
+                        Analytics
+                    </h3>
+                    <p class="text-sm text-gray-600 mb-3">Tracking, reporting, system utilities</p>
+                    <code class="text-xs text-red-600">/api/core/*</code>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Download Schema -->
+        <div class="mt-16">
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Download OpenAPI Schema</h2>
+                <p class="text-gray-600 mb-6">
+                    Get the complete OpenAPI 3.0 schema file for code generation, testing tools, 
+                    or integration with your own documentation system.
+                </p>
+                <a href="{% url 'schema' %}" download class="inline-flex items-center px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold transition-colors">
+                    <i class="fas fa-download mr-2"></i>
+                    Download schema.yaml
+                </a>
+            </div>
+        </div>
+        
+        <!-- Support -->
+        <div class="mt-16 mb-16">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">Need Help?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2">
+                            <i class="fas fa-envelope text-primary-500 mr-2"></i>Email Support
+                        </h3>
+                        <p class="text-gray-600 text-sm">support@zyra.app</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2">
+                            <i class="fas fa-phone text-primary-500 mr-2"></i>Phone Support
+                        </h3>
+                        <p class="text-gray-600 text-sm">+256789079301</p>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900 mb-2">
+                            <i class="fas fa-book text-primary-500 mr-2"></i>Documentation
+                        </h3>
+                        <p class="text-gray-600 text-sm">Full guides in /docs/</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

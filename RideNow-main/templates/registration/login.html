@@ -1,0 +1,112 @@
+{% extends 'landing_page.html' %}
+
+{% block title %}Log In - RideNow{% endblock %}
+
+{% block footer %}
+<!-- Empty block to remove the footer -->
+{% endblock %}
+
+{% block content %}
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+    .card {
+        width: 100%;
+        max-width: 350px;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        overflow: hidden;
+    }
+    .card-body {
+        padding: 2rem;
+    }
+    h2 {
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    p {
+        font-size: 0.9rem;
+        text-align: center;
+        color: #6c757d;
+        margin-bottom: 1.5rem;
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    .form-control {
+        border-radius: 8px;
+        font-size: 0.95rem;
+        border: 1px solid #ced4da;
+        padding: 0.75rem;
+    }
+    .btn-primary {
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 100%;
+        background-color: #007bff;
+        border: none;
+        padding: 0.75rem;
+        margin-top: 1rem;
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .text-muted {
+        font-size: 0.85rem;
+        text-align: center;
+        color: #6c757d;
+        margin-top: 1rem;
+    }
+    a {
+        text-decoration: none;
+        font-weight: 500;
+        color: #007bff;
+    }
+    a:hover {
+        text-decoration: none;
+    }
+    footer {
+        display: none;
+    }
+</style>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-body p-4">
+            <h2>Welcome to RideNow</h2>
+            <p>Log in with your phone number to continue</p>
+            <form method="POST" action="{% url 'send_otp' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input
+                        type="tel"
+                        class="form-control"
+                        id="phone"
+                        name="phone_number"
+                        placeholder="e.g., +256123456789"
+                        required>
+                </div>
+                <button type="submit" class="btn btn-primary">Send OTP</button>
+            </form>
+            <p class="text-muted">
+                By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

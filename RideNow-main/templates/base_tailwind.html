@@ -1,0 +1,593 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Zyra - Your ultimate ride-sharing solution. Safe, reliable, and easy to use.{% endblock %}">
+    <meta name="author" content="Zyra Team">
+    <meta name="keywords" content="{% block meta_keywords %}ride-sharing, transportation, app, mobility, ride-hailing{% endblock %}">
+
+    <title>{% block title %}Zyra{% endblock %} | Your Ride, Your Way</title>
+    <link rel="favicon" type="image/png" href="{% static 'img/favicons/favion-32x32.png' %}">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#21c45d',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @media (max-width: 640px) {
+            footer {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="main-navbar bg-white shadow-md z-30 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-car text-primary-500 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gray-900">Zyra</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        {% if user.is_client %}
+                        <a href="{% url 'rides:book_ride' %}" class="text-gray-600 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-car mr-1"></i> Book Ride
+                        </a>
+                        {% endif %}
+                        <a href="{% if user.is_client %}{% url 'rides:user_rides' %}{% else %}{% url 'rides:driver_dashboard' %}{% endif %}" class="text-gray-600 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-history mr-1"></i> My Rides
+                        </a>
+                        <a href="{% url 'profile' %}" class="text-gray-600 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-user mr-1"></i> Profile
+                        </a>
+                        <button id="walletBtn" class="bg-primary-50 hover:bg-primary-100 text-primary-700 px-4 py-2 rounded-lg transition-colors font-semibold text-sm">
+                            <i class="fas fa-wallet mr-1"></i>
+                            <span id="navWalletBalance">UGX 0</span>
+                        </button>
+                        <span class="text-gray-700">{{ user.username }}</span>
+                        <form id="navLogoutForm" method="post" action="{% url 'logout' %}" class="inline"> {% csrf_token %}
+                            <button id="navLogoutBtn" type="button" class="text-gray-600 hover:text-primary-500 transition-colors">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'rides:book_ride' %}" class="text-gray-600 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-car mr-1"></i> Book Ride
+                        </a>
+                        <a href="{% url 'login' %}" class="text-gray-600 hover:text-primary-500 transition-colors">
+                            <i class="fas fa-sign-in-alt mr-1"></i> Login
+                        </a>
+                        <a href="{% url 'signup' %}" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors text-sm">
+                            <i class="fas fa-user-plus mr-1"></i> Sign Up
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-button" class="text-gray-600 hover:text-primary-500 focus:outline-none focus:text-primary-500 transition-colors">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path id="menu-icon" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            <path id="close-icon" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="hidden md:hidden">
+                <div class="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-200">
+                    {% if user.is_authenticated %}
+                        {% if user.is_client %}
+                        <a href="{% url 'rides:book_ride' %}" class="block px-3 py-2 text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-md transition-colors">
+                            <i class="fas fa-car mr-2"></i> Book Ride
+                        </a>
+                        {% endif %}
+                        <a href="{% if user.is_client %}{% url 'rides:user_rides' %}{% else %}{% url 'rides:driver_dashboard' %}{% endif %}" class="block px-3 py-2 text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-md transition-colors">
+                            <i class="fas fa-history mr-2"></i> My Rides
+                        </a>
+                        <a href="{% url 'profile' %}" class="block px-3 py-2 text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-md transition-colors">
+                            <i class="fas fa-user mr-2"></i> Profile
+                        </a>
+                        <button id="mobileWalletBtn" class="block w-full text-left px-3 py-2 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-md transition-colors font-semibold">
+                            <i class="fas fa-wallet mr-2"></i>
+                            <span id="mobileNavWalletBalance">UGX 0</span>
+                        </button>
+                        <div class="block px-3 py-2 text-gray-700 border-t border-gray-200">
+                            <i class="fas fa-user-circle mr-2"></i> {{ user.username }}
+                        </div>
+                        <form id="mobileNavLogoutForm" method="post" action="{% url 'logout' %}" class="block">
+                            {% csrf_token %}
+                            <button id="mobileNavLogoutBtn" type="button" class="block w-full text-left px-3 py-2 text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-md transition-colors">
+                                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                            </button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'rides:book_ride' %}" class="block px-3 py-2 text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-md transition-colors">
+                            <i class="fas fa-car mr-2"></i> Book Ride
+                        </a>
+                        <a href="{% url 'login' %}" class="block px-3 py-2 text-gray-600 hover:text-primary-500 hover:bg-gray-50 rounded-md transition-colors">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Login
+                        </a>
+                        <a href="{% url 'signup' %}" class="block px-3 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-md transition-colors text-center">
+                            <i class="fas fa-user-plus mr-2"></i> Sign Up
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages/Alerts -->
+    {% if messages %}
+    <div class="mb-6 space-y-4">
+        {% for message in messages %}
+        <div class="alert relative px-4 py-3 rounded border transition-all duration-300 ease-in-out {% if message.tags == 'error' %}bg-red-50 border-red-200 text-red-700{% elif message.tags == 'success' %}bg-green-50 border-green-200 text-green-700{% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-200 text-yellow-700{% else %}bg-blue-50 border-blue-200 text-blue-700{% endif %}">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    {% if message.tags == 'error' %}
+                    <i class="fas fa-exclamation-circle"></i>
+                    {% elif message.tags == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'warning' %}
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                    <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm font-medium">{{ message }}</p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button class="close-alert text-gray-500 hover:text-gray-700 focus:outline-none" id="messageAlert">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="min-h-screen pt-16">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Quick Links</h5>
+                    <ul class="space-y-2">
+                        <li><a href="{% url 'faq' %}" class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+                        <li><a href="{% url 'features' %}" class="text-gray-300 hover:text-white transition-colors">Features</a></li>
+                        <li><a href="{% url 'contact' %}" class="text-gray-300 hover:text-white transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">Connect With Us</h5>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="Facebook">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="X (Twitter)">
+                            <span class="inline-block align-middle w-6 h-6">
+                                <svg viewBox="0 0 120 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6">
+                                    <g>
+                                        <path d="M87.5 24H104L72.5 59.2L109 96H86.5L63.5 71.2L37.5 96H21L54.5 59.2L19 24H42L62 46.2L87.5 24ZM83.5 89H90.5L46.5 31H39L83.5 89Z"/>
+                                    </g>
+                                </svg>
+                            </span>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="Instagram">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-white transition-colors" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in text-xl"></i>
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <h6 class="text-gray-400 mb-2">Stay Updated</h6>
+                        <form class="flex">
+                            <input type="email" class="flex-1 px-3 py-2 bg-gray-800 border border-gray-700 rounded-l-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Enter your email">
+                            <button type="submit" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-r-lg transition-colors">Subscribe</button>
+                        </form>
+                    </div>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-4">About Zyra</h5>
+                    <p class="text-gray-300 text-sm">
+                        Your reliable ride-sharing solution. Safe, convenient, and affordable transportation at your fingertips.
+                    </p>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; {% now "Y" %} Zyra. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{% static 'js/sweetalert-theme.js' %}"></script>
+    <script src="{% static 'js/country-code-selector.js' %}"></script>
+
+    <!-- Global Notification Functions -->
+    <script>
+        /*
+         * SweetAlert2 Functions Usage Examples:
+         * 
+         * 1. Basic Confirm Dialog:
+         *    showConfirm('Delete Item', 'Are you sure?').then(result => {
+         *        if (result.isConfirmed) {
+         *            // User clicked "Yes"
+         *        }
+         *    });
+         * 
+         * 2. Enhanced Confirm with Promise:
+         *    confirmAction('Save Changes', 'Do you want to save?').then(confirmed => {
+         *        if (confirmed) {
+         *            // Save logic here
+         *        }
+         *    });
+         * 
+         * 3. Delete Confirmation:
+         *    confirmDelete('User Profile').then(result => {
+         *        if (result.isConfirmed) {
+         *            // Delete logic here
+         *        }
+         *    });
+         * 
+         * 4. Logout Confirmation:
+         *    confirmLogout().then(result => {
+         *        if (result.isConfirmed) {
+         *            // Logout logic here
+         *        }
+         *    });
+         * 
+         * 5. Custom Alert:
+         *    showAlert('success', 'Operation completed successfully!');
+         * 
+         * 6. Toast Notification:
+         *    showToast('success', 'Data saved successfully!', 3000);
+         */
+        // Show toast notification (for non-blocking messages)
+        function showToast(type, message, duration = 4000) {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 z-50 max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden transform transition-all duration-300 ease-in-out translate-x-full`;
+            
+            // Set colors based on type
+            let bgColor, textColor, icon;
+            switch(type) {
+                case 'success':
+                    bgColor = 'bg-green-50';
+                    textColor = 'text-green-800';
+                    icon = `<svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>`;
+                    break;
+                case 'error':
+                    bgColor = 'bg-red-50';
+                    textColor = 'text-red-800';
+                    icon = `<svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>`;
+                    break;
+                case 'warning':
+                    bgColor = 'bg-yellow-50';
+                    textColor = 'text-yellow-800';
+                    icon = `<svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>`;
+                    break;
+                default:
+                    bgColor = 'bg-blue-50';
+                    textColor = 'text-blue-800';
+                    icon = `<svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>`;
+            }
+            
+            toast.innerHTML = `
+                <div class="p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            ${icon}
+                        </div>
+                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                            <p class="text-sm font-medium ${textColor}">${message}</p>
+                        </div>
+                        <div class="ml-4 flex-shrink-0 flex">
+                            <button class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()">
+                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add to page
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+                toast.classList.add('translate-x-0');
+            }, 100);
+            
+            // Auto remove after duration
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, duration);
+        }
+
+        // Show alert modal (for important confirmations and blocking messages)
+        function showAlert(type, message, options = {}) {
+            if (typeof Swal !== 'undefined') {
+                const icon = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+                const title = options.title || (type === 'success' ? 'Success!' : type === 'error' ? 'Error!' : type === 'warning' ? 'Warning!' : 'Info');
+                
+                const swalOptions = {
+                    icon: icon,
+                    title: title,
+                    text: message,
+                    confirmButtonText: options.confirmText || 'OK',
+                    showCancelButton: options.showCancel || false,
+                    confirmButtonColor: options.confirmColor || '#21c45d',
+                    cancelButtonText: options.cancelText || 'Cancel',
+                    cancelButtonColor: options.cancelColor || '#6b7280'
+                };
+                
+                if (options.showCancel) {
+                    swalOptions.cancelButtonText = options.cancelText || 'Cancel';
+                }
+                
+                return Swal.fire(swalOptions);
+            } else {
+                // Fallback to native confirm/alert
+                if (options.showCancel) {
+                    return confirm(message);
+                } else {
+                    alert(message);
+                    return Promise.resolve({ isConfirmed: true });
+                }
+            }
+        }
+
+        // SweetAlert confirm function to replace browser default confirm()
+        function showConfirm(title, text, options = {}) {
+            if (typeof Swal !== 'undefined') {
+                return Swal.fire({
+                    title: title || 'Confirm',
+                    text: text || 'Are you sure you want to proceed?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#21c45d',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: options.confirmText || 'Yes',
+                    cancelButtonText: options.cancelText || 'No',
+                    reverseButtons: options.reverseButtons || false,
+                    focusCancel: options.focusCancel || false,
+                    allowOutsideClick: options.allowOutsideClick !== false,
+                    allowEscapeKey: options.allowEscapeKey !== false,
+                    ...options
+                });
+            } else {
+                // Fallback to native confirm
+                return Promise.resolve({
+                    isConfirmed: confirm(text || 'Are you sure you want to proceed?'),
+                    isDenied: false,
+                    isDismissed: false
+                });
+            }
+        }
+
+        // Utility function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Utility function to show notification (wrapper for both toast and alert)
+        function showNotification(message, type = 'info', isModal = false, options = {}) {
+            if (isModal) {
+                return showAlert(type, message, options);
+            } else {
+                showToast(type, message, options.duration);
+            }
+        }
+
+        // Enhanced confirm function with promise support
+        function confirmAction(title, message, options = {}) {
+            return showConfirm(title, message, options).then(result => {
+                return result.isConfirmed;
+            });
+        }
+
+        // Delete confirmation helper
+        function confirmDelete(itemName = 'this item', options = {}) {
+            return showConfirm(
+                'Delete Confirmation',
+                `Are you sure you want to delete ${itemName}? This action cannot be undone.`,
+                {
+                    confirmText: options.confirmText || 'Delete',
+                    cancelText: options.cancelText || 'Cancel',
+                    confirmButtonColor: '#ef4444',
+                    ...options
+                }
+            );
+        }
+
+        // Logout confirmation helper
+        function confirmLogout(options = {}) {
+            return showConfirm(
+                'Logout Confirmation',
+                'Are you sure you want to logout?',
+                {
+                    confirmText: options.confirmText || 'Logout',
+                    cancelText: options.cancelText || 'Stay Logged In',
+                    confirmButtonColor: '#f59e0b',
+                    ...options
+                }
+            );
+        }
+    </script>
+
+    <!-- Message Alert Close Functionality -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add close functionality to message alerts
+            const closeButtons = document.querySelectorAll('.close-alert');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Find the parent alert container and remove it
+                    const alertContainer = this.closest('.alert');
+                    if (alertContainer) {
+                        alertContainer.style.opacity = '0';
+                        alertContainer.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            alertContainer.remove();
+                        }, 300);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const closeIcon = document.getElementById('close-icon');
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    const isHidden = mobileMenu.classList.contains('hidden');
+                    
+                    if (isHidden) {
+                        // Show menu
+                        mobileMenu.classList.remove('hidden');
+                        menuIcon.classList.add('hidden');
+                        closeIcon.classList.remove('hidden');
+                    } else {
+                        // Hide menu
+                        mobileMenu.classList.add('hidden');
+                        menuIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    }
+                });
+
+                // Close mobile menu when clicking on a link
+                const mobileLinks = mobileMenu.querySelectorAll('a, button');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                        menuIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    });
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(event) {
+                    const isClickInsideMenu = mobileMenu.contains(event.target);
+                    const isClickOnButton = mobileMenuButton.contains(event.target);
+                    
+                    if (!isClickInsideMenu && !isClickOnButton && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        menuIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    }
+                });
+
+                // Close mobile menu on window resize to desktop size
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth >= 768) { // md breakpoint
+                        mobileMenu.classList.add('hidden');
+                        menuIcon.classList.remove('hidden');
+                        closeIcon.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Add logout confirmation functionality
+            const navLogoutBtn = document.getElementById('navLogoutBtn');
+            const mobileNavLogoutBtn = document.getElementById('mobileNavLogoutBtn');
+            const navLogoutForm = document.getElementById('navLogoutForm');
+            const mobileNavLogoutForm = document.getElementById('mobileNavLogoutForm');
+
+            if (navLogoutBtn && navLogoutForm) {
+                navLogoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    confirmLogout().then(result => {
+                        if (result.isConfirmed) {
+                            navLogoutForm.submit();
+                        }
+                    });
+                });
+            }
+
+            if (mobileNavLogoutBtn && mobileNavLogoutForm) {
+                mobileNavLogoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    confirmLogout().then(result => {
+                        if (result.isConfirmed) {
+                            mobileNavLogoutForm.submit();
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,894 @@
+{% extends 'base_tailwind.html' %}
+{% load static %}
+
+{% block title %}Driver Registration - Zyra{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registration-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .registration-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .registration-header h1 {
+        color: #1a1a1a;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .registration-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+    
+    .registration-steps {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+    }
+    
+    .step {
+        display: flex;
+        align-items: center;
+        margin: 0 10px 20px;
+        padding: 15px 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s;
+    }
+    
+    .step.active {
+        background: #21c45d;
+        color: white;
+        border-color: #21c45d;
+    }
+    
+    .step.completed {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+    }
+    
+    .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 10px;
+        font-weight: bold;
+    }
+    
+    .registration-form {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+    
+    .form-section {
+        margin-bottom: 40px;
+    }
+    
+    .form-section h3 {
+        color: #1a1a1a;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #21c45d;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #21c45d;
+        box-shadow: 0 0 0 3px rgba(33, 196, 93, 0.1);
+    }
+    
+    .form-control[type="file"] {
+        padding: 8px 12px;
+    }
+    
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #21c45d;
+    }
+    
+    .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+    
+    .btn-primary {
+        background: #21c45d;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #1db954;
+        transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+    
+    .file-upload-area {
+        border: 2px dashed #ccc;
+        border-radius: 8px;
+        padding: 40px;
+        text-align: center;
+        background: #f8f9fa;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .file-upload-area:hover {
+        border-color: #21c45d;
+        background: #f0fdf4;
+    }
+    
+    .file-upload-area.dragover {
+        border-color: #21c45d;
+        background: #f0fdf4;
+    }
+    
+    .file-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .file-preview-item {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 2px solid #e9ecef;
+    }
+    
+    .file-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .file-preview-item .remove-file {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(220, 53, 69, 0.8);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    
+    .alert {
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .alert-danger {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    #registrationError {
+        margin-bottom: 20px;
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .terms-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .terms-section h4 {
+        margin-bottom: 15px;
+        color: #1a1a1a;
+    }
+    
+    .terms-section ul {
+        margin-bottom: 15px;
+        padding-left: 20px;
+    }
+    
+    .terms-section li {
+        margin-bottom: 8px;
+        color: #666;
+    }
+    
+    .text-muted {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 5px;
+        display: block;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .registration-steps {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .step {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registration-container">
+    <div class="registration-header">
+        <h1>🚗 Join Zyra as a Driver</h1>
+        <p>Start earning money by providing safe and reliable rides to passengers</p>
+    </div>
+    
+    <!-- Registration Steps -->
+    <div class="registration-steps">
+        <div class="step active" id="step1">
+            <div class="step-number">1</div>
+            <span>Personal Info</span>
+        </div>
+        <div class="step" id="step2">
+            <div class="step-number">2</div>
+            <span>Contact Verification</span>
+        </div>
+        <div class="step" id="step3">
+            <div class="step-number">3</div>
+            <span>Vehicle Details</span>
+        </div>
+        <div class="step" id="step4">
+            <div class="step-number">4</div>
+            <span>Documents & Photos</span>
+        </div>
+        <div class="step" id="step5">
+            <div class="step-number">5</div>
+            <span>Review & Submit</span>
+        </div>
+    </div>
+    
+    <form id="driverRegistrationForm" class="registration-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Error Display -->
+        <div id="registrationError" class="alert alert-danger" style="display: none;">
+            <i class="fas fa-exclamation-circle mr-2"></i>
+            <span id="registrationErrorText"></span>
+        </div>
+        
+        <!-- Step 1: Personal Information -->
+        <div class="form-section" id="section1">
+            <h3>👤 Personal Information</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name">First Name *</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name *</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <div id="driverPhoneSelector"></div>
+                </div>
+                <div class="form-group">
+                    <label for="date_of_birth">Date of Birth *</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" class="form-control" required>
+                    <small class="text-muted">You must be at least 18 years old to register as a driver</small>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <select id="country" name="country" class="form-control">
+                        <option value="UG">Uganda</option>
+                        <option value="KE">Kenya</option>
+                        <option value="TZ">Tanzania</option>
+                        <option value="RW">Rwanda</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" class="form-control" value="Kampala">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" class="form-control" rows="3" placeholder="Tell passengers about yourself..."></textarea>
+            </div>
+        </div>
+        
+        <!-- Step 2: Contact Verification -->
+        <div class="form-section" id="section2" style="display: none;">
+            <h3>📧 Contact Verification</h3>
+            <p>We'll send verification codes to your email and phone number.</p>
+            
+            <div class="form-group">
+                <label>Email Verification</label>
+                <div class="alert alert-info">
+                    A verification code will be sent to your email address. Please check your inbox.
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Phone Verification</label>
+                <div class="alert alert-info">
+                    An SMS verification code will be sent to your phone number.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step 3: Vehicle Information -->
+        <div class="form-section" id="section3" style="display: none;">
+            <h3>🚙 Vehicle Information</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="vehicle_type">Vehicle Type *</label>
+                    <select id="vehicle_type" name="vehicle_type_id" class="form-control" required>
+                        <option value="">Select Vehicle Type</option>
+                        {% for vehicle_type in vehicle_types %}
+                        <option value="{{ vehicle_type.id }}">{{ vehicle_type.name }} - {{ vehicle_type.vehicle_capacity }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehicle_name">Vehicle Name *</label>
+                    <input type="text" id="vehicle_name" name="vehicle_name" class="form-control" placeholder="e.g., Toyota Corolla" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="vehicle_registration">Registration Number *</label>
+                    <input type="text" id="vehicle_registration" name="vehicle_registration" class="form-control" placeholder="e.g., UAA 123A" required>
+                </div>
+                <div class="form-group">
+                    <label for="manufacturing_year">Manufacturing Year</label>
+                    <input type="date" id="manufacturing_year" name="manufacturing_year" class="form-control">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="vehicle_description">Vehicle Description</label>
+                <textarea id="vehicle_description" name="vehicle_description" class="form-control" rows="3" placeholder="Describe your vehicle..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is_air_conditioned" name="is_air_conditioned">
+                        <label for="is_air_conditioned">Has Air Conditioning</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="is_insured" name="is_insured">
+                        <label for="is_insured">Is Insured</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Step 4: Documents & Photos -->
+        <div class="form-section" id="section4" style="display: none;">
+            <h3>📷 Documents & Photos</h3>
+            
+            <div class="form-group">
+                <label>Driver Photo *</label>
+                <div class="file-upload-area" onclick="document.getElementById('photo').click()">
+                    <i class="fas fa-camera" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p>Click to upload your clear portrait photo</p>
+                    <small>Required: Clear face photo for identification</small>
+                </div>
+                <input type="file" id="photo" name="photo" accept="image/*" style="display: none;" required>
+                <div class="file-preview" id="photo-preview"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Cover Photo</label>
+                <div class="file-upload-area" onclick="document.getElementById('cover_photo').click()">
+                    <i class="fas fa-image" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p>Click to upload cover photo (optional)</p>
+                </div>
+                <input type="file" id="cover_photo" name="cover_photo" accept="image/*" style="display: none;">
+                <div class="file-preview" id="cover-photo-preview"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Vehicle Photos</label>
+                <div class="file-upload-area" onclick="document.getElementById('vehicle_photos').click()">
+                    <i class="fas fa-car" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p>Click to upload vehicle photos</p>
+                    <small>Multiple photos recommended</small>
+                </div>
+                <input type="file" id="vehicle_photos" name="vehicle_photos" accept="image/*" multiple style="display: none;">
+                <div class="file-preview" id="vehicle-photos-preview"></div>
+            </div>
+            
+            <div class="form-group">
+                <label>Vehicle Documents</label>
+                <div class="file-upload-area" onclick="document.getElementById('vehicle_documents').click()">
+                    <i class="fas fa-file-alt" style="font-size: 2rem; color: #ccc; margin-bottom: 10px;"></i>
+                    <p>Click to upload vehicle documents</p>
+                    <small>Insurance, registration, etc.</small>
+                </div>
+                <input type="file" id="vehicle_documents" name="vehicle_documents" accept=".pdf,.jpg,.jpeg,.png" multiple style="display: none;">
+                <div class="file-preview" id="vehicle-documents-preview"></div>
+            </div>
+        </div>
+        
+        <!-- Step 5: Review & Submit -->
+        <div class="form-section" id="section5" style="display: none;">
+            <h3>📋 Review & Submit</h3>
+            
+            <div class="terms-section">
+                <h4>Terms of Service</h4>
+                <p>By registering as a driver, you agree to:</p>
+                <ul>
+                    <li>Provide safe and reliable transportation services</li>
+                    <li>Maintain a valid driver's license and insurance</li>
+                    <li>Treat all passengers with respect and professionalism</li>
+                    <li>Follow all local traffic laws and regulations</li>
+                    <li>Keep your vehicle clean and well-maintained</li>
+                    <li>Complete background checks and vehicle inspections</li>
+                </ul>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms_accepted" name="terms_accepted" required>
+                    <label for="terms_accepted">I agree to the Terms of Service and Privacy Policy *</label>
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <h5>What happens next?</h5>
+                <ol>
+                    <li>You'll receive verification codes via email and SMS</li>
+                    <li>Complete the verification process</li>
+                    <li>Our team will review your application</li>
+                    <li>You'll be notified of approval within 2-3 business days</li>
+                    <li>Once approved, you can start accepting rides!</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+            <button type="button" id="prevBtn" class="btn btn-secondary" style="display: none;" onclick="changeStep(-1)">Previous</button>
+            <button type="button" id="nextBtn" class="btn btn-primary" onclick="changeStep(1)">Next</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary" style="display: none;">Submit Registration</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentStep = 1;
+const totalSteps = 5;
+
+function changeStep(direction) {
+    const currentSection = document.getElementById(`section${currentStep}`);
+    
+    if (direction > 0) {
+        // Validate current step
+        if (!validateStep(currentStep)) {
+            return;
+        }
+    }
+    
+    // Hide current section
+    currentSection.style.display = 'none';
+    
+    // Update step indicator
+    document.getElementById(`step${currentStep}`).classList.remove('active');
+    
+    currentStep += direction;
+    
+    // Show new section
+    const newSection = document.getElementById(`section${currentStep}`);
+    newSection.style.display = 'block';
+    
+    // Update step indicator
+    document.getElementById(`step${currentStep}`).classList.add('active');
+    
+    // Update buttons
+    updateButtons();
+}
+
+function updateButtons() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    prevBtn.style.display = currentStep > 1 ? 'block' : 'none';
+    nextBtn.style.display = currentStep < totalSteps ? 'block' : 'none';
+    submitBtn.style.display = currentStep === totalSteps ? 'block' : 'none';
+}
+
+function validateStep(step) {
+    const section = document.getElementById(`section${step}`);
+    const requiredFields = section.querySelectorAll('[required]');
+    
+    for (let field of requiredFields) {
+        if (!field.value.trim()) {
+            // alert(`Please fill in the required field: ${field.previousElementSibling.textContent}`);
+            showAlert('error', `Please fill in the required field: ${field.previousElementSibling.textContent}`);
+            field.focus();
+            return false;
+        }
+    }
+    
+    // Additional validation for step 1 (Personal Information)
+    if (step === 1) {
+        // Validate age if date of birth is provided
+        if (!validateAge()) {
+            return false;
+        }
+        
+        // Validate phone number using country code selector
+        if (!validateDriverPhone()) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+// File upload handlers
+document.getElementById('photo').addEventListener('change', function(e) {
+    handleFileUpload(e, 'photo-preview');
+});
+
+document.getElementById('cover_photo').addEventListener('change', function(e) {
+    handleFileUpload(e, 'cover-photo-preview');
+});
+
+document.getElementById('vehicle_photos').addEventListener('change', function(e) {
+    handleFileUpload(e, 'vehicle-photos-preview', true);
+});
+
+document.getElementById('vehicle_documents').addEventListener('change', function(e) {
+    handleFileUpload(e, 'vehicle-documents-preview', true);
+});
+
+function handleFileUpload(event, previewId, multiple = false) {
+    const files = event.target.files;
+    const preview = document.getElementById(previewId);
+    
+    preview.innerHTML = '';
+    
+    for (let file of files) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'file-preview-item';
+            
+            if (file.type.startsWith('image/')) {
+                previewItem.innerHTML = `
+                    <img src="${e.target.result}" alt="${file.name}">
+                    <button type="button" class="remove-file" onclick="removeFile('${file.name}', '${previewId}')">×</button>
+                `;
+            } else {
+                previewItem.innerHTML = `
+                    <div style="padding: 20px; text-align: center;">
+                        <i class="fas fa-file" style="font-size: 2rem; color: #ccc;"></i>
+                        <p style="margin: 5px 0; font-size: 12px;">${file.name}</p>
+                        <button type="button" class="remove-file" onclick="removeFile('${file.name}', '${previewId}')">×</button>
+                    </div>
+                `;
+            }
+            
+            preview.appendChild(previewItem);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeFile(fileName, previewId) {
+    // Remove from preview
+    const preview = document.getElementById(previewId);
+    preview.innerHTML = '';
+    
+    // Clear the file input
+    const input = preview.previousElementSibling;
+    input.value = '';
+}
+
+// Error display functions
+function showRegistrationError(message) {
+    const errorDiv = document.getElementById('registrationError');
+    const errorText = document.getElementById('registrationErrorText');
+    
+    // Add helpful suggestions for common errors
+    let enhancedMessage = message;
+    if (message.includes('Phone number already registered')) {
+        enhancedMessage += '<br><br><strong>Suggestions:</strong><br>• Try logging in if you already have an account<br>• Use a different phone number<br>• Contact support if you believe this is an error';
+    } else if (message.includes('Email address already registered')) {
+        enhancedMessage += '<br><br><strong>Suggestions:</strong><br>• Try logging in if you already have an account<br>• Use a different email address<br>• Check if you used a different email before';
+    } else if (message.includes('Username already taken')) {
+        enhancedMessage += '<br><br><strong>Suggestions:</strong><br>• Try adding numbers or underscores to your username<br>• Use a completely different username';
+    }
+    
+    errorText.innerHTML = enhancedMessage;
+    errorDiv.style.display = 'block';
+    
+    // Scroll to error
+    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideRegistrationError() {
+    const errorDiv = document.getElementById('registrationError');
+    errorDiv.style.display = 'none';
+}
+
+// Form submission
+document.getElementById('driverRegistrationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Clear any previous errors
+    hideRegistrationError();
+    
+    if (!validateStep(currentStep)) {
+        return;
+    }
+    
+    // Create FormData
+    const formData = new FormData(this);
+    
+    // Add phone number from country code selector
+    if (driverPhoneSelector) {
+        const phone = driverPhoneSelector.getValue();
+        if (phone) {
+            formData.set('phone', phone);
+        }
+    }
+    
+    // Show loading state
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    // Submit form
+    fetch('/accounts/api/driver/register/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            // Handle HTTP error responses
+            return response.json().then(errorData => {
+                throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            showToast('success', 'Registration successful! Redirecting to verification...');
+            setTimeout(() => {
+                window.location.href = '/accounts/driver/verification/';
+            }, 1500);
+        } else {
+            showRegistrationError(data.error || 'Registration failed. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Registration error:', error);
+        const errorMessage = error.message || 'Registration failed. Please try again.';
+        showRegistrationError(errorMessage);
+    })
+    .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Registration';
+    });
+});
+
+// Note: showAlert and showToast functions are now available globally from base_tailwind.html
+
+// Initialize date of birth field with age restriction
+function initializeDateOfBirth() {
+    const dateOfBirthInput = document.getElementById('date_of_birth');
+    const today = new Date();
+    const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+    
+    // Set the maximum date to 18 years ago from today
+    dateOfBirthInput.max = maxDate.toISOString().split('T')[0];
+    
+    // Add change event listener for real-time validation
+    dateOfBirthInput.addEventListener('change', function() {
+        validateAge();
+    });
+}
+
+function validateAge() {
+    const dateOfBirthInput = document.getElementById('date_of_birth');
+    const selectedDate = new Date(dateOfBirthInput.value);
+    const today = new Date();
+    const age = today.getFullYear() - selectedDate.getFullYear();
+    const monthDiff = today.getMonth() - selectedDate.getMonth();
+    
+    // Check if birthday has occurred this year
+    const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < selectedDate.getDate()) 
+        ? age - 1 
+        : age;
+    
+    if (dateOfBirthInput.value && actualAge < 18) {
+        showAlert('error', 'You must be at least 18 years old to register as a driver');
+        dateOfBirthInput.focus();
+        return false;
+    }
+    
+    return true;
+}
+
+function validateDriverPhone() {
+    if (!driverPhoneSelector) {
+        showAlert('error', 'Phone selector not initialized. Please refresh and try again.');
+        return false;
+    }
+    
+    const phone = driverPhoneSelector.getValue();
+    
+    if (!phone || phone.trim() === '') {
+        showAlert('error', 'Please enter a valid phone number');
+        return false;
+    }
+    
+    if (!driverPhoneSelector.validate()) {
+        const validationMessage = driverPhoneSelector.getValidationMessage();
+        showAlert('error', validationMessage);
+        return false;
+    }
+    
+    return true;
+}
+
+// Country code selector for driver registration
+let driverPhoneSelector = null;
+
+function initializeDriverPhoneSelector() {
+    // Wait for the page to be fully loaded
+    if (window.countryCodeManager) {
+        driverPhoneSelector = countryCodeManager.create('driverPhoneSelector', {
+            defaultCountry: 'UG',
+            searchEnabled: true
+        });
+        console.log('Driver phone selector initialized:', driverPhoneSelector);
+    } else {
+        console.error('Country code manager not available');
+        // Retry after a short delay
+        setTimeout(initializeDriverPhoneSelector, 500);
+    }
+}
+
+// Debug function for driver phone selector
+window.debugDriverPhone = function() {
+    console.log('=== Driver Phone Debug ===');
+    console.log('Driver phone selector:', driverPhoneSelector);
+    console.log('Country code manager:', window.countryCodeManager);
+    if (driverPhoneSelector) {
+        console.log('Phone value:', driverPhoneSelector.getValue());
+        console.log('Phone validation:', driverPhoneSelector.validate());
+        console.log('Validation message:', driverPhoneSelector.getValidationMessage());
+    }
+    return driverPhoneSelector;
+};
+
+// Initialize
+updateButtons();
+initializeDateOfBirth();
+initializeDriverPhoneSelector();
+</script>
+{% endblock %}

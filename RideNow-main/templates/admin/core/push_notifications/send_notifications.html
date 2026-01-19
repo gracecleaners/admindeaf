@@ -1,0 +1,206 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Send Push Notification {% endblock %}
+{% block extrastyle %}
+    <meta name="vapid-key" content="{{ vapid_key }}">
+	{% if request.user.is_authenticated %}
+        <meta name="user_id" content="{{ request.user.id }}">
+    {% endif %}
+{% endblock %}
+{% block content %}
+    <style>
+        body {
+            background-color: azure;
+            color: black;
+        }
+        .content-section {
+            width: 100%;
+            margin: auto;
+            font-size: medium;
+            padding: 0.1em;
+            font-size: 1rem;
+        }
+        .form-title {
+            margin: 0.3em;
+            text-align: center;
+            color: black;
+            font-size: 1.3rem;
+        }
+        input[type=text] {
+            width: 100%;
+            font-size: 1rem;
+            padding: 0.5rem;
+            background-color: white;
+            color: black;
+        }
+        .btn-outline-info {
+            font-size: 1rem;
+            padding: 0.7em;
+            width: 30%;
+            border-radius: 0.3em;
+        }
+        .btn-outline-info:hover {
+            background-color: bisque;
+            transform: scale(1);
+            transition: 1s;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 35%;
+            margin: 10% auto;
+        }
+        form > h3 {
+            font-size: 17px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: orangered;
+            text-transform: uppercase;
+        }
+
+        form > .error {
+            margin: 0;
+            font-size: 15px;
+            font-weight: normal;
+            color: orange;
+            opacity: 0.7;
+        }
+
+        form > input, form > textarea {
+            border: 3px solid orangered;
+            box-shadow: unset;
+            padding: 13px 12px;
+            margin: 12px auto;
+            width: 80%;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        form > input:focus, form > textarea:focus {
+            border: 3px solid orangered;
+            box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2);
+            outline: unset;
+        }
+
+        form > button {
+            justify-self: center;
+            padding: 12px 25px;
+            border-radius: 0;
+            text-transform: uppercase;
+            font-weight: 600;
+            background: orangered;
+            color: white;
+            border: none;
+            font-size: 14px;
+            letter-spacing: -0.1px;
+            cursor: pointer;
+        }
+
+        form > button:disabled {
+            background: dimgrey;
+            cursor: not-allowed;
+        }
+    </style>
+    {% load i18n admin_urls %}
+    <form id="send-push__form">
+        <h3 class="header">Send a push notification</h3>
+        <p class="error"></p>
+        <input type="text" name="head" placeholder="Header: Send a push notification">
+        <textarea name="body" id="" cols="30" rows="10" placeholder="Body: Amazing flash sales this week on Shukrani Foods"></textarea>
+        <button>Send Notification</button>
+    </form>
+    <script src="{% static 'assets/js/site.js' %}"></script>
+    <script>
+        const registerSw = async () => {
+            if ('serviceWorker' in navigator) {
+                const reg = await navigator.serviceWorker.register('sw.js');
+                initialiseState(reg)
+
+            } else {
+                showNotAllowed("You can't send push notifications ☹️😢")
+            }
+        };
+        const initialiseState = (reg) => {
+            if (!reg.showNotification) {
+                showNotAllowed('Showing notifications isn\'t supported ☹️😢');
+                return
+            }
+            if (Notification.permission === 'denied') {
+                showNotAllowed('You prevented us from showing notifications ☹️🤔');
+                return
+            }
+            if (!'PushManager' in window) {
+                showNotAllowed("Push isn't allowed in your browser 🤔");
+                return
+            }
+            subscribe(reg);
+        }
+
+        const showNotAllowed = (message) => {
+            const button = document.querySelector('form>button');
+            button.innerHTML = `${message}`;
+            button.setAttribute('disabled', 'true');
+        };
+
+        function urlB64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding)
+                .replace(/\-/g, '+')
+                .replace(/_/g, '/');
+
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            const outputData = outputArray.map((output, index) => rawData.charCodeAt(index));
+
+            return outputData;
+        }
+
+        const subscribe = async (reg) => {
+            const subscription = await reg.pushManager.getSubscription();
+            if (subscription) {
+                sendSubData(subscription);
+                return;
+            }
+
+            const vapidMeta = document.querySelector('meta[name="vapid-key"]');
+            const key = vapidMeta.content;
+            const options = {
+                userVisibleOnly: true,
+                // if key exists, create applicationServerKey property
+                ...(key && {applicationServerKey: urlB64ToUint8Array(key)})
+            };
+
+            const sub = await reg.pushManager.subscribe(options);
+            sendSubData(sub)
+        };
+
+        const sendSubData = async (subscription) => {
+            const browser = navigator.userAgent.match(/(firefox|msie|chrome|safari|trident)/ig)[0].toLowerCase();
+            const data = {
+                status_type: 'subscribe',
+                subscription: subscription.toJSON(),
+                browser: browser,
+            };
+
+            const res = await fetch('/webpush/save_information', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'content-type': 'application/json'
+                },
+                credentials: "include"
+            });
+
+            handleResponse(res);
+        };
+
+        const handleResponse = (res) => {
+            console.log(res.status);
+        };
+
+        registerSw();
+    </script>
+{% endblock content %}

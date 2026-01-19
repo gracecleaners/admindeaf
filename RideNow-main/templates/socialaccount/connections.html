@@ -1,0 +1,102 @@
+{% extends 'base_tailwind.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Connected Accounts - Zyra{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+            <i class="fas fa-link text-primary-500"></i> Connected Accounts
+        </h1>
+        <p class="text-gray-600 mb-6">Manage your social account connections</p>
+        
+        <div class="space-y-4">
+            {% get_providers as socialaccount_providers %}
+            
+            {% for provider in socialaccount_providers %}
+                {% get_social_accounts provider.id as accounts %}
+                
+                <div class="border border-gray-200 rounded-lg p-4 hover:border-primary-500 transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            {% if provider.id == 'google' %}
+                                <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                                    <i class="fab fa-google text-blue-500 text-xl"></i>
+                                </div>
+                            {% elif provider.id == 'apple' %}
+                                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                    <i class="fab fa-apple text-gray-900 text-xl"></i>
+                                </div>
+                            {% else %}
+                                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user-circle text-gray-500 text-xl"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div>
+                                <h3 class="font-semibold text-gray-900">{{ provider.name }}</h3>
+                                {% if accounts %}
+                                    {% for account in accounts %}
+                                        <p class="text-sm text-gray-500">
+                                            <i class="fas fa-check-circle text-green-500"></i> 
+                                            Connected as {{ account.extra_data.email|default:account.uid }}
+                                        </p>
+                                    {% endfor %}
+                                {% else %}
+                                    <p class="text-sm text-gray-500">
+                                        <i class="fas fa-times-circle text-gray-400"></i> Not connected
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            {% if accounts %}
+                                {% for account in accounts %}
+                                    <form method="post" action="{% url 'socialaccount_connections' %}" class="inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="account" value="{{ account.id }}"/>
+                                        <button type="submit" name="disconnect" 
+                                                class="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm">
+                                            <i class="fas fa-unlink"></i> Disconnect
+                                        </button>
+                                    </form>
+                                {% endfor %}
+                            {% else %}
+                                <a href="{% provider_login_url provider.id %}" 
+                                   class="px-4 py-2 bg-primary-50 text-primary-600 rounded-lg hover:bg-primary-100 transition-colors font-medium text-sm inline-block">
+                                    <i class="fas fa-link"></i> Connect
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="flex items-start space-x-3">
+                <i class="fas fa-info-circle text-blue-500 mt-1"></i>
+                <div>
+                    <h4 class="font-semibold text-blue-900 mb-1">About Social Connections</h4>
+                    <p class="text-sm text-blue-700">
+                        Social account connections allow you to sign in quickly without entering your password. 
+                        You can connect or disconnect accounts at any time. Note that social login is available 
+                        for <strong>riders/clients only</strong>. If you want to become a driver, please use the 
+                        <a href="{% url 'driver_registration' %}" class="underline font-semibold">driver registration form</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-6 flex justify-end">
+            <a href="{% url 'profile' %}" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                <i class="fas fa-arrow-left mr-2"></i>Back to Profile
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

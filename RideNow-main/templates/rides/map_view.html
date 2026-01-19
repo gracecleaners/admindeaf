@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}RideNow Map{% endblock %}
+
+{% block extra_css %}
+<style>
+    #map {
+        height: 500px;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .ride-controls {
+        margin-top: 20px;
+    }
+    .location-input {
+        margin-bottom: 15px;
+    }
+    #ride-request-form {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>RideNow Map</h1>
+    <p>Select your pickup location and destination to request a ride.</p>
+
+    <div id="map"></div>
+
+    <div class="ride-controls">
+        <form id="ride-request-form">
+            <div class="location-input">
+                <label for="pickup-location">Pickup Location</label>
+                <input type="text" id="pickup-location" class="form-control" placeholder="Enter pickup location">
+            </div>
+            <div class="location-input">
+                <label for="destination-location">Destination</label>
+                <input type="text" id="destination-location" class="form-control" placeholder="Enter destination">
+            </div>
+            <button type="button" id="request-ride-btn" class="btn btn-primary btn-block">Request Ride</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=places&callback=initMap" async defer></script>
+<script>
+    let map;
+    let directionsService;
+    let directionsRenderer;
+    let pickupMarker;
+    let destinationMarker;
+    let pickupAutocomplete;
+    let destinationAutocomplete;
+    let pickupLocation = null;
+    let destinationLocation = null;
+
+    function initMap() {
+        // Initialize map
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 0.347596, lng: 32.582520 }, // Kampala, Uganda coordinates
+            zoom: 13,
+        });
+
+        // Initialize directions service and renderer
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(map);
+
+        // Initialize autocomplete
+        pickupAutocomplete = new google.maps.places.Autocomplete(
+            document.getElementById("pickup-location")
+        );
+        destinationAutocomplete = new google.maps.places.Autocomplete(
+            document.getElementById("destination-location")
+        );
+
+        // Add event listeners for place selection
+        pickupAutocomplete.addListener("place_changed", () => {
+            const place = pickupAutocomplete.getPlace();
+            if (place.geometry) {
+                if (pickupMarker) {
+                    pickupMarker.setMap(null);
+                }
+                pickupMarker = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: map,
+                    title: "Pickup Location",
+                    icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                });
+                pickupLocation = {
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng(),
+                    address: place.formatted_address
+                };
+                updateRoute();
+            }
+        });
+
+        destinationAutocomplete.addListener("place_changed", () => {
+            const place = destinationAutocomplete.getPlace();
+            if (place.geometry) {
+                if (destinationMarker) {
+                    destinationMarker.setMap(null);
+                }
+                destinationMarker = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: map,
+                    title: "Destination",
+                    icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                });
+                destinationLocation = {
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng(),
+                    address: place.formatted_address
+                };
+                updateRoute();
+            }
+        });
+
+        // Set up event listener for request ride button
+        document.getElementById("request-ride-btn").addEventListener("click", requestRide);
+    }
+
+    function updateRoute() {
+        if (pickupLocation && destinationLocation) {
+            const request = {
+                origin: { lat: pickupLocation.lat, lng: pickupLocation.lng },
+                destination: { lat: destinationLocation.lat, lng: destinationLocation.lng },
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            directionsService.route(request, (result, status) => {
+                if (status === "OK") {
+                    directionsRenderer.setDirections(result);
+                }
+            });
+        }
+    }
+
+    function requestRide() {
+        if (!pickupLocation || !destinationLocation) {
+            alert("Please select both pickup and destination locations");
+            return;
+        }
+
+        // Send ride request to server
+        fetch('{% url "rides:request_ride_api" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                pickup_lat: pickupLocation.lat,
+                pickup_lng: pickupLocation.lng,
+                destination_lat: destinationLocation.lat,
+                destination_lng: destinationLocation.lng,
+                pickup_address: pickupLocation.address,
+                destination_address: destinationLocation.address
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Your ride has been requested! Request ID: ' + data.request_id);
+                // Redirect to ride tracking page
+                window.location.href = '/rides/track/' + data.request_id + '/';
+            } else {
+                alert('Error requesting ride: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('There was an error requesting your ride. Please try again.');
+        });
+    }
+
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}
